@@ -449,14 +449,15 @@ html.js .reveal-stagger.in > *{transform:translateY(0)}
   ) !important;
 }
 .room-card:hover h3{transform:translateY(-4px)}
-.room-card-meta{display:flex;align-items:center;gap:14px;font-size:.78rem;color:rgba(255,255,255,.85);margin-bottom:14px;flex-wrap:wrap;font-weight:400}
+.room-card-meta{display:flex;align-items:center;gap:14px;font-size:.78rem;color:rgba(255,255,255,.92);margin-bottom:14px;flex-wrap:wrap;font-weight:400;text-shadow:0 1px 6px rgba(0,0,0,.9),0 1px 2px rgba(0,0,0,1)}
 .room-card-meta span{display:flex;align-items:center;gap:6px}
 .room-card-meta i{color:var(--lime)}
 .room-card-foot{display:flex;align-items:center;justify-content:space-between}
-.room-card-price{font-size:.9rem;color:rgba(255,255,255,.85);font-weight:300}
+.room-card-price{font-size:.9rem;color:rgba(255,255,255,.92);font-weight:300;text-shadow:0 1px 6px rgba(0,0,0,.9),0 1px 2px rgba(0,0,0,1)}
 .room-card-price b{color:var(--lime);font-weight:800;font-size:1.4rem;font-family:var(--display)}
 .room-card-cta{width:46px;height:46px;border-radius:50%;background:var(--lime);color:var(--navy-deep);display:flex;align-items:center;justify-content:center;transform:translateX(20px);opacity:0;transition:all .4s var(--ease)}
 .room-card:hover .room-card-cta{transform:translateX(0);opacity:1}
+.rooms-grid .room-card-body{background:linear-gradient(0deg,rgba(0,0,51,.92) 0%,rgba(0,0,51,.55) 45%,transparent 100%)}
 
 .marquee{background:var(--lime);padding:36px 0;overflow:hidden;position:relative;color:var(--navy-deep)}
 .marquee::before,.marquee::after{content:'';position:absolute;top:0;bottom:0;width:120px;z-index:2;pointer-events:none}
@@ -1759,11 +1760,11 @@ img, svg, video { max-width: 100%; height: auto; }
         </div>
         <span class="room-card-tag">For Families</span>
         <div class="room-card-body">
-          <h3>Family Room Connected</h3>
+          <h3 data-cms-room="familyconnected" data-cms-field="name">Family Room Connected</h3>
           <div class="room-card-meta">
-            <span><i class="fas fa-vector-square"></i>52 m²</span>
-            <span><i class="fas fa-user-group"></i>Up to 6</span>
-            <span><i class="fas fa-door-open"></i>Connecting</span>
+            <span><i class="fas fa-vector-square"></i><span data-cms-room="familyconnected" data-cms-field="size">52 m²</span></span>
+            <span><i class="fas fa-user-group"></i><span data-cms-room="familyconnected" data-cms-field="guests">Up to 5</span></span>
+            <span><i class="fas fa-tree"></i><span data-cms-room="familyconnected" data-cms-field="view">Garden / Pool</span></span>
           </div>
           <div class="room-card-foot">
             <div class="room-card-price">From <b>€<span data-cms-room="familyconnected" data-cms-field="price">180</span></b>/night</div>
@@ -1785,7 +1786,12 @@ img, svg, video { max-width: 100%; height: auto; }
         </div>
         <span class="room-card-tag">Spacious</span>
         <div class="room-card-body">
-          <h3>Standard Family</h3>
+          <h3 data-cms-room="standardfamily" data-cms-field="name">Standard Family</h3>
+          <div class="room-card-meta">
+            <span><i class="fas fa-vector-square"></i><span data-cms-room="standardfamily" data-cms-field="size">36 m²</span></span>
+            <span><i class="fas fa-user-group"></i><span data-cms-room="standardfamily" data-cms-field="guests">Up to 4</span></span>
+            <span><i class="fas fa-tree"></i><span data-cms-room="standardfamily" data-cms-field="view">Garden / Pool</span></span>
+          </div>
           <div class="room-card-foot">
             <div class="room-card-price">From <b>€<span data-cms-room="standardfamily" data-cms-field="price">140</span></b></div>
             <div class="room-card-cta"><i class="fas fa-arrow-right"></i></div>
@@ -1805,7 +1811,12 @@ img, svg, video { max-width: 100%; height: auto; }
         </div>
         <span class="room-card-tag">Garden &amp; Sea</span>
         <div class="room-card-body">
-          <h3>Sea Side View</h3>
+          <h3 data-cms-room="seaside" data-cms-field="name">Sea Side View</h3>
+          <div class="room-card-meta">
+            <span><i class="fas fa-vector-square"></i><span data-cms-room="seaside" data-cms-field="size">28 m²</span></span>
+            <span><i class="fas fa-user-group"></i><span data-cms-room="seaside" data-cms-field="guests">Up to 2</span></span>
+            <span><i class="fas fa-water"></i><span data-cms-room="seaside" data-cms-field="view">Side Sea View</span></span>
+          </div>
           <div class="room-card-foot">
             <div class="room-card-price">From <b>€<span data-cms-room="seaside" data-cms-field="price">130</span></b></div>
             <div class="room-card-cta"><i class="fas fa-arrow-right"></i></div>
@@ -1826,7 +1837,12 @@ img, svg, video { max-width: 100%; height: auto; }
         </div>
         <span class="room-card-tag">Classic</span>
         <div class="room-card-body">
-          <h3>Standard Room</h3>
+          <h3 data-cms-room="standard" data-cms-field="name">Standard Room</h3>
+          <div class="room-card-meta">
+            <span><i class="fas fa-vector-square"></i><span data-cms-room="standard" data-cms-field="size">28 m²</span></span>
+            <span><i class="fas fa-user-group"></i><span data-cms-room="standard" data-cms-field="guests">Up to 3</span></span>
+            <span><i class="fas fa-tree"></i><span data-cms-room="standard" data-cms-field="view">Garden / Pool</span></span>
+          </div>
           <div class="room-card-foot">
             <div class="room-card-price">From <b>€<span data-cms-room="standard" data-cms-field="price">105</span></b></div>
             <div class="room-card-cta"><i class="fas fa-arrow-right"></i></div>
@@ -1847,7 +1863,12 @@ img, svg, video { max-width: 100%; height: auto; }
         </div>
         <span class="room-card-tag">Best Value</span>
         <div class="room-card-body">
-          <h3>Economy Room</h3>
+          <h3 data-cms-room="economy" data-cms-field="name">Economy Room</h3>
+          <div class="room-card-meta">
+            <span><i class="fas fa-vector-square"></i><span data-cms-room="economy" data-cms-field="size">22 m²</span></span>
+            <span><i class="fas fa-user-group"></i><span data-cms-room="economy" data-cms-field="guests">Up to 2</span></span>
+            <span><i class="fas fa-tree"></i><span data-cms-room="economy" data-cms-field="view">Garden</span></span>
+          </div>
           <div class="room-card-foot">
             <div class="room-card-price">From <b>€<span data-cms-room="economy" data-cms-field="price">85</span></b></div>
             <div class="room-card-cta"><i class="fas fa-arrow-right"></i></div>

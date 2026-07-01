@@ -159,7 +159,8 @@ input,textarea,select{font-family:inherit;font-size:.95rem}
 .section-card > h3 .ico{color:var(--lime-deep)}
 .section-card > .desc{color:var(--muted);font-size:.86rem;margin-bottom:20px}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-@media(max-width:640px){.grid-2{grid-template-columns:1fr}}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
+@media(max-width:640px){.grid-2{grid-template-columns:1fr}.grid-3{grid-template-columns:1fr}}
 .help{font-size:.76rem;color:var(--muted);margin-top:6px}
 
 /* image / video uploader */
@@ -783,6 +784,11 @@ input,textarea,select{font-family:inherit;font-size:.95rem}
       <div class="field"><label>Price (number only)</label><input id="rm-price" placeholder="155"></div>
       <div class="field"><label>Currency / unit</label><input id="rm-unit" placeholder="€ / night"></div>
     </div>
+    <div class="grid-3">
+      <div class="field"><label>Size</label><input id="rm-size" placeholder="28 m²"></div>
+      <div class="field"><label>Occupancy</label><input id="rm-guests" placeholder="Up to 2"></div>
+      <div class="field"><label>View</label><input id="rm-view" placeholder="Sea View"></div>
+    </div>
     <div class="modal-actions">
       <button class="btn btn-ghost" data-close-modal>Cancel</button>
       <button class="btn btn-primary" id="rm-save">Save room</button>
@@ -1025,13 +1031,13 @@ var DEFAULTS = {
     }
   },
   rooms: [
-    {id:"premium", name:"Premium Room", desc:"2 single beds and 2 sofa beds (double bed on request) — same as a double room, but larger, with a side sea view or pool view and a spacious balcony.", price:"220", unit:"€ / night"},
-    {id:"seaview", name:"Sea View Room", desc:"A great choice for up to two persons, with a direct front sea view. Wake up to the Red Sea every morning from your private balcony.", price:"155", unit:"€ / night"},
-    {id:"seaside", name:"Sea Side View Room", desc:"A double room with a relaxing side sea view, surrounded by the resort's lush gardens. A great choice for two persons.", price:"130", unit:"€ / night"},
-    {id:"familyconnected", name:"Family Room Connected", desc:"Two connected units forming a spacious family suite — a great choice for up to five persons, with a separate room for the children and two bathrooms.", price:"180", unit:"€ / night"},
-    {id:"standardfamily", name:"Standard Family Room", desc:"A single spacious unit and a great choice for up to four persons. Ideal for families who want to stay in one open, comfortable room.", price:"140", unit:"€ / night"},
-    {id:"standard", name:"Standard Room", desc:"There are 192 Standard Rooms in the resort, all spacious and comfortable for up to three persons — suitable for a family with one child. These rooms have garden or swimming pool views.", price:"105", unit:"€ / night"},
-    {id:"economy", name:"Economy Room", desc:"A great choice for singles or two persons. Compact, comfortable, and excellent value — with all the essential comforts of the resort.", price:"85", unit:"€ / night"}
+    {id:"premium", name:"Premium Room", desc:"2 single beds and 2 sofa beds (double bed on request) — same as a double room, but larger, with a side sea view or pool view and a spacious balcony.", price:"220", unit:"€ / night", size:"34 m²", guests:"Up to 4", view:"Side Sea View"},
+    {id:"seaview", name:"Sea View Room", desc:"A great choice for up to two persons, with a direct front sea view. Wake up to the Red Sea every morning from your private balcony.", price:"155", unit:"€ / night", size:"28 m²", guests:"Up to 2", view:"Direct Sea View"},
+    {id:"seaside", name:"Sea Side View Room", desc:"A double room with a relaxing side sea view, surrounded by the resort's lush gardens. A great choice for two persons.", price:"130", unit:"€ / night", size:"28 m²", guests:"Up to 2", view:"Side Sea View"},
+    {id:"familyconnected", name:"Family Room Connected", desc:"Two connected units forming a spacious family suite — a great choice for up to five persons, with a separate room for the children and two bathrooms.", price:"180", unit:"€ / night", size:"52 m²", guests:"Up to 5", view:"Garden / Pool"},
+    {id:"standardfamily", name:"Standard Family Room", desc:"A single spacious unit and a great choice for up to four persons. Ideal for families who want to stay in one open, comfortable room.", price:"140", unit:"€ / night", size:"36 m²", guests:"Up to 4", view:"Garden / Pool"},
+    {id:"standard", name:"Standard Room", desc:"There are 192 Standard Rooms in the resort, all spacious and comfortable for up to three persons — suitable for a family with one child. These rooms have garden or swimming pool views.", price:"105", unit:"€ / night", size:"28 m²", guests:"Up to 3", view:"Garden / Pool"},
+    {id:"economy", name:"Economy Room", desc:"A great choice for singles or two persons. Compact, comfortable, and excellent value — with all the essential comforts of the resort.", price:"85", unit:"€ / night", size:"22 m²", guests:"Up to 2", view:"Garden"}
   ],
   news: [
     {id:1, title:"Summer Stay 7-for-5 — book by June", date:"May 02, 2026", cat:"Offer", excerpt:"Book seven nights, pay for five. Available across all room categories for arrivals between 1 July and 31 August."},
@@ -1452,10 +1458,12 @@ function renderRooms(){
 }
 function openRoom(r){ editingRoom=r; $("#roomModalTitle").textContent="Edit "+r.name;
   $("#rm-name").value=r.name; $("#rm-desc").value=r.desc; $("#rm-price").value=r.price; $("#rm-unit").value=r.unit;
+  $("#rm-size").value=r.size||""; $("#rm-guests").value=r.guests||""; $("#rm-view").value=r.view||"";
   $("#roomModal").classList.add("show"); }
 $("#rm-save").addEventListener("click", function(){
   editingRoom.name=$("#rm-name").value; editingRoom.desc=$("#rm-desc").value;
   editingRoom.price=$("#rm-price").value; editingRoom.unit=$("#rm-unit").value;
+  editingRoom.size=$("#rm-size").value; editingRoom.guests=$("#rm-guests").value; editingRoom.view=$("#rm-view").value;
   renderRooms(); markDirty(); closeModals(); toast("Room updated");
 });
 
