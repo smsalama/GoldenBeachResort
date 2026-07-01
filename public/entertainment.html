@@ -158,13 +158,13 @@ em.lime::after{content:'';position:absolute;left:0;right:0;bottom:6%;height:30%;
 
 .logo{display:inline-block;line-height:0;position:relative;transition:transform .5s var(--ease-spring)}
 .logo:hover{transform:scale(1.04)}
-.logo svg{width:auto;height:64px;display:block;max-width:100%}
-.logo.lg svg{height:80px}
-.logo.sm svg{height:54px}
+.logo svg,.logo img{width:auto;height:64px;display:block;max-width:100%}
+.logo.lg svg,.logo.lg img{height:80px}
+.logo.sm svg,.logo.sm img{height:54px}
 .logo-photo{padding-left:clamp(8px,1vw,14px)}.logo-photo img{height:clamp(44px,5vw,58px);width:auto;display:block;max-width:100%}
 @media (max-width:520px){
-  .logo svg{height:48px}
-  .logo.lg svg{height:62px}
+  .logo svg,.logo img{height:48px}
+  .logo.lg svg,.logo.lg img{height:62px}
 }
 
 .loader{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;background:radial-gradient(125% 125% at 50% 26%,#FFFFFF 0%,#F4F4F7 54%,#E7E7EF 100%);transition:opacity .9s var(--ease),visibility .9s,clip-path .9s var(--ease);overflow:hidden;perspective:1100px}
@@ -1579,7 +1579,7 @@ img, svg, video { max-width: 100%; height: auto; }
 <div class="drawer-overlay" id="drawerOverlay"></div>
 <aside class="drawer" id="drawer">
   <div class="drawer-head">
-    <a href="index.html" class="logo sm"><svg viewBox="0 0 440 120"><use href="#fullLogoLight"/></svg></a>
+    <a href="index.html" class="logo sm"><img src="logo-gbr-light.png" alt="Golden Beach Resort Hurghada"/></a>
     <button class="drawer-close" id="drawerClose"><i class="fas fa-xmark"></i></button>
   </div>
   <nav class="drawer-nav">
@@ -1789,7 +1789,7 @@ img, svg, video { max-width: 100%; height: auto; }
     <div class="footer-grid">
       <div class="footer-brand">
         <a href="#" class="logo lg" aria-label="Golden Beach Resort">
-          <svg viewBox="0 0 440 120"><use href="#fullLogoLight"/></svg>
+          <img src="logo-gbr-light.png" alt="Golden Beach Resort Hurghada"/>
         </a>
         <p>An innovative, contemporary hotel brand on Hurghada's Red Sea coast. Family-owned, family-run, and quietly proud of it since 1994.</p>
         <div class="footer-social">
