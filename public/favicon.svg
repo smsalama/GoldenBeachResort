@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="Golden Beach Resort">
+  <!-- Brand ring: lime top half, navy bottom half. Open gaps left and right. -->
+  <g fill="none" stroke-width="14" stroke-linecap="butt">
+    <!-- Top half (lime) -->
+    <path d="M 9 50 A 41 41 0 0 1 91 50" stroke="#CCFF00"/>
+    <!-- Bottom half (navy) -->
+    <path d="M 91 50 A 41 41 0 0 1 9 50" stroke="#000066"/>
+  </g>
+</svg>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  SolidCP fallback — NO httpPlatform section (avoids Event 1034).
+
+  Node runs separately on port 3000 (Windows Service or scheduled task).
+  IIS only reverse-proxies to it.
+
+  Requires: IIS URL Rewrite + ARR proxy enabled on the server.
+  Set PORT=3000 in server\.env
+-->
+<configuration>
+  <system.webServer>
+    <rewrite>
+      <rules>
+        <rule name="GoldenBeachNodeProxy" stopProcessing="true">
+          <match url="(.*)" />
+          <action type="Rewrite" url="http://127.0.0.1:3000/{R:1}" />
+          <serverVariables>
+            <set name="HTTP_X_FORWARDED_PROTO" value="https" />
+            <set name="HTTP_X_FORWARDED_HOST" value="{HTTP_HOST}" />
+          </serverVariables>
+        </rule>
+      </rules>
+    </rewrite>
+  </system.webServer>
+</configuration>

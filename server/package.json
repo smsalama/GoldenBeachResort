@@ -1,0 +1,29 @@
+{
+  "name": "gbr-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Golden Beach Resort — secure Node.js backend (admin auth, CMS content, media uploads) on SQL Server.",
+  "main": "server.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "init-db": "node scripts/init-db.js",
+    "create-admin": "node scripts/create-admin.js",
+    "diagnose": "node scripts/iis-diagnose.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.4.0",
+    "express-session": "^1.18.0",
+    "helmet": "^7.1.0",
+    "mssql": "^11.0.1",
+    "multer": "^2.2.0"
+  }
+}

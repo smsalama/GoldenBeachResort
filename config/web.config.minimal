@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  MINIMAL Http Bridge / HttpPlatformHandler config for SolidCP.
+  Use this if the full web.config still gives Event ID 1034.
+
+  Only required attributes — no processesPerApplication / maxProcesses /
+  rapidFailsPerMinute (those can cause "web.config authoring error" on
+  some hosts when the schema is strict).
+-->
+<configuration>
+  <system.webServer>
+    <handlers>
+      <add name="httpPlatformHandler" path="*" verb="*"
+           modules="httpPlatformHandler" resourceType="Unspecified" />
+    </handlers>
+    <httpPlatform
+      processPath="C:\Program Files\nodejs\node.exe"
+      arguments=".\server\server.js"
+      stdoutLogEnabled="true"
+      stdoutLogFile=".\logs\node"
+      startupTimeLimit="120">
+      <environmentVariables>
+        <environmentVariable name="PORT" value="%HTTP_PLATFORM_PORT%" />
+        <environmentVariable name="NODE_ENV" value="production" />
+      </environmentVariables>
+    </httpPlatform>
+  </system.webServer>
+</configuration>

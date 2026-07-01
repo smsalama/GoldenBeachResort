@@ -1,0 +1,7 @@
+# Golden Beach Resort — robots.txt
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /_qa-preview.html
+
+Sitemap: https://www.goldenbeachresort.net/sitemap.xml

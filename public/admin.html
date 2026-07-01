@@ -1,0 +1,2497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Portal — Golden Beach Resort</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="fontawesome.css"/>
+<style>
+:root{
+  --navy:#000066; --navy-deep:#00004D; --navy-darker:#000033; --navy-light:#1A1A85; --navy-soft:#41418C;
+  --lime:#CCFF00; --lime-light:#DDFF66; --lime-soft:#ECFF99; --lime-pale:#F6FFCC; --lime-deep:#6F8C00;
+  --green:#5ADA65; --green-light:#7FE389; --green-deep:#34A03E;
+  --cream:#F3F3F3; --warm:#E5E5E5; --white:#FFFFFF;
+  --ink:#00004D; --muted:#41418C;
+  --border:rgba(0,0,102,.1); --shadow-sm:0 2px 12px rgba(0,0,77,.06);
+  --shadow:0 18px 50px rgba(0,0,77,.15);
+  --radius:16px; --radius-sm:10px;
+  --sans:'Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --display:'Montserrat',-apple-system,'Segoe UI',sans-serif;
+  --ease-spring:cubic-bezier(.34,1.56,.64,1);
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--cream);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4,h5,h6,.panel-title,.section-card h3{font-family:var(--display);letter-spacing:-.02em}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+input,textarea,select{font-family:inherit;font-size:.95rem}
+.hidden{display:none !important}
+
+/* ---------- BRAND LOGOS (website-matched) ---------- */
+.brand-logo{display:block;line-height:0}
+.brand-logo svg{display:block;width:auto;max-width:100%}
+
+/* ---------- PORTAL LOADING SCREEN ---------- */
+.admin-loader{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;
+  background:radial-gradient(125% 125% at 50% 26%,#FFFFFF 0%,#F4F4F7 54%,#E7E7EF 100%);
+  opacity:0;visibility:hidden;pointer-events:none;overflow:hidden;perspective:1100px;
+  transition:opacity .9s var(--ease),visibility .9s,clip-path .9s var(--ease)}
+.admin-loader.show{opacity:1;visibility:visible;pointer-events:auto}
+.admin-loader.gone{opacity:0;visibility:hidden;pointer-events:none;clip-path:inset(0 0 100% 0)}
+/* Loader visuals — identical to the public website pages.
+   IMPORTANT: the animations are scoped to .admin-loader.show so they
+   START when the loader appears (on login), not when the page parses.
+   Without this, the animations would finish during the seconds the
+   login form is shown and the loader would appear already-completed. */
+.ldr-stage{position:relative;display:flex;flex-direction:column;align-items:center;gap:32px;transform-style:preserve-3d;transition:transform .25s ease-out;will-change:transform}
+.ldr-ring{width:148px;height:148px;position:relative;filter:drop-shadow(0 16px 32px rgba(0,0,102,.16))}
+.ldr-ring svg{width:100%;height:100%;display:block}
+.ldr-track{fill:none;stroke:rgba(0,0,102,.08);stroke-width:11}
+.ldr-arc{fill:none;stroke-width:11;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100}
+.ldr-sun{stroke:#CCFF00}
+.ldr-blue{stroke:#000066}
+.ldr-orbit{transform-origin:60px 60px;opacity:0}
+.ldr-dot{fill:#5ADA65}
+.ldr-logo{width:min(330px,72vw);height:auto;display:block;opacity:0;transform:translateY(14px)}
+.ldr-meta{display:flex;flex-direction:column;align-items:center;gap:13px;opacity:0}
+.ldr-bar{width:188px;height:4px;border-radius:99px;background:rgba(0,0,102,.12);overflow:hidden}
+.ldr-bar span{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#5ADA65,#CCFF00);transition:width .25s ease}
+.ldr-sub{font-family:var(--display);font-size:.6rem;letter-spacing:.42em;text-transform:uppercase;font-weight:800;color:#000066}
+.ldr-particles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.ldr-particle{position:absolute;bottom:-12px;border-radius:50%;opacity:0}
+/* Animations only run while the loader is visible */
+.admin-loader.show .ldr-ring{animation:ldrPulse 2s ease-in-out .65s infinite}
+.admin-loader.show .ldr-arc{animation:ldrDraw .65s var(--ease) forwards}
+.admin-loader.show .ldr-blue{animation-delay:.16s}
+.admin-loader.show .ldr-orbit{animation:ldrSpin 1.4s linear .65s infinite forwards}
+.admin-loader.show .ldr-logo{animation:ldrRise .6s .28s var(--ease) forwards}
+.admin-loader.show .ldr-meta{animation:ldrRise .55s .42s var(--ease) forwards}
+.admin-loader.show .ldr-particle{animation:ldrFloat linear infinite}
+@keyframes ldrDraw{to{stroke-dashoffset:0}}
+@keyframes ldrSpin{from{opacity:1;transform:rotate(0)}to{opacity:1;transform:rotate(360deg)}}
+@keyframes ldrPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+@keyframes ldrRise{to{opacity:1;transform:translateY(0)}}
+@keyframes ldrFloat{0%{transform:translateY(0) scale(.6);opacity:0}12%{opacity:.55}88%{opacity:.55}100%{transform:translateY(-105vh) scale(1);opacity:0}}
+@media(max-width:600px){.ldr-ring{width:118px;height:118px}}
+@media(prefers-reduced-motion:reduce){.admin-loader.show .ldr-ring,.admin-loader.show .ldr-arc,.admin-loader.show .ldr-orbit,.admin-loader.show .ldr-logo,.admin-loader.show .ldr-meta,.admin-loader.show .ldr-particle{animation:none!important}.ldr-arc{stroke-dashoffset:0}.ldr-orbit{opacity:1}.ldr-logo,.ldr-meta{opacity:1;transform:none}}
+
+/* ---------- LOGIN ---------- */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+  background:radial-gradient(1200px 600px at 70% -10%,rgba(204,255,0,.12),transparent),var(--navy-deep)}
+.login-card{background:var(--white);border-radius:24px;box-shadow:var(--shadow);width:100%;max-width:420px;padding:44px 40px;position:relative;overflow:hidden}
+.login-card::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--lime),var(--green-light),var(--lime))}
+.login-logo{display:flex;flex-direction:column;align-items:flex-start;gap:14px;margin-bottom:6px}
+.login-logo .brand-logo svg{height:56px;width:auto}
+.login-logo .brand-logo img{height:56px;width:auto;display:block}
+.login-tag{display:inline-block;background:var(--lime);color:var(--navy-deep);font-family:var(--display);font-weight:800;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;padding:5px 12px;border-radius:999px}
+.login-card h1{font-size:1.5rem;font-weight:900;letter-spacing:-.02em;margin:18px 0 4px}
+.login-card p.sub{color:var(--muted);font-size:.9rem;margin-bottom:26px}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:.74rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--navy);margin-bottom:8px}
+.field input,.field textarea,.field select{width:100%;padding:13px 15px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--cream);transition:border .2s,box-shadow .2s}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--lime-deep);box-shadow:0 0 0 3px rgba(204,255,0,.25);background:#fff}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 24px;border-radius:100px;font-weight:800;
+  letter-spacing:.04em;transition:transform .2s,box-shadow .2s,background .2s;font-size:.92rem}
+.btn-primary{background:var(--lime);color:var(--navy-deep)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(204,255,0,.4)}
+.btn-dark{background:var(--navy-deep);color:#fff}
+.btn-dark:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.btn-ghost{background:transparent;border:1.5px solid var(--border);color:var(--navy)}
+.btn-ghost:hover{border-color:var(--navy);background:var(--cream)}
+.btn-block{width:100%}
+.login-hint{margin-top:22px;padding:14px 16px;background:var(--lime-pale);border-radius:var(--radius-sm);font-size:.82rem;color:var(--navy)}
+.login-hint b{font-weight:800}
+.login-err{background:#FDECEC;color:#B22;border-radius:var(--radius-sm);padding:11px 15px;font-size:.85rem;font-weight:600;margin-bottom:18px}
+
+/* ---------- APP SHELL ---------- */
+.app{display:none;min-height:100vh}
+.app.active{display:grid;grid-template-columns:260px 1fr}
+.sidebar{background:var(--navy-deep);color:rgba(255,255,255,.85);padding:24px 16px;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column}
+.sidebar .brand{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:8px 8px 22px;border-bottom:1px solid rgba(204,255,0,.14);margin-bottom:14px}
+.sidebar .brand .brand-logo svg{width:100%;max-width:172px;height:auto}
+.sidebar .brand .brand-logo img{width:100%;max-width:188px;height:auto;display:block}
+.sidebar .brand-tag{display:inline-block;background:rgba(204,255,0,.16);color:var(--lime);font-family:var(--display);font-weight:800;font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;padding:4px 11px;border-radius:999px}
+.nav-group-label{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.4);padding:14px 12px 6px;font-weight:700}
+.nav-item{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:10px;font-weight:600;font-size:.9rem;color:rgba(255,255,255,.8);transition:background .2s,color .2s;width:100%;text-align:left}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff}
+.nav-item.active{background:var(--lime);color:var(--navy-deep);font-weight:800}
+.nav-item .ico{width:20px;text-align:center;font-size:.95rem}
+.sidebar-foot{margin-top:auto;padding-top:18px}
+.user-chip{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.05)}
+.user-chip .avatar{width:34px;height:34px;border-radius:50%;background:var(--lime);color:var(--navy-deep);display:grid;place-items:center;font-weight:900}
+.user-chip .who{font-size:.82rem;line-height:1.2}
+.user-chip .who small{color:rgba(255,255,255,.5);font-size:.72rem}
+
+/* ---------- MAIN ---------- */
+.main{padding:0;overflow-y:auto;height:100vh}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(243,243,243,.9);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);padding:16px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.topbar h2{font-size:1.3rem;font-weight:900;letter-spacing:-.02em}
+.topbar .crumbs{font-size:.78rem;color:var(--muted);font-weight:600}
+.topbar-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.save-state{font-size:.78rem;font-weight:700;color:var(--green-deep);display:flex;align-items:center;gap:6px}
+.save-state .dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+.save-state.unsaved{color:#C8911A}
+.save-state.unsaved .dot{background:#E0A82E}
+.content{padding:32px;max-width:1000px}
+.panel{display:none}
+.panel.active{display:block;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.intro-card{background:linear-gradient(120deg,var(--navy-deep),var(--navy));color:#fff;border-radius:var(--radius);padding:30px 32px;margin-bottom:26px;position:relative;overflow:hidden}
+.intro-card::after{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(204,255,0,.25),transparent 70%)}
+.intro-card h3{font-size:1.3rem;font-weight:900;margin-bottom:6px}
+.intro-card p{color:rgba(255,255,255,.8);font-size:.92rem;max-width:560px}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;margin-bottom:30px}
+.tile{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:22px;text-align:left;transition:transform .2s,box-shadow .2s;display:block}
+.tile:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.tile .ti{width:46px;height:46px;border-radius:12px;background:var(--lime-pale);display:grid;place-items:center;font-size:1.2rem;color:var(--lime-deep);margin-bottom:14px}
+.tile h4{font-size:1.02rem;font-weight:800;margin-bottom:4px}
+.tile p{font-size:.84rem;color:var(--muted)}
+
+.section-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:26px 28px;margin-bottom:22px;box-shadow:var(--shadow-sm)}
+.section-card > h3{font-size:1.08rem;font-weight:800;margin-bottom:4px;display:flex;align-items:center;gap:9px}
+.section-card > h3 .ico{color:var(--lime-deep)}
+.section-card > .desc{color:var(--muted);font-size:.86rem;margin-bottom:20px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:640px){.grid-2{grid-template-columns:1fr}}
+.help{font-size:.76rem;color:var(--muted);margin-top:6px}
+
+/* image / video uploader */
+.img-upload{border:2px dashed var(--border-lime,rgba(204,255,0,.5));border-radius:var(--radius-sm);padding:14px;text-align:center;background:var(--lime-pale);transition:border .2s}
+.img-upload:hover{border-color:var(--lime-deep)}
+.media-preview{width:100%;height:150px;border-radius:8px;overflow:hidden;margin-bottom:12px;background:#fff;display:none}
+.media-preview.show{display:block}
+.media-preview img,.media-preview video{width:100%;height:100%;object-fit:cover;display:block}
+.media-preview .ph{color:var(--muted);font-size:.85rem;padding:48px 0}
+.media-row{display:flex;align-items:center;gap:10px;justify-content:center}
+/* multi-photo manager (restaurant / detail sliders) */
+.photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px;margin-bottom:10px}
+.photo-cell{position:relative;aspect-ratio:4/3;border-radius:8px;overflow:hidden;background:#fff;border:1px solid var(--border)}
+.photo-cell img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-cell .pc-rm{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:6px;border:none;background:rgba(0,0,51,.62);color:#fff;cursor:pointer;font-size:.7rem;display:flex;align-items:center;justify-content:center}
+.photo-cell .pc-rm:hover{background:var(--danger,#c0392b)}
+.photo-cell .pc-badge{position:absolute;left:4px;bottom:4px;background:var(--lime,#CCFF00);color:var(--navy-deep,#00004D);font-size:.58rem;font-weight:800;letter-spacing:.06em;padding:2px 6px;border-radius:5px}
+.photo-add{aspect-ratio:4/3;border:2px dashed var(--border-lime,rgba(204,255,0,.6));border-radius:8px;background:var(--lime-pale);color:var(--lime-deep,#8FB300);font-size:.78rem;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;transition:border .2s}
+.photo-add:hover{border-color:var(--lime-deep,#8FB300)}
+.photo-add span.plus{font-size:1.3rem;line-height:1}
+.media-tag{margin-top:8px;font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--lime-deep)}
+.media-grid{margin-top:4px}
+
+/* collection editors (facilities / activities / bars / timetable) */
+.coll-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+.coll-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:16px}
+.coll-card{border:1px solid var(--border);border-radius:var(--radius-sm);background:#fff;overflow:hidden;transition:box-shadow .2s}
+.coll-card:hover{box-shadow:var(--shadow-sm)}
+.coll-thumb{height:120px;width:100%;object-fit:cover;display:block;background:var(--lime-pale)}
+.coll-thumb.is-ph{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;color:var(--lime-deep);font-size:.74rem;font-weight:700;letter-spacing:.04em;
+  background:repeating-linear-gradient(45deg,rgba(204,255,0,.10),rgba(204,255,0,.10) 12px,rgba(204,255,0,.20) 12px,rgba(204,255,0,.20) 24px)}
+.coll-thumb.is-ph span{font-size:1.4rem}
+.coll-body{padding:14px 15px}
+.coll-body .ttl{display:flex;align-items:center;gap:8px;font-weight:800;font-size:.95rem;margin-bottom:4px}
+.coll-body .ttl i{color:var(--lime-deep)}
+.coll-body p{color:var(--muted);font-size:.8rem;line-height:1.5;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.coll-actions{display:flex;gap:8px;padding:0 15px 14px}
+.coll-empty{padding:26px;text-align:center;color:var(--muted);font-size:.88rem;border:1.5px dashed var(--border);border-radius:var(--radius-sm);background:var(--cream)}
+
+/* icon picker */
+.icon-picker{display:grid;grid-template-columns:repeat(auto-fill,minmax(48px,1fr));gap:8px;max-height:170px;overflow-y:auto;padding:10px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--cream)}
+.icon-opt{height:46px;border-radius:9px;display:grid;place-items:center;font-size:1.15rem;background:#fff;border:1.5px solid transparent;color:var(--navy);transition:border .15s,background .15s}
+.icon-opt:hover{background:var(--lime-pale)}
+.icon-opt.active{border-color:var(--lime-deep);background:var(--lime-pale);color:var(--navy-deep)}
+
+/* timetable day editor */
+.slot-row{display:grid;grid-template-columns:1fr 1.6fr auto;gap:8px;margin-bottom:8px;align-items:center}
+.slot-row input{padding:9px 11px;border:1.5px solid var(--border);border-radius:8px;background:var(--cream)}
+.slot-row input:focus{outline:none;border-color:var(--lime-deep);background:#fff}
+@media(max-width:560px){.slot-row{grid-template-columns:1fr auto}.slot-row input:first-child{grid-column:1/-1}}
+
+/* lists (news/rooms) */
+.list-item{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:10px;background:#fff;transition:box-shadow .2s}
+.list-item:hover{box-shadow:var(--shadow-sm)}
+.list-item .li-main{flex:1;min-width:0}
+.list-item .li-main b{display:block;font-weight:800;font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-item .li-main small{color:var(--muted);font-size:.8rem}
+.list-item .li-actions{display:flex;gap:8px}
+.icon-btn{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;background:var(--cream);color:var(--navy);transition:background .2s,color .2s}
+.icon-btn:hover{background:var(--navy-deep);color:#fff}
+.icon-btn.danger:hover{background:#C0392B}
+.badge{font-size:.68rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:100px;background:var(--lime-pale);color:var(--lime-deep)}
+
+/* ---------- LANGUAGES / TRANSLATIONS PANEL ---------- */
+.tr-toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.tr-stat{font-size:.84rem;font-weight:700;color:var(--muted)}
+.tr-stat b{color:var(--ink)}
+.tr-stat .miss{color:#C8911A}
+.tr-search{flex:1;min-width:180px;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--cream)}
+.tr-search:focus{outline:none;border-color:var(--lime-deep);background:#fff;box-shadow:0 0 0 3px rgba(204,255,0,.2)}
+.tr-filter{display:inline-flex;background:var(--cream);border:1.5px solid var(--border);border-radius:100px;padding:3px;gap:2px}
+.tr-filter button{padding:8px 16px;border-radius:100px;font-size:.8rem;font-weight:700;color:var(--muted);transition:background .2s,color .2s}
+.tr-filter button.active{background:var(--navy-deep);color:#fff}
+.tr-langnote{font-size:.8rem;color:var(--muted);margin:-6px 0 4px}
+.tr-langnote .flag{font-weight:800;color:var(--navy)}
+.tr-group{margin-bottom:14px}
+.tr-group > h4{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--lime-deep);font-weight:800;margin:18px 2px 10px;display:flex;align-items:center;gap:8px}
+.tr-sub{font-size:.74rem;font-weight:700;color:var(--navy);background:var(--cream);border:1px solid var(--border);border-left:3px solid var(--lime);border-radius:8px;padding:6px 11px;margin:14px 0 8px}
+.tr-row{display:grid;grid-template-columns:1fr;gap:10px;padding:16px;border:1px solid var(--border);border-radius:var(--radius-sm);background:#fff;margin-bottom:10px;transition:border-color .2s,box-shadow .2s}
+.tr-row.need{border-color:rgba(224,168,46,.55);background:linear-gradient(#FAFAFA,#fff)}
+.tr-row .tr-en{font-size:.92rem;line-height:1.5;color:var(--ink)}
+.tr-row .tr-en .src{font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted);display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.tr-row .tr-en .src .pill-en{background:var(--cream);border:1px solid var(--border);border-radius:100px;padding:2px 9px;color:var(--navy)}
+.tr-row .tr-en .src .need-tag{background:#F0F0F0;color:#9A6B12;border-radius:100px;padding:2px 9px;font-weight:800}
+.tr-langs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:640px){.tr-langs{grid-template-columns:1fr}}
+.tr-field label{display:flex;align-items:center;gap:7px;font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--navy);margin-bottom:6px}
+.tr-field label .flag{font-size:1rem;line-height:1}
+.tr-field textarea{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--cream);resize:vertical;min-height:46px;line-height:1.45}
+.tr-field textarea:focus{outline:none;border-color:var(--lime-deep);background:#fff;box-shadow:0 0 0 3px rgba(204,255,0,.18)}
+.tr-field textarea.auto{color:var(--muted);font-style:italic}
+.tr-empty{padding:30px;text-align:center;color:var(--muted);font-size:.9rem;border:1.5px dashed var(--border);border-radius:var(--radius-sm);background:var(--cream)}
+
+/* toast */
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(140%);
+  background:var(--navy-deep);color:#fff;padding:14px 24px;border-radius:100px;font-weight:700;font-size:.9rem;
+  box-shadow:var(--shadow);z-index:200;transition:transform .35s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;gap:10px}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast .dot{width:9px;height:9px;border-radius:50%;background:var(--lime)}
+
+/* modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,51,.55);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:24px;z-index:150}
+.modal-bg.show{display:flex}
+.modal{background:#fff;border-radius:20px;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:30px;box-shadow:var(--shadow)}
+.modal h3{font-size:1.2rem;font-weight:900;margin-bottom:18px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:22px}
+.modal-note{color:var(--muted,#5b6b86);font-size:.92rem;line-height:1.55;margin:.5rem 0 0}
+
+.mobile-note{display:none}
+@media(max-width:860px){
+  .app.active{grid-template-columns:1fr}
+  .sidebar{position:fixed;left:0;top:0;z-index:100;transform:translateX(-100%);transition:transform .3s;width:260px}
+  .sidebar.open{transform:none}
+  .hamburger{display:grid !important}
+}
+.hamburger{display:none;width:42px;height:42px;border-radius:10px;background:var(--navy-deep);color:#fff;place-items:center}
+
+/* Topbar: keep it readable when the window narrows */
+@media(max-width:860px){
+  .topbar{padding:14px 18px}
+}
+@media(max-width:680px){
+  .topbar{align-items:stretch}
+  .topbar-actions{width:100%;justify-content:flex-start}
+  .topbar-actions .btn{flex:1 1 auto;text-align:center}
+  .topbar h2{font-size:1.15rem}
+}
+@media(max-width:420px){
+  .topbar-actions{gap:8px}
+  .topbar-actions .btn{padding:11px 14px;font-size:.84rem}
+  .save-state{order:-1;width:100%}
+}
+</style>
+<!-- GBR-SEO:START  (generated by seo-bake.js — do not hand-edit) -->
+<meta name="robots" content="noindex, nofollow"/>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"/>
+<link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png"/>
+<link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<link rel="manifest" href="/site.webmanifest"/>
+<!-- GBR-SEO:END -->
+</head>
+<body>
+
+<!-- ===== Portal loading screen (login -> portal transition) ===== -->
+<div class="admin-loader" id="adminLoader" role="status" aria-hidden="true" aria-label="Preparing your portal">
+  <div class="ldr-particles" id="ldrParticles" aria-hidden="true"></div>
+  <div class="ldr-stage" id="ldrStage">
+    <div class="ldr-ring">
+      <svg viewBox="0 0 120 120" aria-hidden="true">
+        <circle class="ldr-track" cx="60" cy="60" r="44"/>
+        <path class="ldr-arc ldr-sun" pathLength="100" d="M16.17 56.16 A44 44 0 0 1 103.83 56.16"/>
+        <path class="ldr-arc ldr-blue" pathLength="100" d="M103.83 63.84 A44 44 0 0 1 16.17 63.84"/>
+        <g class="ldr-orbit"><circle class="ldr-dot" cx="60" cy="16" r="4.6"/></g>
+      </svg>
+    </div>
+    <img class="ldr-logo" src="logo-gbr.png" alt="Golden Beach Resort Hurghada"/>
+    <div class="ldr-meta">
+      <div class="ldr-bar"><span id="ldrBar"></span></div>
+      <div class="ldr-sub">Hurghada · Red Sea</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============ LOGIN ============ -->
+<div class="login-wrap" id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">
+      <span class="brand-logo"><img src="logo-gbr.png" alt="Golden Beach Resort Hurghada"/></span>
+      <span class="login-tag">Admin Portal</span>
+    </div>
+    <h1>Welcome back</h1>
+    <p class="sub">Sign in to manage your website content.</p>
+    <div class="login-err hidden" id="loginErr">Those details didn't match. Please try again.</div>
+    <div class="field">
+      <label for="username">Username</label>
+      <input type="text" id="username" placeholder="admin" autocomplete="username">
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Your password" autocomplete="current-password">
+    </div>
+    <button class="btn btn-primary btn-block" id="loginBtn">Sign in</button>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div class="app" id="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <span class="brand-logo"><img src="logo-gbr-light.png" alt="Golden Beach Resort Hurghada"/></span>
+      <span class="brand-tag">Admin Portal</span>
+    </div>
+    <button class="nav-item active" data-panel="dashboard"><span class="ico">▣</span> Dashboard</button>
+
+    <div class="nav-group-label">Website content</div>
+    <button class="nav-item" data-panel="global"><span class="ico">⚙</span> Contact &amp; Global</button>
+    <button class="nav-item" data-panel="homepage"><span class="ico">⌂</span> Homepage</button>
+    <button class="nav-item" data-panel="cReviews"><span class="ico">★</span> Guest reviews</button>
+    <button class="nav-item" data-panel="rooms"><span class="ico">⌧</span> Rooms &amp; Prices</button>
+    <button class="nav-item" data-panel="facilities"><span class="ico">◴</span> Facilities</button>
+    <button class="nav-item" data-panel="activities"><span class="ico">⛵</span> Activities</button>
+    <button class="nav-item" data-panel="entertainment"><span class="ico">♪</span> Entertainment</button>
+    <button class="nav-item" data-panel="outlets"><span class="ico">☕</span> Dining &amp; Outlets</button>
+    <button class="nav-item" data-panel="news"><span class="ico">✎</span> News &amp; Offers</button>
+    <button class="nav-item" data-panel="images"><span class="ico">▦</span> Photos &amp; Videos</button>
+
+    <div class="nav-group-label">Sections &amp; cards</div>
+    <button class="nav-item" data-panel="cFacilities"><span class="ico">◴</span> Facilities</button>
+    <button class="nav-item" data-panel="cActivities"><span class="ico">⛵</span> Activities</button>
+    <button class="nav-item" data-panel="cBars"><span class="ico">☕</span> Restaurants &amp; Bars</button>
+    <button class="nav-item" data-panel="cSchedule"><span class="ico">▦</span> Activities timetable</button>
+    <button class="nav-item" data-panel="cGallery"><span class="ico">▦</span> Gallery</button>
+
+    <div class="nav-group-label">Languages</div>
+    <button class="nav-item" data-panel="languages"><span class="ico"><i class="fas fa-language"></i></span> German &amp; Russian</button>
+
+    <div class="nav-group-label">Manage</div>
+    <button class="nav-item" data-panel="seo"><span class="ico">⌕</span> SEO &amp; Search</button>
+    <button class="nav-item" data-panel="backup"><span class="ico">⤓</span> Backup &amp; Restore</button>
+    <button class="nav-item" data-panel="help"><span class="ico">?</span> Help</button>
+
+    <div class="sidebar-foot">
+      <div class="user-chip">
+        <span class="avatar">A</span>
+        <div class="who">Admin<br><small id="loginTime">Signed in</small></div>
+      </div>
+      <button class="nav-item" id="logoutBtn" style="margin-top:8px"><span class="ico">⎋</span> Sign out</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:14px">
+        <button class="hamburger" id="hamburger">≡</button>
+        <div>
+          <div class="crumbs" id="crumbs">Admin · Dashboard</div>
+          <h2 id="panelTitle">Dashboard</h2>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <span class="save-state" id="saveState"><span class="dot"></span><span id="saveLabel">All changes saved</span></span>
+        <a class="btn btn-ghost" id="previewBtn" href="index.html" target="_blank">Preview site ↗</a>
+        <button class="btn btn-primary" id="publishBtn">Publish changes</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <section class="panel active" id="panel-dashboard">
+        <div class="intro-card">
+          <h3>Website Manager</h3>
+          <p>Update any text, price, photo, news post or contact detail on your website — no code, no developer needed. Pick a section on the left, make your change, then hit <b>Publish changes</b>.</p>
+        </div>
+        <div class="cards">
+          <button class="tile" data-jump="global"><span class="ti">⚙</span><h4>Contact &amp; Global</h4><p>Phone, email, address &amp; social links shown across every page.</p></button>
+          <button class="tile" data-jump="homepage"><span class="ti">⌂</span><h4>Homepage</h4><p>Edit your headline, intro text and main selling points.</p></button>
+          <button class="tile" data-jump="cReviews"><span class="ti">★</span><h4>Guest Reviews</h4><p>Edit, add or remove the guest quotes in the "What our guests say" section.</p></button>
+          <button class="tile" data-jump="rooms"><span class="ti">⌧</span><h4>Rooms &amp; Prices</h4><p>Update room names, descriptions and nightly prices.</p></button>
+          <button class="tile" data-jump="facilities"><span class="ti">◴</span><h4>Facilities</h4><p>Edit the header and intro on your Facilities page.</p></button>
+          <button class="tile" data-jump="activities"><span class="ti">⛵</span><h4>Activities</h4><p>Edit the header and intro on your Activities page.</p></button>
+          <button class="tile" data-jump="entertainment"><span class="ti">♪</span><h4>Entertainment</h4><p>Edit the header and intro on your Entertainment page.</p></button>
+          <button class="tile" data-jump="outlets"><span class="ti">☕</span><h4>Dining &amp; Outlets</h4><p>Edit the header and intro on your Dining page.</p></button>
+          <button class="tile" data-jump="news"><span class="ti">✎</span><h4>News &amp; Offers</h4><p>Add, edit or remove posts on your news page.</p></button>
+          <button class="tile" data-jump="cFacilities"><span class="ti">◴</span><h4>Facilities</h4><p>Edit the big facility blocks and the small cards, or add new ones with photos.</p></button>
+          <button class="tile" data-jump="cActivities"><span class="ti">⛵</span><h4>Activities</h4><p>Edit the activity cards, or add new ones — each with its own photo.</p></button>
+          <button class="tile" data-jump="cBars"><span class="ti">☕</span><h4>Restaurants &amp; Bars</h4><p>Edit or add restaurants (full sections) and bars / cafés (cards).</p></button>
+          <button class="tile" data-jump="cSchedule"><span class="ti">▦</span><h4>Activities Timetable</h4><p>Edit what's on each day in the weekly "day by day" grid.</p></button>
+          <button class="tile" data-jump="cGallery"><span class="ti">▦</span><h4>Gallery</h4><p>Add photos, organise them under filter categories, and manage the filter pills.</p></button>
+          <button class="tile" data-jump="images"><span class="ti">▦</span><h4>Photos &amp; Videos</h4><p>Replace any photo on the site, or add looping videos.</p></button>
+          <button class="tile" data-jump="languages"><span class="ti"><i class="fas fa-language"></i></span><h4>German &amp; Russian</h4><p>Add the German &amp; Russian wording for everything you've edited, so the whole site translates.</p></button>
+          <button class="tile" data-jump="backup"><span class="ti">⤓</span><h4>Backup &amp; Restore</h4><p>Download a copy of your content, or restore from a file.</p></button>
+        </div>
+      </section>
+
+      <!-- GLOBAL -->
+      <section class="panel" id="panel-global">
+        <div class="section-card">
+          <h3><span class="ico">☎</span> Contact details</h3>
+          <p class="desc">These appear in the bar at the top of every page and on the Contact page.</p>
+          <div class="grid-2">
+            <div class="field"><label>Phone number</label><input data-bind="global.phone"><div class="help">e.g. +2 065 35020 53–58</div></div>
+            <div class="field"><label>Email address</label><input data-bind="global.email"></div>
+            <div class="field"><label>Short location label</label><input data-bind="global.location"><div class="help">Shown in the top bar, e.g. "Hurghada, Red Sea"</div></div>
+            <div class="field"><label>Second phone (Contact page)</label><input data-bind="global.phone2"></div>
+          </div>
+          <div class="field"><label>Full address / directions</label><textarea rows="3" data-bind="global.address"></textarea></div>
+        </div>
+        <div class="section-card">
+          <h3><span class="ico">⌘</span> Social media links</h3>
+          <p class="desc">Paste the full web address of each profile. Leave blank to hide.</p>
+          <div class="grid-2">
+            <div class="field"><label>Facebook URL</label><input data-bind="global.facebook" placeholder="https://facebook.com/..."></div>
+            <div class="field"><label>Instagram URL</label><input data-bind="global.instagram" placeholder="https://instagram.com/..."></div>
+            <div class="field"><label>YouTube URL</label><input data-bind="global.youtube" placeholder="https://youtube.com/..."></div>
+            <div class="field"><label>TikTok URL</label><input data-bind="global.tiktok" placeholder="https://tiktok.com/..."></div>
+          </div>
+        </div>
+        <div class="section-card">
+          <h3><span class="ico">⊞</span> Booking button</h3>
+          <p class="desc">Where the "Book Now" buttons send your guests.</p>
+          <div class="field"><label>Booking engine web address</label><input data-bind="global.bookingUrl" placeholder="https://goldenbeachresort.book-onlinenow.net"></div>
+        </div>
+      </section>
+
+      <!-- HOMEPAGE -->
+      <section class="panel" id="panel-homepage">
+        <div class="section-card">
+          <h3><span class="ico">⌂</span> Main headline</h3>
+          <p class="desc">The big text guests see first when they arrive.</p>
+          <div class="field"><label>Headline</label><input data-bind="index.heroTitle"><div class="help">Keep it short and welcoming.</div></div>
+          <div class="field"><label>Sub-text under the headline</label><textarea rows="2" data-bind="index.heroSubtitle"></textarea></div>
+        </div>
+        <div class="section-card">
+          <h3><span class="ico">★</span> Review highlights</h3>
+          <p class="desc">The three stats shown in your "What our guests say" section.</p>
+          <div class="grid-2">
+            <div class="field"><label>Number of reviews</label><input data-bind="index.statReviews" placeholder="3,000+"></div>
+            <div class="field"><label>% who recommend</label><input data-bind="index.statRecommend" placeholder="90"></div>
+            <div class="field"><label>Average rating</label><input data-bind="index.statRating" placeholder="4.6"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GUEST REVIEWS -->
+      <section class="panel" id="panel-cReviews">
+        <div class="section-card">
+          <div class="coll-head">
+            <h3 style="margin:0"><span class="ico">★</span> What our guests say</h3>
+            <button class="btn btn-dark" id="addTestiBtn" style="font-size:.82rem;padding:9px 18px">+ Add review</button>
+          </div>
+          <p class="desc">The guest quote cards on your homepage. Edit any quote, change the name, location, source or star rating, or add new reviews. The first letter of the name becomes the round avatar automatically.</p>
+          <div class="coll-grid" id="testiGrid"></div>
+        </div>
+      </section>
+
+      <!-- ROOMS -->
+      <section class="panel" id="panel-rooms">
+        <div class="section-card">
+          <h3><span class="ico">⌧</span> Room categories</h3>
+          <p class="desc">Edit the name, short description and nightly price for each room type. Click a room to edit it.</p>
+          <div id="roomList"></div>
+        </div>
+      </section>
+
+      <!-- FACILITIES -->
+      <section class="panel" id="panel-facilities">
+        <div class="section-card">
+          <h3><span class="ico">◴</span> Facilities page</h3>
+          <p class="desc">The wording at the top of your Facilities page. To change the photos on this page, use <b>Photos &amp; Videos</b>.</p>
+          <div class="grid-2">
+            <div class="field"><label>Header eyebrow (small label)</label><input data-bind="facilities.heroEyebrow"></div>
+            <div class="field"><label>Header title</label><input data-bind="facilities.heroTitle"></div>
+          </div>
+          <div class="field"><label>Intro heading</label><input data-bind="facilities.introHeading"></div>
+          <div class="field"><label>Intro paragraph</label><textarea rows="3" data-bind="facilities.introText"></textarea></div>
+        </div>
+      </section>
+
+      <!-- ACTIVITIES -->
+      <section class="panel" id="panel-activities">
+        <div class="section-card">
+          <h3><span class="ico">⛵</span> Activities page</h3>
+          <p class="desc">The wording at the top of your Activities page. To change the photos on this page, use <b>Photos &amp; Videos</b>.</p>
+          <div class="grid-2">
+            <div class="field"><label>Header eyebrow (small label)</label><input data-bind="activities.heroEyebrow"></div>
+            <div class="field"><label>Header title</label><input data-bind="activities.heroTitle"></div>
+          </div>
+          <div class="field"><label>Intro heading</label><input data-bind="activities.introHeading"></div>
+          <div class="field"><label>Intro paragraph</label><textarea rows="3" data-bind="activities.introText"></textarea></div>
+        </div>
+      </section>
+
+      <!-- ENTERTAINMENT -->
+      <section class="panel" id="panel-entertainment">
+        <div class="section-card">
+          <h3><span class="ico">♪</span> Entertainment page</h3>
+          <p class="desc">The wording at the top of your Entertainment page. To change the photos on this page, use <b>Photos &amp; Videos</b>.</p>
+          <div class="grid-2">
+            <div class="field"><label>Header eyebrow (small label)</label><input data-bind="entertainment.heroEyebrow"></div>
+            <div class="field"><label>Header title</label><input data-bind="entertainment.heroTitle"></div>
+          </div>
+          <div class="field"><label>Intro heading</label><input data-bind="entertainment.introHeading"></div>
+          <div class="field"><label>Intro paragraph</label><textarea rows="3" data-bind="entertainment.introText"></textarea></div>
+        </div>
+      </section>
+
+      <!-- OUTLETS -->
+      <section class="panel" id="panel-outlets">
+        <div class="section-card">
+          <h3><span class="ico">☕</span> Dining &amp; Outlets page</h3>
+          <p class="desc">The wording at the top of your Dining / Outlets page. To change the photos on this page, use <b>Photos &amp; Videos</b>.</p>
+          <div class="grid-2">
+            <div class="field"><label>Header eyebrow (small label)</label><input data-bind="outlets.heroEyebrow"></div>
+            <div class="field"><label>Header title</label><input data-bind="outlets.heroTitle"></div>
+          </div>
+          <div class="field"><label>Intro heading</label><input data-bind="outlets.introHeading"></div>
+          <div class="field"><label>Intro paragraph</label><textarea rows="3" data-bind="outlets.introText"></textarea></div>
+        </div>
+      </section>
+
+      <!-- NEWS -->
+      <section class="panel" id="panel-news">
+        <div class="section-card">
+          <h3 style="justify-content:space-between"><span style="display:flex;align-items:center;gap:9px"><span class="ico">✎</span> News &amp; offers</span>
+            <button class="btn btn-dark" id="addNewsBtn" style="font-size:.82rem;padding:9px 18px">+ Add post</button></h3>
+          <p class="desc">These appear on your News page. Newest posts show first.</p>
+          <div id="newsList"></div>
+        </div>
+      </section>
+
+      <!-- IMAGES -->
+      <section class="panel" id="panel-images">
+        <div class="intro-card" style="padding:22px 26px;margin-bottom:20px">
+          <h3 style="font-size:1.1rem">Photos &amp; videos</h3>
+          <p>Every photo on your website can be replaced here. Upload a wide landscape photo (at least 1200px) or a short looping video (MP4/WebM) for any slot. Leave a slot empty to keep the built-in illustration. Replacing a room updates both its card on the Rooms page and that room's own page.</p>
+        </div>
+        <div id="imageGroups"></div>
+      </section>
+
+      <!-- FACILITIES (detail blocks + cards) -->
+      <section class="panel" id="panel-cFacilities">
+        <div class="section-card">
+          <div class="coll-head">
+            <h3 style="margin:0"><span class="ico">◴</span> Facility sections</h3>
+            <button class="btn btn-dark" data-add-detail="facilityDetails" style="font-size:.82rem;padding:9px 18px">+ Add section</button>
+          </div>
+          <p class="desc">The large blocks on your Facilities page (Aqua Park, Beach, Spa). Edit the wording, the feature list, the tag and the photo — or add a brand-new section. New sections show a “Photo coming soon” placeholder until you add a photo.</p>
+          <div class="coll-grid" id="grid-facilityDetails"></div>
+        </div>
+        <div class="section-card">
+          <div class="coll-head">
+            <h3 style="margin:0"><span class="ico">▦</span> “Other facilities” cards</h3>
+            <button class="btn btn-dark" data-add-coll="facilities" style="font-size:.82rem;padding:9px 18px">+ Add card</button>
+          </div>
+          <p class="desc">The small cards lower down the Facilities page (Doctor, Business Centre, …). Edit any card, or add a new one with its own photo.</p>
+          <div class="coll-grid" id="grid-facilities"></div>
+        </div>
+      </section>
+
+      <!-- ACTIVITIES (cards) -->
+      <section class="panel" id="panel-cActivities">
+        <div class="section-card">
+          <div class="coll-head">
+            <h3 style="margin:0"><span class="ico">⛵</span> Activity cards</h3>
+            <button class="btn btn-dark" data-add-coll="activities" style="font-size:.82rem;padding:9px 18px">+ Add card</button>
+          </div>
+          <p class="desc">The cards in the “Recharge on your own terms” section of your Activities page (Spa, Fitness, Kids’ Club…). Edit any card, or add a new one with its own photo.</p>
+          <div class="coll-grid" id="grid-activities"></div>
+        </div>
+      </section>
+
+      <!-- RESTAURANTS (detail blocks) + BARS (cards) -->
+      <section class="panel" id="panel-cBars">
+        <div class="section-card">
+          <div class="coll-head">
+            <h3 style="margin:0"><span class="ico">☕</span> Restaurants</h3>
+            <button class="btn btn-dark" data-add-detail="restaurants" style="font-size:.82rem;padding:9px 18px">+ Add restaurant</button>
+          </div>
+          <p class="desc">The large restaurant sections on your Dining page (The Bouquet, Don Vito, Beach Restaurant). Edit the wording, feature list, tag and photo — or add a new restaurant. New ones show a “Photo coming soon” placeholder until you add a photo.</p>
+          <div class="coll-grid" id="grid-restaurants"></div>
+        </div>
+        <div class="section-card">
+          <div class="coll-head">
+            <h3 style="margin:0"><span class="ico">▦</span> Bars &amp; cafés</h3>
+            <button class="btn btn-dark" data-add-coll="bars" style="font-size:.82rem;padding:9px 18px">+ Add bar / café</button>
+          </div>
+          <p class="desc">The smaller cards in the “Bars &amp; Cafés” section of your Dining page. Edit any card, or add a new one with its own photo.</p>
+          <div class="coll-grid" id="grid-bars"></div>
+        </div>
+      </section>
+
+      <!-- ACTIVITIES TIMETABLE (edit days only) -->
+      <section class="panel" id="panel-cSchedule">
+        <div class="section-card">
+          <h3 style="margin:0 0 4px"><span class="ico">▦</span> Activities timetable</h3>
+          <p class="desc">The “Your week, day by day” grid on your Activities page. Tap a day to edit what’s on (e.g. <b>Morning</b> → “Beach yoga · 08:00”). The seven days are fixed — you edit them, rather than adding or removing days. A label of “Evening” or “Night” is highlighted on the website.</p>
+          <div id="scheduleList"></div>
+        </div>
+      </section>
+
+      <!-- GALLERY -->
+      <section class="panel" id="panel-cGallery">
+        <div class="section-card">
+          <div class="coll-head">
+            <h3 style="margin:0"><span class="ico">▦</span> Filter categories</h3>
+            <button class="btn btn-dark" id="addPillBtn" style="font-size:.82rem;padding:9px 18px">+ Add category</button>
+          </div>
+          <p class="desc">The filter pills above your Gallery (Beach, Pools, …). Add a new one — e.g. “Facilities” — then tag photos to it below. “All” is always shown automatically and isn’t listed here.</p>
+          <div id="pillList"></div>
+        </div>
+        <div class="section-card">
+          <div class="coll-head">
+            <h3 style="margin:0"><span class="ico">▦</span> Photos</h3>
+            <button class="btn btn-dark" id="addTileBtn" style="font-size:.82rem;padding:9px 18px">+ Add photo</button>
+          </div>
+          <p class="desc">Every photo on your Gallery page. Edit a photo’s caption, change which category it’s filed under, or replace its picture — and add brand-new photos. A photo with no picture shows a “Photo coming soon” placeholder.</p>
+          <div class="coll-grid" id="tileGrid"></div>
+        </div>
+      </section>
+
+      <!-- BACKUP -->
+      <section class="panel" id="panel-backup">
+        <div class="section-card">
+          <h3><span class="ico">⤓</span> Backup your content</h3>
+          <p class="desc">Download everything you've edited as a single file. Keep it safe — you can restore from it any time, and your developer can use it to load your content into the live database.</p>
+          <button class="btn btn-primary" id="exportBtn">Download backup file</button>
+        </div>
+        <div class="section-card">
+          <h3><span class="ico">⤒</span> Restore from a backup</h3>
+          <p class="desc">Choose a backup file you downloaded earlier to bring all that content back.</p>
+          <input type="file" id="importFile" accept="application/json" style="margin-bottom:14px">
+          <div><button class="btn btn-ghost" id="importBtn">Restore content</button></div>
+        </div>
+        <div class="section-card">
+          <h3><span class="ico" style="color:#C0392B">⟲</span> Reset everything</h3>
+          <p class="desc">Remove all your edits and put the website back to its original wording. This cannot be undone.</p>
+          <button class="btn btn-ghost" id="resetBtn" style="color:#C0392B;border-color:#E8C0BC">Reset to original</button>
+        </div>
+      </section>
+
+      <!-- LANGUAGES -->
+      <section class="panel" id="panel-languages">
+        <div class="intro-card" style="padding:22px 26px;margin-bottom:20px">
+          <h3 style="font-size:1.1rem">German &amp; Russian wording</h3>
+          <p>Your website can be shown in English, German or Russian. Whenever you add or change wording in the portal, its German and Russian versions are added here — fill them in so visitors who pick those languages see the whole site translated, not half-English. Anything still missing a translation is highlighted. Leave a box blank and that item simply stays in English for that language.</p>
+        </div>
+        <div class="section-card">
+          <div class="tr-toolbar">
+            <input id="trSearch" class="tr-search" type="search" placeholder="Search the English wording…">
+            <div class="tr-filter">
+              <button type="button" data-trfilter="need" class="active">Needs translation</button>
+              <button type="button" data-trfilter="all">Show everything</button>
+            </div>
+          </div>
+          <div class="tr-stat" id="trStat"></div>
+          <div id="trList"></div>
+        </div>
+      </section>
+
+      <!-- HELP -->
+      <section class="panel" id="panel-help">
+        <div class="section-card">
+          <h3><span class="ico">?</span> How this works</h3>
+          <p class="desc">A quick guide for getting comfortable.</p>
+          <ol style="padding-left:20px;color:var(--muted);font-size:.92rem;line-height:1.9">
+            <li><b style="color:var(--ink)">Pick a section</b> on the left — Contact, Homepage, Rooms, News or Images.</li>
+            <li><b style="color:var(--ink)">Make your change</b> by typing in a box or uploading a photo. Your changes save automatically as a draft.</li>
+            <li><b style="color:var(--ink)">Press "Publish changes"</b> at the top right to make them appear on the live website.</li>
+            <li><b style="color:var(--ink)">Press "Preview site"</b> any time to open your website and check how it looks.</li>
+            <li><b style="color:var(--ink)">Download a backup</b> regularly from the Backup section, just to be safe.</li>
+          </ol>
+          <div class="login-hint" style="margin-top:18px">
+            <b>Going live:</b> right now your login and content live in this browser for the demo. When your developer connects the SQL Server database, your sign-in becomes secure and encrypted, and your content is stored centrally so it shows for every visitor. The way you edit here will not change.
+          </div>
+        </div>
+      </section>
+
+      <!-- SEO & SEARCH -->
+      <section class="panel" id="panel-seo">
+        <div class="intro-card" style="padding:22px 26px;margin-bottom:20px">
+          <h3 style="font-size:1.1rem"><span class="ico">⌕</span> Search engine listing (SEO)</h3>
+          <p>This is what Google shows for each page — the blue clickable title and the grey description underneath. It updates <b>automatically</b> from your content every time you press <b>Publish changes</b>: edit a room, a price or your contact details and the search listing follows. You don't have to do anything here. But if you want to word a page's title or description differently for Google, type your own version below — leave a box empty to use the automatic one.</p>
+        </div>
+        <div class="section-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px">
+            <h3 style="margin:0"><span class="ico">↻</span> Page-by-page preview</h3>
+            <button class="btn btn-ghost" id="seoRefreshBtn" type="button">Refresh preview</button>
+          </div>
+          <p class="desc">Tip: keep titles under ~60 characters and descriptions around 150–160, so Google doesn't cut them off. The counters turn amber if a box gets too long.</p>
+          <div id="seoList"></div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- News editor modal -->
+<div class="modal-bg" id="newsModal">
+  <div class="modal">
+    <h3 id="newsModalTitle">Add a post</h3>
+    <div class="field"><label>Title</label><input id="nm-title"></div>
+    <div class="grid-2">
+      <div class="field"><label>Date</label><input id="nm-date" placeholder="May 02, 2026"></div>
+      <div class="field"><label>Category</label>
+        <select id="nm-cat"><option>Offer</option><option>Event</option><option>News</option><option>Dining</option></select>
+      </div>
+    </div>
+    <div class="field"><label>Short summary</label><textarea id="nm-excerpt" rows="3"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close-modal>Cancel</button>
+      <button class="btn btn-primary" id="nm-save">Save post</button>
+    </div>
+  </div>
+</div>
+
+<!-- Sign-out confirmation (unsaved changes) -->
+<div class="modal-bg" id="logoutModal">
+  <div class="modal">
+    <h3>You have unsaved changes</h3>
+    <p class="modal-note">Your latest edits haven't been published yet. If you sign out now they'll be lost. Publish them first to keep them — or sign out and discard.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="logoutConfirm">Sign out &amp; discard</button>
+      <button class="btn btn-primary" data-close-modal>Stay &amp; keep editing</button>
+    </div>
+  </div>
+</div>
+
+<!-- Room editor modal -->
+<div class="modal-bg" id="roomModal">
+  <div class="modal">
+    <h3 id="roomModalTitle">Edit room</h3>
+    <div class="field"><label>Room name</label><input id="rm-name"></div>
+    <div class="field"><label>Short description</label><textarea id="rm-desc" rows="3"></textarea></div>
+    <div class="grid-2">
+      <div class="field"><label>Price (number only)</label><input id="rm-price" placeholder="155"></div>
+      <div class="field"><label>Currency / unit</label><input id="rm-unit" placeholder="€ / night"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close-modal>Cancel</button>
+      <button class="btn btn-primary" id="rm-save">Save room</button>
+    </div>
+  </div>
+</div>
+
+<!-- Collection card editor modal (facilities / activities / bars) -->
+<div class="modal-bg" id="collModal">
+  <div class="modal">
+    <h3 id="collModalTitle">Add card</h3>
+    <div class="field">
+      <label>Photo for this card</label>
+      <div class="img-upload">
+        <div class="media-preview" id="cm-preview"><div class="ph">No photo yet — a “Photo coming soon” placeholder will show on the website</div></div>
+        <div class="media-row">
+          <input type="file" id="cm-file" accept="image/*" style="font-size:.82rem">
+          <button type="button" class="icon-btn danger hidden" id="cm-remove" title="Remove photo">🗑</button>
+        </div>
+      </div>
+      <div class="help">Use a wide landscape photo (at least 1000px wide). Under 2.5MB.</div>
+    </div>
+    <div class="field"><label>Title</label><input id="cm-title" placeholder="e.g. Beach Volleyball"></div>
+    <div class="field"><label>Short description</label><textarea id="cm-desc" rows="3" placeholder="One or two sentences guests will read on the card."></textarea></div>
+    <div class="field">
+      <label>Icon</label>
+      <div class="icon-picker" id="cm-icons"></div>
+      <div class="help">Pick a small icon for the card. It shows above the title, and stands in when no photo is set.</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close-modal>Cancel</button>
+      <button class="btn btn-primary" id="cm-save">Save card</button>
+    </div>
+  </div>
+</div>
+
+<!-- Timetable day editor modal -->
+<div class="modal-bg" id="dayModal">
+  <div class="modal">
+    <h3 id="dayModalTitle">Edit day</h3>
+    <input type="hidden" id="dm-day">
+    <div class="field">
+      <label>Time slots</label>
+      <div id="dm-slots"></div>
+      <button class="btn btn-ghost" id="dm-addSlot" style="font-size:.82rem;padding:8px 14px;margin-top:4px">+ Add time slot</button>
+      <div class="help">Each slot has a label (e.g. “Morning”, “Evening”) and the activity text. Labels with “evening” or “night” are highlighted on the website. Clear a slot’s boxes to remove it.</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close-modal>Cancel</button>
+      <button class="btn btn-primary" id="dm-save">Save day</button>
+    </div>
+  </div>
+</div>
+
+<!-- Detail-block editor modal (facility sections / restaurants) -->
+<div class="modal-bg" id="detailModal">
+  <div class="modal">
+    <h3 id="detailModalTitle">Edit section</h3>
+    <div class="field">
+      <label>Photos <span style="color:var(--muted);font-weight:400">(up to 5 — shown as an animated slider)</span></label>
+      <div id="dt-photos" class="photo-grid"></div>
+      <input type="file" id="dt-file" accept="image/*" multiple style="display:none">
+      <div class="help">Add up to 5 landscape photos (at least 1200px wide, under 2.5MB each). Two or more become an animated slider on the website; one photo shows as a single image. For built-in restaurants the photos replace the illustration.</div>
+    </div>
+    <div class="grid-2">
+      <div class="field"><label>Corner tag</label><input id="dt-tag" placeholder="e.g. Beachfront"></div>
+      <div class="field"><label>Small label (eyebrow)</label><input id="dt-eyebrow" placeholder="e.g. Seafood & Grills"></div>
+    </div>
+    <div class="field"><label>Title</label><input id="dt-title" placeholder="e.g. Beach Restaurant"></div>
+    <div class="field"><label>Description</label><textarea id="dt-desc" rows="3"></textarea></div>
+    <div class="field">
+      <label>Feature list</label>
+      <div id="dt-points"></div>
+      <button class="btn btn-ghost" id="dt-addPoint" style="font-size:.82rem;padding:8px 14px;margin-top:4px">+ Add feature</button>
+      <div class="help">Each row: an icon, a bold heading, and a small line under it (e.g. “Fresh daily catch” → “From local fishermen”).</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close-modal>Cancel</button>
+      <button class="btn btn-primary" id="dt-save">Save section</button>
+    </div>
+  </div>
+</div>
+
+<!-- Gallery pill (category) editor modal -->
+<div class="modal-bg" id="pillModal">
+  <div class="modal">
+    <h3 id="pillModalTitle">Add category</h3>
+    <div class="field"><label>Category name</label><input id="pl-label" placeholder="e.g. Facilities"><div class="help">This is the wording shown on the filter pill.</div></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close-modal>Cancel</button>
+      <button class="btn btn-primary" id="pl-save">Save category</button>
+    </div>
+  </div>
+</div>
+
+<!-- Gallery tile (photo) editor modal -->
+<div class="modal-bg" id="tileModal">
+  <div class="modal">
+    <h3 id="tileModalTitle">Add photo</h3>
+    <div class="field">
+      <label>Photo</label>
+      <div class="img-upload">
+        <div class="media-preview" id="tl-preview"><div class="ph">No photo yet — a “Photo coming soon” placeholder shows on the website</div></div>
+        <div class="media-row">
+          <input type="file" id="tl-file" accept="image/*" style="font-size:.82rem">
+          <button type="button" class="icon-btn danger hidden" id="tl-remove" title="Remove photo">🗑</button>
+        </div>
+      </div>
+      <div class="help">Use a wide landscape photo (at least 1000px wide). Under 2.5MB.</div>
+    </div>
+    <div class="field"><label>Caption</label><input id="tl-label" placeholder="e.g. Sunset over the bay"></div>
+    <div class="field"><label>Filter category</label>
+      <select id="tl-cat"></select>
+      <div class="help">Which filter pill this photo appears under when a guest taps it.</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close-modal>Cancel</button>
+      <button class="btn btn-primary" id="tl-save">Save photo</button>
+    </div>
+  </div>
+</div>
+
+<!-- Testimonial (guest review) editor modal -->
+<div class="modal-bg" id="testiModal">
+  <div class="modal">
+    <h3 id="testiModalTitle">Add review</h3>
+    <div class="field"><label>Quote</label><textarea id="ts-quote" rows="4" placeholder="What the guest said…"></textarea><div class="help">Quotation marks are added automatically.</div></div>
+    <div class="grid-2">
+      <div class="field"><label>Guest name</label><input id="ts-name" placeholder="e.g. Tanja"></div>
+      <div class="field"><label>Star rating</label>
+        <select id="ts-stars"><option value="5">★★★★★ (5)</option><option value="4">★★★★ (4)</option><option value="3">★★★ (3)</option><option value="2">★★ (2)</option><option value="1">★ (1)</option></select>
+      </div>
+    </div>
+    <div class="field"><label>Location &amp; source</label><input id="ts-where" placeholder="e.g. Germany · TripAdvisor"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" data-close-modal>Cancel</button>
+      <button class="btn btn-primary" id="ts-save">Save review</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span class="dot"></span><span id="toastMsg">Saved</span></div>
+
+<!-- Shared site dictionary: read-only here, used to show which strings already
+     have German/Russian. The guard in translations.js prevents it translating
+     the portal itself (no .lang-switch on this page). -->
+<script src="translations.js"></script>
+
+<script>
+/* ============================================================
+   DEMO AUTH — used only when the page is opened locally
+   (file:// or localhost). On the live domain this branch is
+   never taken: the portal POSTs credentials to the Node.js
+   /api/login endpoint, which verifies them against the SQL
+   Server `admin_users` table (passwords stored as bcrypt
+   hashes). No password is ever stored in this file.
+   ============================================================ */
+var MOCK_USER = "admin";
+var MOCK_PASS = "goldenbeach";
+var SESSION_KEY = "gbr_admin_session";
+var STORE_KEY   = "gbr_cms_content";
+
+/* ============================================================
+   GO-LIVE SERVER BRIDGE
+   On the host (served over http/https) the portal talks to the
+   Node.js API: login, content load/save and media upload all go
+   to the server. Opened as a local file (file://) it falls back
+   to the original in-browser demo behaviour, so this one file
+   works in both places.
+   ============================================================ */
+var GBR_LIVE = /^https?:$/.test(location.protocol) &&
+               !/^(localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])$/i.test(location.hostname);
+function GBR_uploadMedia(file, slot){
+  return new Promise(function(resolve, reject){
+    if(GBR_LIVE){
+      var fd = new FormData();
+      fd.append("file", file);
+      fd.append("slot", slot || ("media-" + Date.now()));
+      fetch("/api/upload", { method:"POST", credentials:"same-origin", body:fd })
+        .then(function(r){ if(!r.ok) throw new Error("upload " + r.status); return r.json(); })
+        .then(function(j){ resolve(j.url); })
+        .catch(function(err){ toast("Upload failed — please try again."); reject(err); });
+    } else {
+      var fr = new FileReader();
+      fr.onload  = function(){ resolve(fr.result); };
+      fr.onerror = function(){ reject(fr.error); };
+      fr.readAsDataURL(file);
+    }
+  });
+}
+function GBR_fetchContent(){
+  return fetch("/api/content", { credentials:"same-origin" }).then(function(r){ return r.json(); });
+}
+function GBR_saveContent(c){
+  return fetch("/api/content", {
+    method:"POST", credentials:"same-origin",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify(c)
+  });
+}
+
+/* ---- default content (mirrors the website's built-in wording) ---- */
+var DEFAULTS = {
+  global: {
+    phone:"+2 065 35020 53–58", phone2:"+2 012 222806 31–36",
+    email:"info@goldenbeachresort.net", location:"Hurghada, Red Sea",
+    address:"Quiet location northwest of Hurghada. El Gouna approx. 10 km, Hurghada centre approx. 15 km, International Airport 20 km.",
+    facebook:"", instagram:"", youtube:"", tiktok:"",
+    bookingUrl:"https://goldenbeachresort.book-onlinenow.net"
+  },
+  pages: {
+    index: {
+      heroTitle:"Where turquoise water meets golden sand",
+      heroSubtitle:"An innovative, contemporary hotel brand on a private stretch of Red Sea coastline. Six pools, an aqua park, and seven beautifully appointed room categories.",
+      statReviews:"3,000+", statRecommend:"90", statRating:"4.6"
+    },
+    facilities: {
+      heroEyebrow:"Resort Facilities",
+      heroTitle:"Everything you need, steps away",
+      introHeading:"Every comfort, a short stroll away",
+      introText:"Six freshwater pools, a full-service spa, fitness studio, kids’ club and boutiques — the whole resort is just steps from your room."
+    },
+    activities: {
+      heroEyebrow:"Activities & Facilities",
+      heroTitle:"Every day, a different adventure",
+      introHeading:"Land, sea, and everything between",
+      introText:"Dive the house reef, ride the aqua park, or unwind with beachside yoga — there is a new way to fill every day beside the Red Sea."
+    },
+    entertainment: {
+      heroEyebrow:"Shows & Events",
+      heroTitle:"From sunrise yoga to midnight shows",
+      introHeading:"Something on, every night of the week",
+      introText:"Our entertainment team runs a full seven-night programme — from live bands and belly dance shows to quiz nights and cinema under the stars."
+    },
+    outlets: {
+      heroEyebrow:"Dining & Bars",
+      heroTitle:"Seven kitchens. Eight bars. One unforgettable evening.",
+      introHeading:"From buffet to à la carte",
+      introText:"Seven distinct dining experiences under one resort — from sunrise breakfast to midnight mezze."
+    }
+  },
+  rooms: [
+    {id:"premium", name:"Premium Room", desc:"2 single beds and 2 sofa beds (double bed on request) — same as a double room, but larger, with a side sea view or pool view and a spacious balcony.", price:"220", unit:"€ / night"},
+    {id:"seaview", name:"Sea View Room", desc:"A great choice for up to two persons, with a direct front sea view. Wake up to the Red Sea every morning from your private balcony.", price:"155", unit:"€ / night"},
+    {id:"seaside", name:"Sea Side View Room", desc:"A double room with a relaxing side sea view, surrounded by the resort's lush gardens. A great choice for two persons.", price:"130", unit:"€ / night"},
+    {id:"familyconnected", name:"Family Room Connected", desc:"Two connected units forming a spacious family suite — a great choice for up to five persons, with a separate room for the children and two bathrooms.", price:"180", unit:"€ / night"},
+    {id:"standardfamily", name:"Standard Family Room", desc:"A single spacious unit and a great choice for up to four persons. Ideal for families who want to stay in one open, comfortable room.", price:"140", unit:"€ / night"},
+    {id:"standard", name:"Standard Room", desc:"There are 192 Standard Rooms in the resort, all spacious and comfortable for up to three persons — suitable for a family with one child. These rooms have garden or swimming pool views.", price:"105", unit:"€ / night"},
+    {id:"economy", name:"Economy Room", desc:"A great choice for singles or two persons. Compact, comfortable, and excellent value — with all the essential comforts of the resort.", price:"85", unit:"€ / night"}
+  ],
+  news: [
+    {id:1, title:"Summer Stay 7-for-5 — book by June", date:"May 02, 2026", cat:"Offer", excerpt:"Book seven nights, pay for five. Available across all room categories for arrivals between 1 July and 31 August."},
+    {id:2, title:"Italian Night returns to the Beach Restaurant", date:"Apr 18, 2026", cat:"Event", excerpt:"Wood-fired pizza, hand-rolled pasta, and a four-course tasting menu — every Wednesday starting May 6th."},
+    {id:3, title:"Reef restoration: our 2026 commitment", date:"Apr 04, 2026", cat:"News", excerpt:"We've partnered with HEPCA to plant 1,200 coral fragments on the house reef this year. Read about how guests can join."},
+    {id:4, title:"Premium rooms refreshed for 2026", date:"Mar 15, 2026", cat:"News", excerpt:"All Premium category rooms have been renovated with new furnishings, rain showers, and smart TVs."},
+    {id:5, title:"Summer amphitheatre season opens June 1", date:"Feb 28, 2026", cat:"Event", excerpt:"Our open-air amphitheatre — one of the Red Sea's largest — launches its summer programme with nightly shows."},
+    {id:6, title:"Early-bird spring rates — save 20%", date:"Jan 20, 2026", cat:"Offer", excerpt:"Book 60 days in advance for stays March through May and enjoy 20% off best available rates."}
+  ],
+  images: {}, // { "index.heroVideo": dataURL, "rooms.premium": <video|img dataURL>, ... }
+  collections: {
+    /* Built-in items are seeded here with the SAME ids used in the page HTML
+       (data-cms-card / data-cms-detail), so editing one overrides it in place.
+       Items without a matching id in the HTML are appended as new ones. */
+
+    // Small "feature" cards -------------------------------------------------
+    facilities: [
+      {id:"doctor",   title:"Doctor & Clinic",  desc:"On-site doctor and 24-hour medical assistance for total peace of mind.", icon:"fa-user-doctor"},
+      {id:"business", title:"Business Centre",  desc:"Conference room, fax service, and business facilities for working travellers.", icon:"fa-briefcase"},
+      {id:"shopping", title:"Shopping",         desc:"Supermarket, gold shop, and souvenir shop right inside the resort.", icon:"fa-bag-shopping"},
+      {id:"guest",    title:"Guest Services",   desc:"Laundry, taxi service, photo service, and concierge available daily.", icon:"fa-shirt"}
+    ],
+    activities: [
+      {id:"spa",     title:"Spa & Massage",  desc:"12 treatment rooms, hammam, steam room, and a menu of 40+ treatments. Open daily 09:00–21:00.", icon:"fa-spa"},
+      {id:"fitness", title:"Fitness Centre", desc:"State-of-the-art Technogym equipment, free weights, spin studio, and personal training. 06:00–22:00.", icon:"fa-dumbbell"},
+      {id:"kids",    title:"Kids' Club",     desc:"Supervised mini-camp for ages 4–12, with art, games, and sports. Every day 09:00–17:00.", icon:"fa-child-reaching"},
+      {id:"courts",  title:"Sports Courts",  desc:"Two tennis courts, beach volleyball, table tennis, and a half-court basketball area. Rackets available.", icon:"fa-table-tennis-paddle-ball"}
+    ],
+    bars: [
+      {id:"lobbybar", title:"Lobby Bar", desc:"All-day cocktails, mocktails, shisha, and live acoustic music Thursday–Sunday.", icon:"fa-martini-glass"},
+      {id:"poolbar",  title:"Pool Bar",  desc:"Swim-up bar with frozen cocktails, fresh juices, and light bites. Open 10:00–sunset.", icon:"fa-swimming-pool"},
+      {id:"beachbar", title:"Beach Bar", desc:"Cold beers, ice cream, and freshly blended smoothies, served directly to your sunbed.", icon:"fa-umbrella-beach"},
+      {id:"cafelotus",title:"Café Lotus",desc:"Specialty coffee, homemade pastries, and light lunch wraps from 07:00.", icon:"fa-coffee"}
+    ],
+
+    // Large split-section blocks --------------------------------------------
+    facilityDetails: [
+      {id:"aquapark", tag:"Aqua Park", eyebrow:"Aqua Park & Pools", title:"15 slides, six pools",
+        desc:"Our aqua park features 15 slides for adults and children across five towers. Six swimming pools cover every mood: an adults-only 18+ pool, a kids' pool with 3 slides, an active pool, a flooded lazy river, and two dedicated relax pools.",
+        points:[
+          {icon:"fa-water",strong:"15 water slides",small:"For adults and children"},
+          {icon:"fa-person-swimming",strong:"Adults-only pool 18+",small:"Quiet zone, cocktail service"},
+          {icon:"fa-child",strong:"Kids' pool with 3 slides",small:"Shallow and supervised"},
+          {icon:"fa-umbrella-beach",strong:"Lazy river + 2 relax pools",small:"Float the afternoon away"}
+        ]},
+      {id:"beach", tag:"Shallow Beach", eyebrow:"The Beach", title:"Shallow, safe, family-perfect",
+        desc:"Our wide, shallow beach is ideal for families with small children. Everything you need is provided: showers, changing cabins, sun beds, umbrellas, beach towels, a dedicated beach quiet zone, and a quiet pool nearby.",
+        points:[
+          {icon:"fa-shower",strong:"Showers & changing cabins",small:"Along the full beachfront"},
+          {icon:"fa-umbrella-beach",strong:"Sun beds, umbrellas & towels",small:"Complimentary for all guests"},
+          {icon:"fa-volume-xmark",strong:"Beach quiet zone",small:"With adjacent quiet pool"}
+        ]},
+      {id:"spa", tag:"Spa & Wellness", eyebrow:"Spa & Fitness", title:"An oasis of relaxation",
+        desc:"Our spa and fitness centre is a true oasis of relaxation and wellness — massage treatments of every kind, sauna, jacuzzi, Turkish steam bath, plus a full salon offering hairdressing, manicure, pedicure, and waxing.",
+        points:[
+          {icon:"fa-spa",strong:"Massage treatments",small:"Swedish, deep tissue, hot stone & more"},
+          {icon:"fa-hot-tub-person",strong:"Sauna, jacuzzi & Turkish bath",small:"Open daily 09:00–21:00"},
+          {icon:"fa-scissors",strong:"Full salon services",small:"Hair, manicure, pedicure, waxing"},
+          {icon:"fa-dumbbell",strong:"Fitness centre",small:"Modern gym equipment, 06:00–22:00"}
+        ]}
+    ],
+    restaurants: [
+      {id:"bouquet", tag:"Main Restaurant", eyebrow:"International Buffet", title:"The Bouquet",
+        desc:"Our flagship restaurant seats 600 guests in a soaring glass-and-timber hall facing the garden. Breakfast, lunch, and dinner buffets span Egyptian street food, live pasta stations, carving stations, and a dedicated kids' corner.",
+        points:[
+          {icon:"fa-utensils",strong:"Breakfast",small:"07:00 – 10:30 daily"},
+          {icon:"fa-utensils",strong:"Lunch",small:"12:30 – 14:30 daily"},
+          {icon:"fa-utensils",strong:"Dinner",small:"18:30 – 21:30 daily"},
+          {icon:"fa-star",strong:"Themed evenings",small:"Egyptian, Italian, Seafood nights weekly"}
+        ]},
+      {id:"donvito", tag:"À La Carte", eyebrow:"Italian Restaurant", title:"Don Vito",
+        desc:"Rustic-chic trattoria serving hand-rolled pasta, wood-fired pizza, and classic Italian mains. Every plate is built from imported Italian staples — buffalo mozzarella, 24-month Parmigiano, Arborio rice — and finished with Red Sea flair.",
+        points:[
+          {icon:"fa-pizza-slice",strong:"Wood-fired pizza",small:"Neapolitan-style, 11 varieties"},
+          {icon:"fa-wine-glass",strong:"Italian wine list",small:"Curated selection of 40+ labels"},
+          {icon:"fa-clock",strong:"Dinner only",small:"19:00 – 22:30 · Reservation recommended"}
+        ]},
+      {id:"beachrest", tag:"Beachfront", eyebrow:"Seafood & Grills", title:"Beach Restaurant",
+        desc:"Feet in the sand, plate full of grilled Red Sea catch. This open-air grill sits directly on our private beach — tables lit by lanterns after dark, the sound of gentle waves the only soundtrack you need.",
+        points:[
+          {icon:"fa-fish",strong:"Fresh daily catch",small:"Direct from local Hurghada fishermen"},
+          {icon:"fa-fire",strong:"Charcoal grill",small:"Seafood, meats, vegetables"},
+          {icon:"fa-clock",strong:"Lunch & dinner",small:"12:00 – 22:00 daily (weather permitting)"}
+        ]}
+    ],
+
+    // Weekly timetable (7 fixed days; slots are editable) -------------------
+    schedule: [
+      {day:"Monday",    slots:[{label:"Morning",text:"Beach yoga · 08:00"},{label:"Afternoon",text:"Aqua aerobics · 15:00"},{label:"Evening",text:"Live music · 21:00"}]},
+      {day:"Tuesday",   slots:[{label:"Morning",text:"Reef snorkel trip · 09:00"},{label:"Afternoon",text:"Beach volleyball · 16:00"},{label:"Evening",text:"Quiz night · 21:30"}]},
+      {day:"Wednesday", slots:[{label:"Morning",text:"Spinning class · 08:30"},{label:"Afternoon",text:"Water polo · 15:30"},{label:"Evening",text:"Italian Night · 19:00"}]},
+      {day:"Thursday",  slots:[{label:"Morning",text:"Sunrise stretch · 07:30"},{label:"Afternoon",text:"Archery · 16:00"},{label:"Evening",text:"Live band · 21:00"}]},
+      {day:"Friday",    slots:[{label:"Morning",text:"Beach yoga · 08:00"},{label:"Afternoon",text:"Pool games · 15:00"},{label:"Evening",text:"Belly dance show · 21:30"}]},
+      {day:"Saturday",  slots:[{label:"Morning",text:"Diving intro · 09:00"},{label:"Afternoon",text:"Tennis tournament · 16:00"},{label:"Evening",text:"Cinema under stars · 21:00"}]},
+      {day:"Sunday",    slots:[{label:"Morning",text:"Aqua aerobics · 10:00"},{label:"Afternoon",text:"Beach football · 15:30"},{label:"Evening",text:"Gala dinner · 19:30"}]}
+    ]
+  },
+  /* Gallery: filter pills + photo tiles. Built-ins are seeded with the SAME ids
+     used in gallery.html (data-cms-pill / data-cms-tile) so editing overrides
+     them in place; new ones append. A tile's "cat" is the pill id it filters under. */
+  gallery: {
+    pills: [
+      {id:"beach",      label:"Beach"},
+      {id:"pool",       label:"Pools"},
+      {id:"dining",     label:"Dining"},
+      {id:"rooms",      label:"Rooms"},
+      {id:"activities", label:"Activities"}
+    ],
+    tiles: [
+      {id:"tile1",  label:"Private Beach",   cat:"beach"},
+      {id:"tile2",  label:"Main Pool",       cat:"pool"},
+      {id:"tile3",  label:"The Bouquet",     cat:"dining"},
+      {id:"tile4",  label:"Aqua Slides",     cat:"pool"},
+      {id:"tile5",  label:"Premium Suite",   cat:"rooms"},
+      {id:"tile6",  label:"Sunset Hour",     cat:"beach"},
+      {id:"tile7",  label:"Reef Snorkelling",cat:"activities"},
+      {id:"tile8",  label:"Lobby Bar",       cat:"dining"},
+      {id:"tile9",  label:"Spa & Wellness",  cat:"activities"},
+      {id:"tile10", label:"Aqua Aerobics",   cat:"activities"},
+      {id:"tile11", label:"Afternoon Swim",  cat:"beach"}
+    ]
+  },
+  /* "What our guests say" cards on the homepage. Built-ins seeded with the same
+     ids used in index.html (data-cms-testi) so editing overrides in place. */
+  testimonials: [
+    {id:"t1", name:"Tanja",          where:"Czech Republic · TripAdvisor", stars:5, quote:"Very nice and clean hotel. The garden was amazing, food as well. Rooms were spacious and clean. Beach was nice and water was clean."},
+    {id:"t2", name:"Traveller 19",   where:"Malaysia · TripAdvisor",       stars:5, quote:"Enjoyed our stay so much. Staff are friendly. Amenities are superb and well maintained. Huge area, many restaurants, rooms bigger than expected."},
+    {id:"t3", name:"Marcus & Family",where:"Germany · TripAdvisor",        stars:5, quote:"Absolute highlight is the Golden Beach — 200 metres flat, perfect for kids. Solid wood loungers, sun and wind protection, perfect service."}
+  ],
+  /* CMS-authored translations, keyed by the English source string:
+     { "<English>": { de:"…", ru:"…" } }. Filled in via the Languages panel and
+     published to the live site, where translations.js merges it into the site
+     dictionary so admin-added content translates alongside the built-in text. */
+  i18n:{}
+};
+
+/* Every media slot on the site, grouped by area. Each accepts a photo OR a
+   video. A room slot updates both its card on the Rooms page and its own page. */
+var IMAGE_GROUPS = [
+  { group:"Homepage hero video", note:"One looping background video for the top of the homepage. It plays automatically, on a loop, with no sound. Leave empty to use the built-in tour video.", slots:[
+    {key:"index.heroVideo", label:"Hero background video", videoOnly:true}
+  ]},
+  { group:"Homepage virtual tour video", note:"The video in the “Virtual Tour” section. It autoplays when guests scroll to it, loops, and they can turn the sound on. Leave empty to use the built-in tour video.", slots:[
+    {key:"index.tourVideo", label:"Virtual tour video", videoOnly:true}
+  ]},
+  { group:"Page header banners", note:"The wide banner at the top of each page. A photo or a short looping video both work well here.", slots:[
+    {key:"rooms.hero", label:"Rooms page header"},
+    {key:"facilities.hero", label:"Facilities page header"},
+    {key:"activities.hero", label:"Activities page header"},
+    {key:"entertainment.hero", label:"Entertainment page header"},
+    {key:"outlets.hero", label:"Dining / Outlets page header"},
+    {key:"gallery.hero", label:"Gallery page header"},
+    {key:"about.hero", label:"About page header"},
+    {key:"news.hero", label:"News page header"},
+    {key:"contact.hero", label:"Contact page header"}
+  ]},
+  { group:"Room photos", note:"One photo (or video) per room. Each updates the room's card on the Rooms page AND that room's own page.", slots:[
+    {key:"rooms.premium", label:"Premium Room"},
+    {key:"rooms.seaview", label:"Sea View Room"},
+    {key:"rooms.seaside", label:"Sea Side View Room"},
+    {key:"rooms.familyconnected", label:"Family Room Connected"},
+    {key:"rooms.standardfamily", label:"Standard Family Room"},
+    {key:"rooms.standard", label:"Standard Room"},
+    {key:"rooms.economy", label:"Economy Room"}
+  ]},
+  { group:"Gallery", note:"The eleven tiles on the Gallery page.", slots:[
+    {key:"gallery.tile1", label:"Private Beach"},
+    {key:"gallery.tile2", label:"Main Pool"},
+    {key:"gallery.tile3", label:"The Bouquet"},
+    {key:"gallery.tile4", label:"Aqua Slides"},
+    {key:"gallery.tile5", label:"Premium Suite"},
+    {key:"gallery.tile6", label:"Sunset Hour"},
+    {key:"gallery.tile7", label:"Reef Snorkelling"},
+    {key:"gallery.tile8", label:"Lobby Bar"},
+    {key:"gallery.tile9", label:"Spa & Wellness"},
+    {key:"gallery.tile10", label:"Aqua Aerobics"},
+    {key:"gallery.tile11", label:"Afternoon Swim"}
+  ]},
+  { group:"Feature photos", note:"Large highlight images inside the pages.", slots:[
+    {key:"facilities.beach", label:"Private beach (Facilities)"},
+    {key:"activities.aquapark", label:"Aqua park (Activities)"},
+    {key:"outlets.bouquet", label:"Main restaurant (Outlets)"},
+    {key:"entertainment.shows", label:"Evening shows (Entertainment)"}
+  ]}
+];
+
+/* ---- state ---- */
+var content = load();
+var dirty = false;
+
+function deepClone(o){ return JSON.parse(JSON.stringify(o)); }
+function load(){
+  try{ var raw = localStorage.getItem(STORE_KEY); if(raw){ var c=JSON.parse(raw);
+    // merge missing keys from defaults so new fields always exist
+    return mergeDefaults(c); } }catch(e){}
+  return deepClone(DEFAULTS);
+}
+function mergeDefaults(c){
+  var d = deepClone(DEFAULTS);
+  d.global = Object.assign({}, d.global, c.global||{});
+  d.pages = Object.assign({}, d.pages, c.pages||{});
+  if(c.pages){
+    Object.keys(d.pages).forEach(function(k){
+      if(c.pages[k]) d.pages[k] = Object.assign({}, DEFAULTS.pages[k]||{}, c.pages[k]);
+    });
+    // keep any extra page buckets the saved content had
+    Object.keys(c.pages).forEach(function(k){ if(!d.pages[k]) d.pages[k]=c.pages[k]; });
+  }
+  if(c.rooms) d.rooms = c.rooms;
+  if(c.news) d.news = c.news;
+  if(c.images) d.images = c.images;
+  if(c.collections){
+    var keys=["facilities","activities","bars","facilityDetails","restaurants","schedule"];
+    d.collections = d.collections || {};
+    keys.forEach(function(k){
+      // saved value wins if it's a real array; otherwise keep the seeded default
+      if(Array.isArray(c.collections[k])) d.collections[k]=c.collections[k];
+      if(!Array.isArray(d.collections[k])) d.collections[k]=[];
+    });
+  }
+  if(c.gallery){
+    d.gallery = d.gallery || {};
+    if(Array.isArray(c.gallery.pills)) d.gallery.pills = c.gallery.pills;
+    if(Array.isArray(c.gallery.tiles)) d.gallery.tiles = c.gallery.tiles;
+    if(!Array.isArray(d.gallery.pills)) d.gallery.pills=[];
+    if(!Array.isArray(d.gallery.tiles)) d.gallery.tiles=[];
+  }
+  if(Array.isArray(c.testimonials)) d.testimonials = c.testimonials;
+  if(!Array.isArray(d.testimonials)) d.testimonials=[];
+  d.i18n = (c.i18n && typeof c.i18n==="object") ? c.i18n : {};
+  return d;
+}
+function persistDraft(){ try{ localStorage.setItem(STORE_KEY+"_draft", JSON.stringify(content)); return true; }catch(e){ toast("Storage is full — your last change couldn't be saved. Videos and large photos are heavy; remove one or use smaller files. At go-live, media uploads to the server instead."); return false; } }
+
+/* ---- LOGIN ---- */
+var $ = function(s){ return document.querySelector(s); };
+function showApp(){
+  $("#loginScreen").style.display="none";
+  $("#app").classList.add("active");
+  $("#loginTime").textContent = "Signed in " + new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  hydrate();
+}
+/* Loading screen shown between the login and the portal.
+   Uses the exact same animation as the public website pages. */
+function loadIntoApp(){
+  var L=$("#adminLoader");
+  $("#loginScreen").style.display="none";
+  if(!L){ showApp(); return; }
+
+  L.setAttribute("aria-hidden","false");
+  L.classList.add("show");
+
+  var bar=$("#ldrBar"), stage=$("#ldrStage"), pc=$("#ldrParticles");
+
+  /* floating particles (same palette/behaviour as the site loader) */
+  if(pc && !pc.childElementCount){
+    var cl=['#CCFF00','#000066','#5ADA65'];
+    for(var i=0;i<14;i++){
+      var s=document.createElement('span');
+      s.className='ldr-particle';
+      s.style.left=(Math.random()*100)+'%';
+      s.style.background=cl[i%3];
+      var z=4+Math.random()*8;
+      s.style.width=z+'px'; s.style.height=z+'px';
+      s.style.animationDuration=(6+Math.random()*6)+'s';
+      s.style.animationDelay=(Math.random()*5)+'s';
+      pc.appendChild(s);
+    }
+  }
+
+  /* progress bar fills toward 90%, then snaps to 100% on finish */
+  var p=0, done=false;
+  var tick=setInterval(function(){
+    if(done) return;
+    p+=Math.max(.5,(90-p)*0.06); if(p>90)p=90;
+    if(bar) bar.style.width=p+'%';
+  },60);
+
+  function finish(){
+    if(done) return; done=true;
+    clearInterval(tick);
+    if(bar) bar.style.width='100%';
+    showApp();
+    setTimeout(function(){
+      if(stage){
+        stage.style.transition='transform .8s cubic-bezier(.2,.7,.2,1),opacity .7s ease';
+        stage.style.transform='scale(1.08)'; stage.style.opacity='0';
+      }
+      setTimeout(function(){
+        L.classList.add("gone");
+        setTimeout(function(){
+          L.classList.remove("show","gone");
+          L.setAttribute("aria-hidden","true");
+          if(stage){ stage.style.transition=''; stage.style.transform=''; stage.style.opacity=''; }
+          if(bar) bar.style.width='0%';
+        }, 950);
+      }, 70);
+    }, 420);
+  }
+
+  setTimeout(finish, 900);   /* same minimum hold as the public pages */
+}
+$("#loginBtn").addEventListener("click", function(){
+  var u = $("#username").value.trim(), p = $("#password").value;
+  if(GBR_LIVE){
+    fetch("/api/login", {
+      method:"POST", credentials:"same-origin",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ username:u, password:p })
+    })
+    .then(function(r){ if(!r.ok) throw new Error("auth"); $("#loginErr").classList.add("hidden"); return GBR_fetchContent(); })
+    .then(function(srv){
+      if(srv && typeof srv==="object" && Object.keys(srv).length) content = mergeDefaults(srv);
+      loadIntoApp();
+    })
+    .catch(function(){ $("#loginErr").classList.remove("hidden"); });
+  } else if(u === MOCK_USER && p === MOCK_PASS){
+    try{ sessionStorage.setItem(SESSION_KEY, "1"); }catch(e){}
+    $("#loginErr").classList.add("hidden");
+    loadIntoApp();
+  } else {
+    $("#loginErr").classList.remove("hidden");
+  }
+});
+$("#password").addEventListener("keydown", function(e){ if(e.key==="Enter") $("#loginBtn").click(); });
+function doLogout(){
+  dirty = false;                       /* avoid the generic beforeunload prompt stacking on top */
+  try{ sessionStorage.removeItem(SESSION_KEY); }catch(e){}
+  if(GBR_LIVE){
+    /* Clear the secure server session, then return to the homepage. */
+    fetch("/api/logout", { method:"POST", credentials:"same-origin" })
+      .catch(function(){})
+      .then(function(){ window.location.href = "index.html"; });
+  } else {
+    window.location.href = "index.html"; /* back to the main website homepage */
+  }
+}
+$("#logoutBtn").addEventListener("click", function(){
+  if(dirty){ $("#logoutModal").classList.add("show"); }   /* unsaved changes → confirm first */
+  else { doLogout(); }
+});
+$("#logoutConfirm").addEventListener("click", doLogout);
+try{ if(!GBR_LIVE && sessionStorage.getItem(SESSION_KEY)==="1") showApp(); }catch(e){}
+
+/* ---- NAV ---- */
+function go(panel){
+  document.querySelectorAll(".nav-item[data-panel]").forEach(function(b){ b.classList.toggle("active", b.dataset.panel===panel); });
+  document.querySelectorAll(".panel").forEach(function(p){ p.classList.remove("active"); });
+  var el = $("#panel-"+panel); if(el) el.classList.add("active");
+  var title = ({dashboard:"Dashboard",global:"Contact & Global",homepage:"Homepage",cReviews:"Guest reviews",rooms:"Rooms & Prices",facilities:"Facilities",activities:"Activities",entertainment:"Entertainment",outlets:"Dining & Outlets",news:"News & Offers",images:"Photos & Videos",cFacilities:"Facilities",cActivities:"Activities",cBars:"Restaurants & Bars",cSchedule:"Activities timetable",cGallery:"Gallery",languages:"Languages",seo:"SEO & Search",backup:"Backup & Restore",help:"Help"})[panel]||"";
+  $("#panelTitle").textContent = title; $("#crumbs").textContent = "Admin · "+title;
+  $("#sidebar").classList.remove("open");
+  /* The Languages list aggregates every page's content, so rebuild it on entry —
+     this surfaces anything added since load (rooms, facilities, activities, …). */
+  if(panel==="languages" && typeof renderTranslations==="function") renderTranslations();
+  window.scrollTo(0,0);
+}
+document.querySelectorAll(".nav-item[data-panel]").forEach(function(b){ b.addEventListener("click", function(){ go(b.dataset.panel); }); });
+document.querySelectorAll("[data-jump]").forEach(function(b){ b.addEventListener("click", function(){ go(b.dataset.jump); }); });
+$("#hamburger").addEventListener("click", function(){ $("#sidebar").classList.toggle("open"); });
+
+/* ---- BINDINGS (text fields) ---- */
+function getVal(path){
+  var p=path.split("."); var bucket = p[0]==="global"?content.global:(content.pages[p[0]]||{});
+  return bucket[p.slice(1).join(".")] || "";
+}
+function setVal(path,val){
+  var p=path.split("."); 
+  if(p[0]==="global"){ content.global[p.slice(1).join(".")]=val; }
+  else { content.pages[p[0]]=content.pages[p[0]]||{}; content.pages[p[0]][p.slice(1).join(".")]=val; }
+  markDirty();
+}
+function hydrate(){
+  document.querySelectorAll("[data-bind]").forEach(function(el){
+    el.value = getVal(el.dataset.bind);
+    el.addEventListener("input", function(){ setVal(el.dataset.bind, el.value); });
+  });
+  renderRooms(); renderNews(); renderImages(); renderFeatureColls(); renderDetailColls(); renderSchedule(); renderGallery(); renderTestimonials(); renderTranslations(); updatePreviewLink();
+}
+
+/* ---- DIRTY / PUBLISH ---- */
+function markDirty(){ dirty=true; persistDraft();
+  $("#saveState").classList.add("unsaved"); $("#saveLabel").textContent="Draft — not published yet"; }
+function markClean(){ dirty=false;
+  $("#saveState").classList.remove("unsaved"); $("#saveLabel").textContent="All changes saved"; }
+$("#publishBtn").addEventListener("click", function(){
+  try{ if(window.GBR_SEO && typeof bakeResolvedSEO==="function") bakeResolvedSEO(); }catch(e){}
+  function refreshAfterPublish(){
+    /* rebuild the aggregated Languages list so newly added sections appear and
+       items that now have German + Russian leave the "needs translation" view */
+    try{ if(typeof renderTranslations==="function") renderTranslations(); }catch(e){}
+  }
+  if(GBR_LIVE){
+    GBR_saveContent(content).then(function(r){
+      if(!r.ok) throw new Error("save " + r.status);
+      markClean(); refreshAfterPublish(); toast("Published — your website is updated");
+    }).catch(function(){ toast("Couldn't publish — please sign in again and retry."); });
+  } else {
+    try{ localStorage.setItem(STORE_KEY, JSON.stringify(content)); }
+    catch(e){ toast("Couldn't publish — storage is full. Videos are heavy; remove one or use smaller files. At go-live media uploads to the server."); return; }
+    markClean(); refreshAfterPublish(); toast("Published — your website is updated");
+  }
+});
+function updatePreviewLink(){ /* preview opens index; live overrides read from STORE_KEY */ }
+
+/* ---- ROOMS ---- */
+var editingRoom = null;
+function renderRooms(){
+  var box=$("#roomList"); box.innerHTML="";
+  content.rooms.forEach(function(r){
+    var d=document.createElement("div"); d.className="list-item";
+    d.innerHTML='<div class="li-main"><b>'+esc(r.name)+'</b><small>'+esc(r.unit)+' · '+esc(r.price)+'</small></div>'+
+      '<span class="badge">'+esc(r.price)+'</span>'+
+      '<div class="li-actions"><button class="icon-btn" title="Edit">✎</button></div>';
+    d.querySelector(".icon-btn").addEventListener("click", function(){ openRoom(r); });
+    box.appendChild(d);
+  });
+}
+function openRoom(r){ editingRoom=r; $("#roomModalTitle").textContent="Edit "+r.name;
+  $("#rm-name").value=r.name; $("#rm-desc").value=r.desc; $("#rm-price").value=r.price; $("#rm-unit").value=r.unit;
+  $("#roomModal").classList.add("show"); }
+$("#rm-save").addEventListener("click", function(){
+  editingRoom.name=$("#rm-name").value; editingRoom.desc=$("#rm-desc").value;
+  editingRoom.price=$("#rm-price").value; editingRoom.unit=$("#rm-unit").value;
+  renderRooms(); markDirty(); closeModals(); toast("Room updated");
+});
+
+/* ---- NEWS ---- */
+var editingNews=null;
+function renderNews(){
+  var box=$("#newsList"); box.innerHTML="";
+  content.news.forEach(function(n){
+    var d=document.createElement("div"); d.className="list-item";
+    d.innerHTML='<div class="li-main"><b>'+esc(n.title)+'</b><small>'+esc(n.date)+' · '+esc(n.cat)+'</small></div>'+
+      '<div class="li-actions"><button class="icon-btn edit" title="Edit">✎</button>'+
+      '<button class="icon-btn danger del" title="Delete">🗑</button></div>';
+    d.querySelector(".edit").addEventListener("click", function(){ openNews(n); });
+    d.querySelector(".del").addEventListener("click", function(){
+      if(confirm("Delete this post?")){ content.news=content.news.filter(function(x){return x!==n;}); renderNews(); markDirty(); toast("Post deleted"); }
+    });
+    box.appendChild(d);
+  });
+}
+function openNews(n){ editingNews=n; $("#newsModalTitle").textContent = n? "Edit post":"Add a post";
+  $("#nm-title").value=n?n.title:""; $("#nm-date").value=n?n.date:todayStr(); $("#nm-cat").value=n?n.cat:"Offer"; $("#nm-excerpt").value=n?n.excerpt:"";
+  $("#newsModal").classList.add("show"); }
+$("#addNewsBtn").addEventListener("click", function(){ openNews(null); });
+$("#nm-save").addEventListener("click", function(){
+  var data={title:$("#nm-title").value, date:$("#nm-date").value, cat:$("#nm-cat").value, excerpt:$("#nm-excerpt").value};
+  if(!data.title){ toast("Please add a title"); return; }
+  if(editingNews){ Object.assign(editingNews,data); } else { data.id=Date.now(); content.news.unshift(data); }
+  renderNews(); markDirty(); closeModals(); toast(editingNews?"Post updated":"Post added");
+});
+
+/* ============================================================
+   SECTIONS & CARDS EDITORS
+   - Feature cards: facilities / activities / bars  (edit built-ins + add new)
+   - Detail blocks: facilityDetails / restaurants    (edit built-ins + add new)
+   - Timetable: schedule (7 fixed days, edit slots only)
+   Built-in items are seeded in DEFAULTS with the same ids used in the page
+   HTML, so editing one overrides it in place; new items append.
+   ============================================================ */
+var COLL_MAX_IMG = 2.6 * 1024 * 1024;   // ~2.5MB photo
+var COLL_META = {
+  facilities:{ noun:"card", defaultIcon:"fa-star" },
+  activities:{ noun:"card", defaultIcon:"fa-person-swimming" },
+  bars:{ noun:"bar / café", defaultIcon:"fa-martini-glass" }
+};
+var DETAIL_META = {
+  facilityDetails:{ noun:"section", defaultIcon:"fa-check" },
+  restaurants:{ noun:"restaurant", defaultIcon:"fa-utensils" }
+};
+/* On-brand Font Awesome icons (already loaded by the site). */
+var ICON_CHOICES = [
+  "fa-star","fa-check","fa-utensils","fa-martini-glass","fa-mug-hot","fa-coffee","fa-wine-glass",
+  "fa-champagne-glasses","fa-ice-cream","fa-pizza-slice","fa-fish","fa-fire","fa-spa","fa-dumbbell",
+  "fa-person-swimming","fa-swimming-pool","fa-water","fa-water-ladder","fa-umbrella-beach","fa-shower",
+  "fa-volleyball","fa-table-tennis-paddle-ball","fa-person-biking","fa-sailboat","fa-child","fa-child-reaching",
+  "fa-gamepad","fa-music","fa-masks-theater","fa-film","fa-microphone","fa-clock","fa-heart","fa-leaf","fa-sun","fa-moon",
+  "fa-bag-shopping","fa-user-doctor","fa-briefcase","fa-shirt","fa-scissors","fa-hot-tub-person","fa-key","fa-wifi","fa-car","fa-bus"
+];
+
+function collArr(name){ content.collections = content.collections || {}; if(!Array.isArray(content.collections[name])) content.collections[name]=[]; return content.collections[name]; }
+/* A built-in item has a non-numeric (string) id seeded in DEFAULTS. New items
+   created in the admin get a numeric Date.now() id, so they have no built-in
+   counterpart in the HTML and are appended on the live page. */
+function isBuiltinId(id){ return typeof id === "string"; }
+
+/* ---------- FEATURE CARDS (facilities / activities / bars) ---------- */
+function renderFeatureColls(){ ["facilities","activities","bars"].forEach(renderFeatureColl); }
+
+function renderFeatureColl(name){
+  var grid=$("#grid-"+name); if(!grid) return;
+  var arr=collArr(name); grid.innerHTML="";
+  if(!arr.length){
+    grid.innerHTML='<div class="coll-empty">Nothing here yet. Press the add button above to create your first card.</div>';
+    return;
+  }
+  arr.forEach(function(item){
+    var card=document.createElement("div"); card.className="coll-card";
+    var thumb = item.image
+      ? '<img class="coll-thumb" src="'+item.image+'" alt="">'
+      : '<div class="coll-thumb is-ph"><span>▦</span>Photo coming soon</div>';
+    var builtin=isBuiltinId(item.id);
+    card.innerHTML=
+      thumb+
+      '<div class="coll-body"><div class="ttl"><i class="fas '+esc(item.icon||"fa-star")+'"></i>'+esc(item.title||"Untitled")+(builtin?' <span class="badge" style="margin-left:auto">Built-in</span>':'')+'</div>'+
+        '<p>'+esc(item.desc||"")+'</p></div>'+
+      '<div class="coll-actions"><button class="icon-btn edit" title="Edit">✎</button>'+
+        (builtin?'':'<button class="icon-btn danger del" title="Delete">🗑</button>')+'</div>';
+    card.querySelector(".edit").addEventListener("click", function(){ openColl(name,item); });
+    var del=card.querySelector(".del");
+    if(del) del.addEventListener("click", function(){
+      if(confirm("Delete this card?")){ content.collections[name]=arr.filter(function(x){return x!==item;}); renderFeatureColl(name); markDirty(); toast("Card deleted"); }
+    });
+    grid.appendChild(card);
+  });
+}
+
+var editingColl=null, editingCollName=null, collDraftImage=null;
+
+function buildIconPicker(hostSel, selected){
+  var host=$(hostSel); host.innerHTML="";
+  ICON_CHOICES.forEach(function(ic){
+    var b=document.createElement("button"); b.type="button"; b.className="icon-opt"+(ic===selected?" active":"");
+    b.innerHTML='<i class="fas '+ic+'"></i>'; b.dataset.icon=ic;
+    b.addEventListener("click", function(){
+      host.querySelectorAll(".icon-opt").forEach(function(x){x.classList.remove("active");});
+      b.classList.add("active");
+    });
+    host.appendChild(b);
+  });
+}
+function pickedIcon(hostSel){ var a=$(hostSel).querySelector(".icon-opt.active"); return a?a.dataset.icon:null; }
+
+function setPreview(prevSel, rmSel, src, store){
+  store(src||null);
+  var prev=$(prevSel), rm=$(rmSel);
+  if(src){ prev.innerHTML='<img src="'+src+'">'; prev.classList.add("show"); rm.classList.remove("hidden"); }
+  else { prev.innerHTML='<div class="ph">No photo yet — a “Photo coming soon” placeholder shows on the website</div>'; prev.classList.remove("show"); rm.classList.add("hidden"); }
+}
+
+function openColl(name,item){
+  editingCollName=name; editingColl=item||null;
+  var meta=COLL_META[name];
+  $("#collModalTitle").textContent=(item?"Edit ":"Add ")+meta.noun;
+  $("#cm-title").value=item?item.title||"":"";
+  $("#cm-desc").value=item?item.desc||"":"";
+  buildIconPicker("#cm-icons", item?item.icon||meta.defaultIcon:meta.defaultIcon);
+  setPreview("#cm-preview","#cm-remove", item?item.image||null:null, function(v){collDraftImage=v;});
+  $("#cm-file").value="";
+  $("#collModal").classList.add("show");
+}
+
+document.querySelectorAll("[data-add-coll]").forEach(function(b){
+  b.addEventListener("click", function(){ openColl(b.dataset.addColl, null); });
+});
+
+$("#cm-file").addEventListener("change", function(){
+  var f=this.files[0]; if(!f) return;
+  if(!GBR_LIVE && f.size>COLL_MAX_IMG){ toast("That photo is large — please use one under 2.5MB."); this.value=""; return; }
+  GBR_uploadMedia(f, "coll-"+Date.now()).then(function(url){
+    setPreview("#cm-preview","#cm-remove", url, function(v){collDraftImage=v;});
+  });
+});
+$("#cm-remove").addEventListener("click", function(){ setPreview("#cm-preview","#cm-remove", null, function(v){collDraftImage=v;}); $("#cm-file").value=""; });
+
+$("#cm-save").addEventListener("click", function(){
+  var title=$("#cm-title").value.trim();
+  if(!title){ toast("Please add a title"); return; }
+  var data={ title:title, desc:$("#cm-desc").value.trim(), icon:pickedIcon("#cm-icons")||COLL_META[editingCollName].defaultIcon, image:collDraftImage||"" };
+  var arr=collArr(editingCollName);
+  if(editingColl){ Object.assign(editingColl,data); }
+  else { data.id=Date.now(); arr.push(data); }
+  var ok=trySaveDraft();
+  if(!ok){ if(!editingColl){ arr.pop(); } return; }
+  renderFeatureColl(editingCollName); markDirty(); closeModals();
+  toast(editingColl?"Card updated":"Card added");
+});
+
+/* ---------- DETAIL BLOCKS (facilityDetails / restaurants) ---------- */
+function renderDetailColls(){ ["facilityDetails","restaurants"].forEach(renderDetailColl); }
+
+function renderDetailColl(name){
+  var grid=$("#grid-"+name); if(!grid) return;
+  var arr=collArr(name); grid.innerHTML="";
+  if(!arr.length){
+    grid.innerHTML='<div class="coll-empty">Nothing here yet. Press the add button above to create your first section.</div>';
+    return;
+  }
+  arr.forEach(function(item){
+    var card=document.createElement("div"); card.className="coll-card";
+    var photoCount=(Array.isArray(item.images)&&item.images.length)?item.images.length:(item.image?1:0);
+    var firstPhoto=(Array.isArray(item.images)&&item.images[0])||item.image||"";
+    var thumb = firstPhoto
+      ? '<img class="coll-thumb" src="'+firstPhoto+'" alt="">'
+      : '<div class="coll-thumb is-ph"><span>▦</span>Photo coming soon</div>';
+    var builtin=isBuiltinId(item.id);
+    var pts=(item.points||[]).length;
+    var photoLabel = photoCount>1 ? (photoCount+" photos (slider)") : (photoCount===1?"1 photo":"no photo");
+    card.innerHTML=
+      thumb+
+      '<div class="coll-body"><div class="ttl">'+esc(item.title||"Untitled")+(builtin?' <span class="badge" style="margin-left:auto">Built-in</span>':'')+'</div>'+
+        '<p>'+esc(item.eyebrow||"")+' · '+pts+' feature'+(pts===1?"":"s")+' · '+photoLabel+'</p></div>'+
+      '<div class="coll-actions"><button class="icon-btn edit" title="Edit">✎</button>'+
+        (builtin?'':'<button class="icon-btn danger del" title="Delete">🗑</button>')+'</div>';
+    card.querySelector(".edit").addEventListener("click", function(){ openDetail(name,item); });
+    var del=card.querySelector(".del");
+    if(del) del.addEventListener("click", function(){
+      if(confirm("Delete this section?")){ content.collections[name]=arr.filter(function(x){return x!==item;}); renderDetailColl(name); markDirty(); toast("Section deleted"); }
+    });
+    grid.appendChild(card);
+  });
+}
+
+var editingDetail=null, editingDetailName=null, detailDraftImages=[];
+var DETAIL_MAX_PHOTOS=5;
+
+/* Render the photo manager grid from detailDraftImages. Shows each photo with
+   a remove button (the first is badged "Slide 1"), plus an add tile until 5. */
+function renderDetailPhotos(){
+  var grid=$("#dt-photos"); if(!grid) return;
+  grid.innerHTML="";
+  detailDraftImages.forEach(function(src,i){
+    var cell=document.createElement("div"); cell.className="photo-cell";
+    cell.innerHTML='<img src="'+src+'" alt="">'+
+      '<span class="pc-badge">'+(i===0?"Slide 1":(i+1))+'</span>'+
+      '<button type="button" class="pc-rm" title="Remove photo" aria-label="Remove photo">✕</button>';
+    cell.querySelector(".pc-rm").addEventListener("click", function(){
+      detailDraftImages.splice(i,1); renderDetailPhotos();
+    });
+    grid.appendChild(cell);
+  });
+  if(detailDraftImages.length<DETAIL_MAX_PHOTOS){
+    var add=document.createElement("button"); add.type="button"; add.className="photo-add";
+    add.innerHTML='<span class="plus">+</span>Add photo';
+    add.addEventListener("click", function(){ $("#dt-file").click(); });
+    grid.appendChild(add);
+  }
+}
+
+function addPointRow(p){
+  var host=$("#dt-points");
+  var row=document.createElement("div"); row.className="slot-row";
+  var iconVal=(p&&p.icon)||"fa-check";
+  var opts=ICON_CHOICES.map(function(ic){ return '<option value="'+ic+'"'+(ic===iconVal?' selected':'')+'>'+ic.replace("fa-","")+'</option>'; }).join("");
+  row.innerHTML=
+    '<select class="p-icon" style="padding:9px 11px;border:1.5px solid var(--border);border-radius:8px;background:var(--cream)">'+opts+'</select>'+
+    '<input class="p-strong" placeholder="Heading (e.g. Fresh daily catch)" value="'+esc(p&&p.strong||"")+'">'+
+    '<button type="button" class="icon-btn danger p-del" title="Remove">🗑</button>'+
+    '<input class="p-small" placeholder="Small line (e.g. From local fishermen)" value="'+esc(p&&p.small||"")+'" style="grid-column:1/-1">';
+  row.style.gridTemplateColumns="auto 1fr auto";
+  row.querySelector(".p-del").addEventListener("click", function(){ row.remove(); });
+  host.appendChild(row);
+}
+
+function openDetail(name,item){
+  editingDetailName=name; editingDetail=item||null;
+  var meta=DETAIL_META[name];
+  $("#detailModalTitle").textContent=(item?"Edit ":"Add ")+meta.noun;
+  $("#dt-tag").value=item?item.tag||"":"";
+  $("#dt-eyebrow").value=item?item.eyebrow||"":"";
+  $("#dt-title").value=item?item.title||"":"";
+  $("#dt-desc").value=item?item.desc||"":"";
+  $("#dt-points").innerHTML="";
+  var pts=(item&&item.points&&item.points.length)?item.points:[{icon:meta.defaultIcon,strong:"",small:""}];
+  pts.forEach(addPointRow);
+  /* seed photos: prefer images[] (new), fall back to single image (legacy) */
+  if(item && Array.isArray(item.images) && item.images.length) detailDraftImages=item.images.slice(0,DETAIL_MAX_PHOTOS);
+  else if(item && item.image) detailDraftImages=[item.image];
+  else detailDraftImages=[];
+  renderDetailPhotos();
+  $("#dt-file").value="";
+  $("#detailModal").classList.add("show");
+}
+
+document.querySelectorAll("[data-add-detail]").forEach(function(b){
+  b.addEventListener("click", function(){ openDetail(b.dataset.addDetail, null); });
+});
+$("#dt-addPoint").addEventListener("click", function(){ addPointRow(null); });
+$("#dt-file").addEventListener("change", function(){
+  var files=[].slice.call(this.files||[]);
+  var input=this;
+  if(!files.length) return;
+  var room=DETAIL_MAX_PHOTOS-detailDraftImages.length;
+  if(room<=0){ toast("You can add up to "+DETAIL_MAX_PHOTOS+" photos."); input.value=""; return; }
+  if(files.length>room){ toast("Only "+room+" more photo"+(room===1?"":"s")+" can be added — extras were skipped."); files=files.slice(0,room); }
+  var pending=files.length, skipped=0;
+  files.forEach(function(f){
+    if(!GBR_LIVE && f.size>COLL_MAX_IMG){ skipped++; if(--pending===0) finish(); return; }
+    GBR_uploadMedia(f, "detail-"+Date.now()+"-"+Math.random().toString(36).slice(2,7)).then(function(url){
+      detailDraftImages.push(url); renderDetailPhotos(); if(--pending===0) finish();
+    }).catch(function(){ skipped++; if(--pending===0) finish(); });
+  });
+  function finish(){ if(skipped) toast(skipped+" photo"+(skipped===1?" was":"s were")+" too large (max 2.5MB) and skipped."); input.value=""; }
+});
+
+$("#dt-save").addEventListener("click", function(){
+  var title=$("#dt-title").value.trim();
+  if(!title){ toast("Please add a title"); return; }
+  var points=[];
+  $("#dt-points").querySelectorAll(".slot-row").forEach(function(r){
+    var strong=r.querySelector(".p-strong").value.trim(), small=r.querySelector(".p-small").value.trim();
+    if(strong||small) points.push({ icon:r.querySelector(".p-icon").value, strong:strong, small:small });
+  });
+  var photos=detailDraftImages.slice(0,DETAIL_MAX_PHOTOS);
+  var data={ tag:$("#dt-tag").value.trim(), eyebrow:$("#dt-eyebrow").value.trim(), title:title, desc:$("#dt-desc").value.trim(), points:points, images:photos, image:photos[0]||"" };
+  var arr=collArr(editingDetailName);
+  if(editingDetail){ Object.assign(editingDetail,data); }
+  else { data.id=Date.now(); arr.push(data); }
+  var ok=trySaveDraft();
+  if(!ok){ if(!editingDetail){ arr.pop(); } return; }
+  renderDetailColl(editingDetailName);
+  // a built-in's photo also feeds the live page via data-cms-img; mirror it there
+  syncDetailImageToImages(editingDetailName);
+  markDirty(); closeModals();
+  toast(editingDetail?"Section updated":"Section added");
+});
+
+/* Built-in detail blocks show their photo through the existing data-cms-img
+   mechanism (keys like "outlets.beachrest" / "facilities.spa"). Mirror an
+   uploaded built-in photo into content.images so it appears on the live page. */
+var DETAIL_IMG_KEY = {
+  facilityDetails:{ aquapark:"facilities.aquapark", beach:"facilities.beach", spa:"facilities.spa" },
+  restaurants:{ bouquet:"outlets.bouquet", donvito:"outlets.donvito", beachrest:"outlets.beachrest" }
+};
+function syncDetailImageToImages(name){
+  var map=DETAIL_IMG_KEY[name]||{}; content.images=content.images||{};
+  collArr(name).forEach(function(it){
+    var key=map[it.id]; if(!key) return;          // only built-ins map to a live img slot
+    if(it.image) content.images[key]=it.image; else delete content.images[key];
+  });
+}
+
+/* ---------- ACTIVITIES TIMETABLE (edit the 7 days; no add/remove) ---------- */
+var editingDay=null;
+
+/* The 7 real days that exist on the Activities page (matched by name there).
+   The built-in week below is used to seed any day that's missing from saved
+   content, so the editor always shows an editable Monday–Sunday — and so edits
+   actually reach the live page (which pairs days by these exact names). */
+var WEEK_DAYS=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+var DEFAULT_WEEK={
+  Monday:[{label:"Morning",text:"Beach yoga · 08:00"},{label:"Afternoon",text:"Aqua aerobics · 15:00"},{label:"Evening",text:"Live music · 21:00"}],
+  Tuesday:[{label:"Morning",text:"Reef snorkel trip · 09:00"},{label:"Afternoon",text:"Beach volleyball · 16:00"},{label:"Evening",text:"Quiz night · 21:30"}],
+  Wednesday:[{label:"Morning",text:"Spinning class · 08:30"},{label:"Afternoon",text:"Water polo · 15:30"},{label:"Evening",text:"Italian Night · 19:00"}],
+  Thursday:[{label:"Morning",text:"Sunrise stretch · 07:30"},{label:"Afternoon",text:"Archery · 16:00"},{label:"Evening",text:"Live band · 21:00"}],
+  Friday:[{label:"Morning",text:"Beach yoga · 08:00"},{label:"Afternoon",text:"Pool games · 15:00"},{label:"Evening",text:"Belly dance show · 21:30"}],
+  Saturday:[{label:"Morning",text:"Diving intro · 09:00"},{label:"Afternoon",text:"Tennis tournament · 16:00"},{label:"Evening",text:"Cinema under stars · 21:00"}],
+  Sunday:[{label:"Morning",text:"Aqua aerobics · 10:00"},{label:"Afternoon",text:"Beach football · 15:30"},{label:"Evening",text:"Gala dinner · 19:30"}]
+};
+
+/* Rebuild the schedule to exactly the 7 real days, in order. Keeps the saved
+   slots for any day whose name matches; seeds a missing day from DEFAULT_WEEK;
+   discards stray/non-standard days (e.g. a test "xday"). Returns true if it had
+   to change anything, so the repair can be published. */
+function normalizeSchedule(){
+  var arr=collArr("schedule");
+  var byName={};
+  arr.forEach(function(d){ if(d&&typeof d.day==="string") byName[d.day.trim().toLowerCase()]=d; });
+  var rebuilt=WEEK_DAYS.map(function(name){
+    var ex=byName[name.toLowerCase()];
+    if(ex){ ex.day=name; if(!Array.isArray(ex.slots)) ex.slots=[]; return ex; }
+    return { day:name, slots:DEFAULT_WEEK[name].map(function(s){return {label:s.label,text:s.text};}) };
+  });
+  var changed = arr.length!==rebuilt.length || arr.some(function(d,i){ return d!==rebuilt[i]; });
+  content.collections.schedule=rebuilt;
+  return changed;
+}
+
+function renderSchedule(){
+  var box=$("#scheduleList"); if(!box) return;
+  if(normalizeSchedule()) markDirty();   // self-heal junk/missing days
+  var arr=collArr("schedule"); box.innerHTML="";
+  arr.forEach(function(day){
+    var d=document.createElement("div"); d.className="list-item";
+    var count=(day.slots||[]).length;
+    d.innerHTML='<div class="li-main"><b>'+esc(day.day||"Day")+'</b><small>'+count+' time slot'+(count===1?"":"s")+'</small></div>'+
+      '<div class="li-actions"><button class="icon-btn edit" title="Edit">✎</button></div>';
+    d.querySelector(".edit").addEventListener("click", function(){ openDay(day); });
+    box.appendChild(d);
+  });
+}
+
+function addSlotRow(slot){
+  var host=$("#dm-slots");
+  var row=document.createElement("div"); row.className="slot-row";
+  row.innerHTML=
+    '<input class="s-label" placeholder="Label (e.g. Morning)" value="'+esc(slot&&slot.label||"")+'">'+
+    '<input class="s-text" placeholder="Activity (e.g. Beach yoga · 08:00)" value="'+esc(slot&&slot.text||"")+'">'+
+    '<button type="button" class="icon-btn danger s-del" title="Remove">🗑</button>';
+  row.querySelector(".s-del").addEventListener("click", function(){ row.remove(); });
+  host.appendChild(row);
+}
+
+function openDay(day){
+  editingDay=day;
+  $("#dayModalTitle").textContent="Edit "+(day.day||"day");
+  $("#dm-day").value=day.day||"";
+  $("#dm-slots").innerHTML="";
+  var slots=(day.slots&&day.slots.length)?day.slots:[{label:"Morning",text:""}];
+  slots.forEach(addSlotRow);
+  $("#dayModal").classList.add("show");
+}
+$("#dm-addSlot").addEventListener("click", function(){ addSlotRow(null); });
+$("#dm-save").addEventListener("click", function(){
+  if(!editingDay) return;
+  var slots=[];
+  $("#dm-slots").querySelectorAll(".slot-row").forEach(function(r){
+    var label=r.querySelector(".s-label").value.trim(), text=r.querySelector(".s-text").value.trim();
+    if(label||text) slots.push({label:label,text:text});
+  });
+  editingDay.slots=slots;
+  renderSchedule(); markDirty(); closeModals(); toast("Day updated");
+});
+
+/* ---------- GALLERY (filter pills + photo tiles) ---------- */
+var TILE_IMG_KEY = { tile1:"gallery.tile1",tile2:"gallery.tile2",tile3:"gallery.tile3",tile4:"gallery.tile4",
+  tile5:"gallery.tile5",tile6:"gallery.tile6",tile7:"gallery.tile7",tile8:"gallery.tile8",
+  tile9:"gallery.tile9",tile10:"gallery.tile10",tile11:"gallery.tile11" };
+
+function gal(){ content.gallery = content.gallery || {pills:[],tiles:[]};
+  if(!Array.isArray(content.gallery.pills)) content.gallery.pills=[];
+  if(!Array.isArray(content.gallery.tiles)) content.gallery.tiles=[];
+  return content.gallery; }
+function isBuiltinTile(id){ return TILE_IMG_KEY.hasOwnProperty(id); }
+/* a built-in tile shows its photo through content.images["gallery.tileN"] */
+function tileImage(t){ if(t.image) return t.image; var k=TILE_IMG_KEY[t.id]; return (k&&content.images&&content.images[k])||""; }
+
+function renderGallery(){ renderPills(); renderTiles(); }
+
+/* --- pills --- */
+function renderPills(){
+  var box=$("#pillList"); if(!box) return;
+  var arr=gal().pills; box.innerHTML="";
+  if(!arr.length){ box.innerHTML='<div class="coll-empty">No categories yet. Press <b>+ Add category</b> to create your first filter pill.</div>'; return; }
+  arr.forEach(function(p){
+    var d=document.createElement("div"); d.className="list-item";
+    var count=gal().tiles.filter(function(t){return t.cat===p.id;}).length;
+    d.innerHTML='<div class="li-main"><b>'+esc(p.label||p.id)+'</b><small>'+count+' photo'+(count===1?"":"s")+' tagged</small></div>'+
+      '<div class="li-actions"><button class="icon-btn edit" title="Edit">✎</button>'+
+      '<button class="icon-btn danger del" title="Delete">🗑</button></div>';
+    d.querySelector(".edit").addEventListener("click", function(){ openPill(p); });
+    d.querySelector(".del").addEventListener("click", function(){
+      if(confirm("Delete this category? Photos tagged to it stay, but will no longer have a matching filter.")){
+        gal().pills=arr.filter(function(x){return x!==p;}); renderGallery(); markDirty(); toast("Category deleted");
+      }
+    });
+    box.appendChild(d);
+  });
+}
+var editingPill=null;
+function slugify(s){ return String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"") || ("cat"+Date.now()); }
+function openPill(p){ editingPill=p||null; $("#pillModalTitle").textContent=p?"Edit category":"Add category";
+  $("#pl-label").value=p?p.label||"":""; $("#pillModal").classList.add("show"); }
+$("#addPillBtn").addEventListener("click", function(){ openPill(null); });
+$("#pl-save").addEventListener("click", function(){
+  var label=$("#pl-label").value.trim(); if(!label){ toast("Please name the category"); return; }
+  var arr=gal().pills;
+  var prevLabel=null;
+  if(editingPill){ prevLabel=editingPill.label; editingPill.label=label; }
+  else {
+    var id=slugify(label);
+    // ensure unique id
+    var base=id, n=2; while(arr.some(function(x){return x.id===id;})){ id=base+"-"+(n++); }
+    arr.push({id:id, label:label});
+  }
+  // persist with quota handling — roll back the change if the draft can't be saved
+  var ok=trySaveDraft();
+  if(!ok){ if(editingPill){ editingPill.label=prevLabel; } else { arr.pop(); } return; }
+  renderGallery(); markDirty(); closeModals(); toast(editingPill?"Category updated":"Category added");
+});
+
+/* --- tiles --- */
+function renderTiles(){
+  var grid=$("#tileGrid"); if(!grid) return;
+  var arr=gal().tiles; grid.innerHTML="";
+  if(!arr.length){ grid.innerHTML='<div class="coll-empty">No photos yet. Press <b>+ Add photo</b> to add your first one.</div>'; return; }
+  arr.forEach(function(t){
+    var img=tileImage(t);
+    var card=document.createElement("div"); card.className="coll-card";
+    var thumb = img ? '<img class="coll-thumb" src="'+img+'" alt="">' : '<div class="coll-thumb is-ph"><span>▦</span>Photo coming soon</div>';
+    var pill=gal().pills.filter(function(p){return p.id===t.cat;})[0];
+    var catLabel=pill?pill.label:(t.cat||"Uncategorised");
+    var builtin=isBuiltinTile(t.id);
+    card.innerHTML=
+      thumb+
+      '<div class="coll-body"><div class="ttl">'+esc(t.label||"Untitled")+(builtin?' <span class="badge" style="margin-left:auto">Built-in</span>':'')+'</div>'+
+        '<p>'+esc(catLabel)+'</p></div>'+
+      '<div class="coll-actions"><button class="icon-btn edit" title="Edit">✎</button>'+
+        (builtin?'':'<button class="icon-btn danger del" title="Delete">🗑</button>')+'</div>';
+    card.querySelector(".edit").addEventListener("click", function(){ openTile(t); });
+    var del=card.querySelector(".del");
+    if(del) del.addEventListener("click", function(){
+      if(confirm("Delete this photo?")){ gal().tiles=arr.filter(function(x){return x!==t;}); renderGallery(); markDirty(); toast("Photo deleted"); }
+    });
+    grid.appendChild(card);
+  });
+}
+var editingTile=null, tileDraftImage=null;
+function openTile(t){
+  editingTile=t||null;
+  $("#tileModalTitle").textContent=t?"Edit photo":"Add photo";
+  $("#tl-label").value=t?t.label||"":"";
+  // category dropdown
+  var sel=$("#tl-cat"); sel.innerHTML="";
+  gal().pills.forEach(function(p){ var o=document.createElement("option"); o.value=p.id; o.textContent=p.label||p.id; sel.appendChild(o); });
+  if(!gal().pills.length){ var o=document.createElement("option"); o.value=""; o.textContent="(add a category first)"; sel.appendChild(o); }
+  sel.value=t?t.cat||"":(gal().pills[0]?gal().pills[0].id:"");
+  setPreview("#tl-preview","#tl-remove", t?tileImage(t)||null:null, function(v){tileDraftImage=v;});
+  $("#tl-file").value="";
+  $("#tileModal").classList.add("show");
+}
+$("#addTileBtn").addEventListener("click", function(){
+  if(!gal().pills.length){ toast("Add at least one category first"); openPill(null); return; }
+  openTile(null);
+});
+$("#tl-file").addEventListener("change", function(){
+  var f=this.files[0]; if(!f) return;
+  if(!GBR_LIVE && f.size>COLL_MAX_IMG){ toast("That photo is large — please use one under 2.5MB."); this.value=""; return; }
+  GBR_uploadMedia(f, "gallery-"+Date.now()).then(function(url){
+    setPreview("#tl-preview","#tl-remove", url, function(v){tileDraftImage=v;});
+  });
+});
+$("#tl-remove").addEventListener("click", function(){ setPreview("#tl-preview","#tl-remove", null, function(v){tileDraftImage=v;}); $("#tl-file").value=""; });
+$("#tl-save").addEventListener("click", function(){
+  var label=$("#tl-label").value.trim(); if(!label){ toast("Please add a caption"); return; }
+  var cat=$("#tl-cat").value;
+  var arr=gal().tiles;
+  if(editingTile){
+    editingTile.label=label; editingTile.cat=cat;
+    if(isBuiltinTile(editingTile.id)){
+      // built-in photo flows through the shared image slot
+      content.images=content.images||{};
+      var key=TILE_IMG_KEY[editingTile.id];
+      if(tileDraftImage){ content.images[key]=tileDraftImage; } else { delete content.images[key]; }
+    } else {
+      editingTile.image=tileDraftImage||"";
+    }
+  } else {
+    arr.push({id:Date.now(), label:label, cat:cat, image:tileDraftImage||""});
+  }
+  var ok=trySaveDraft();
+  if(!ok){ if(!editingTile){ arr.pop(); } return; }
+  renderGallery(); markDirty(); closeModals(); toast(editingTile?"Photo updated":"Photo added");
+});
+
+/* ---------- GUEST REVIEWS (testimonials) ---------- */
+function testiArr(){ if(!Array.isArray(content.testimonials)) content.testimonials=[]; return content.testimonials; }
+function isBuiltinTesti(id){ return typeof id==="string"; }
+function starsGlyphs(n){ n=Math.max(1,Math.min(5,parseInt(n,10)||5)); var s=""; for(var i=0;i<n;i++) s+="★"; return s; }
+
+function renderTestimonials(){
+  var grid=$("#testiGrid"); if(!grid) return;
+  var arr=testiArr(); grid.innerHTML="";
+  if(!arr.length){ grid.innerHTML='<div class="coll-empty">No reviews yet. Press <b>+ Add review</b> to add your first guest quote.</div>'; return; }
+  arr.forEach(function(t){
+    var card=document.createElement("div"); card.className="coll-card";
+    var builtin=isBuiltinTesti(t.id);
+    var initial=(t.name||"?").trim().charAt(0).toUpperCase()||"?";
+    var quote=(t.quote||"").trim(); if(quote.length>120) quote=quote.slice(0,117)+"…";
+    card.innerHTML=
+      '<div class="coll-body" style="padding-top:16px">'+
+        '<div class="ttl"><span style="display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--lime);color:var(--navy-deep);font-weight:800;margin-right:4px">'+esc(initial)+'</span>'+
+          esc(t.name||"Untitled")+(builtin?' <span class="badge" style="margin-left:auto">Built-in</span>':'')+'</div>'+
+        '<p style="color:var(--lime-deep);font-size:.8rem;margin:2px 0 6px">'+starsGlyphs(t.stars)+' · '+esc(t.where||"")+'</p>'+
+        '<p>'+esc(quote)+'</p></div>'+
+      '<div class="coll-actions"><button class="icon-btn edit" title="Edit">✎</button>'+
+        (builtin?'':'<button class="icon-btn danger del" title="Delete">🗑</button>')+'</div>';
+    card.querySelector(".edit").addEventListener("click", function(){ openTesti(t); });
+    var del=card.querySelector(".del");
+    if(del) del.addEventListener("click", function(){
+      if(confirm("Delete this review?")){ content.testimonials=arr.filter(function(x){return x!==t;}); renderTestimonials(); markDirty(); toast("Review deleted"); }
+    });
+    grid.appendChild(card);
+  });
+}
+var editingTesti=null;
+function openTesti(t){
+  editingTesti=t||null;
+  $("#testiModalTitle").textContent=t?"Edit review":"Add review";
+  $("#ts-quote").value=t?(t.quote||"").replace(/^"|"$/g,""):"";
+  $("#ts-name").value=t?t.name||"":"";
+  $("#ts-where").value=t?t.where||"":"";
+  $("#ts-stars").value=String(t?t.stars||5:5);
+  $("#testiModal").classList.add("show");
+}
+$("#addTestiBtn").addEventListener("click", function(){ openTesti(null); });
+$("#ts-save").addEventListener("click", function(){
+  var quote=$("#ts-quote").value.trim(); if(!quote){ toast("Please add the quote"); return; }
+  var name=$("#ts-name").value.trim(); if(!name){ toast("Please add the guest name"); return; }
+  var data={ quote:quote, name:name, where:$("#ts-where").value.trim(), stars:parseInt($("#ts-stars").value,10)||5 };
+  var arr=testiArr();
+  if(editingTesti){ Object.assign(editingTesti,data); }
+  else { data.id=Date.now(); arr.push(data); }
+  renderTestimonials(); markDirty(); closeModals(); toast(editingTesti?"Review updated":"Review added");
+});
+
+/* ============================================================
+   LANGUAGES — German & Russian wording
+   Every translatable English string currently on the site (built-in OR added
+   through the portal) is gathered here. The owner supplies the German/Russian
+   wording, stored in content.i18n keyed by the English source string. On
+   Publish, that map ships to the live site where translations.js merges it into
+   the dictionary — so admin-added content translates like the rest of the site.
+   A string already covered by the built-in dictionary isn't flagged as missing.
+   ============================================================ */
+var trFilter = "need";   // "need" | "all"
+var trSearch = "";
+
+function siteDict(){ try{ return window.GBR_I18N_DICT || {}; }catch(e){ return {}; } }
+
+/* The current translation shown as an editable default: a German/Russian entry
+   the admin saved (content.i18n) takes priority, otherwise the built-in wording
+   from the dictionary. The admin updates these by hand — there is no machine
+   translation. Anything with no German or Russian is flagged "needs translation". */
+function transFor(en){
+  en = (en||"").trim();
+  var cms  = (content.i18n && content.i18n[en]) || null;
+  var dict = siteDict()[en] || null;
+  return {
+    de:    (cms && cms.de) || (dict && dict.de) || "",
+    ru:    (cms && cms.ru) || (dict && dict.ru) || "",
+    deCms: !!(cms && cms.de),
+    ruCms: !!(cms && cms.ru)
+  };
+}
+function transNeeds(en){ var t = transFor(en); return !(t.de && t.ru); }
+
+function setTrans(en, de, ru){
+  en = (en||"").trim(); if(!en) return;
+  content.i18n = content.i18n || {};
+  de = (de||"").trim(); ru = (ru||"").trim();
+  if(de || ru) content.i18n[en] = {de:de, ru:ru};
+  else delete content.i18n[en];
+}
+
+/* Gather every translatable English string, grouped by where it lives.
+   Identical strings are de-duped (one translation covers every occurrence). */
+function collectTranslatables(){
+  var groups = [], seen = {};
+  function G(name){ var g={group:name, items:[]}; groups.push(g); return g; }
+  function add(g, en, ctx, sub){
+    en = (en==null?"":String(en)).trim();
+    if(!en || seen[en]) return;
+    /* skip pure numbers / symbols (prices, ratings) — nothing to translate */
+    if(/^[\d\s.,%+€$£–-]+$/.test(en)) return;
+    seen[en] = 1; g.items.push({en:en, ctx:ctx||"", sub:sub||""});
+  }
+  var P = content.pages || {};
+  var col = content.collections || {};
+
+  /* Shared helpers — every page groups its own header, sections and cards, so a
+     newly added restaurant/facility/activity surfaces under its own page. */
+  function pageHeader(g, key){
+    var pg = P[key]; if(!pg) return;
+    add(g, pg.heroEyebrow, "Header label", "Page header");
+    add(g, pg.heroTitle,  "Header title", "Page header");
+    add(g, pg.introHeading,"Intro heading","Page header");
+    add(g, pg.introText,  "Intro text",   "Page header");
+  }
+  function detailItems(g, arr, noun){      /* full sections: restaurants, facility blocks */
+    (arr||[]).forEach(function(it){
+      var s = noun + (it.title ? (" — "+it.title) : "");
+      add(g, it.title,   noun+" name",  s);
+      add(g, it.eyebrow, "Small label", s);
+      add(g, it.tag,     "Corner tag",  s);
+      add(g, it.desc,    noun+" intro", s);
+      (it.points||[]).forEach(function(pt){ add(g, pt.strong, "Feature", s); add(g, pt.small, "Feature detail", s); });
+    });
+  }
+  function cardItems(g, arr, noun){        /* small cards: facility cards, activity cards, bars */
+    (arr||[]).forEach(function(it){
+      var s = noun + (it.title ? (" — "+it.title) : "");
+      add(g, it.title, noun+" title",      s);
+      add(g, it.desc,  noun+" description", s);
+    });
+  }
+
+  /* ── Homepage (hero + the guest reviews shown on it) ── */
+  var home = G("Homepage");
+  if(P.index){ add(home, P.index.heroTitle, "Headline", "Hero"); add(home, P.index.heroSubtitle, "Intro text", "Hero"); }
+  (content.testimonials||[]).forEach(function(t,i){
+    var s = "Guest review" + (t.where ? (" — "+t.where) : (" "+(i+1)));
+    add(home, t.quote, "Quote", s); add(home, t.where, "Name & source", s);
+  });
+
+  /* ── Rooms ── */
+  var gr = G("Rooms page");
+  (content.rooms||[]).forEach(function(r){
+    var s = "Room" + (r.name ? (" — "+r.name) : "");
+    add(gr, r.name, "Room name", s); add(gr, r.desc, "Room description", s); add(gr, r.unit, "Price unit", s);
+  });
+
+  /* ── Facilities page: header + detail blocks + small cards ── */
+  var gf = G("Facilities page");
+  pageHeader(gf, "facilities");
+  detailItems(gf, col.facilityDetails, "Facility section");
+  cardItems(gf, col.facilities, "Facility card");
+
+  /* ── Activities page: header + activity cards + the weekly timetable ── */
+  var ga = G("Activities page");
+  pageHeader(ga, "activities");
+  cardItems(ga, col.activities, "Activity card");
+  if(Array.isArray(col.schedule)){
+    col.schedule.forEach(function(d){
+      var s = "Timetable" + (d.day ? (" — "+d.day) : "");
+      add(ga, d.day, "Day", "Timetable");
+      (d.slots||[]).forEach(function(sl){ add(ga, sl.label, "Time label", s); add(ga, sl.text, "Activity", s); });
+    });
+  }
+
+  /* ── Entertainment page: header ── */
+  var ge = G("Entertainment page");
+  pageHeader(ge, "entertainment");
+
+  /* ── Dining / Outlets page: header + restaurants (sections) + bars & cafés (cards) ── */
+  var go = G("Dining / Outlets page");
+  pageHeader(go, "outlets");
+  detailItems(go, col.restaurants, "Restaurant");
+  cardItems(go, col.bars, "Bar / café");
+
+  /* ── News & offers ── */
+  var gn = G("News & offers");
+  (content.news||[]).forEach(function(n){
+    var s = "Post" + (n.title ? (" — "+n.title) : "");
+    add(gn, n.title, "Post title", s); add(gn, n.cat, "Category", s); add(gn, n.excerpt, "Summary", s);
+  });
+
+  /* ── Gallery ── */
+  var gg = G("Gallery page");
+  var gal = content.gallery || {};
+  (gal.pills||[]).forEach(function(p){ add(gg, p.label, "Filter category", "Filter categories"); });
+  (gal.tiles||[]).forEach(function(t){ add(gg, t.label, "Photo caption", "Photo captions"); });
+
+  return groups.filter(function(g){ return g.items.length; });
+}
+
+function buildTransRow(item){
+  var en = item.en, t = transFor(en), needs = transNeeds(en);
+  var row = document.createElement("div");
+  row.className = "tr-row" + (needs ? " need" : "");
+  row.dataset.en = en;
+
+  var enBox = document.createElement("div"); enBox.className = "tr-en";
+  var src = document.createElement("div"); src.className = "src";
+  var ctxPill = document.createElement("span"); ctxPill.className = "pill-en"; ctxPill.textContent = item.ctx || "English";
+  src.appendChild(ctxPill);
+  var needTag = document.createElement("span"); needTag.className = "need-tag"; needTag.textContent = "Needs translation";
+  needTag.style.display = needs ? "" : "none";
+  src.appendChild(needTag);
+  enBox.appendChild(src);
+  var enText = document.createElement("div"); enText.textContent = en; enBox.appendChild(enText);
+  row.appendChild(enBox);
+
+  var langs = document.createElement("div"); langs.className = "tr-langs";
+
+  function field(label, flag, val, fromCms){
+    var wrap = document.createElement("div"); wrap.className = "tr-field";
+    var lab = document.createElement("label");
+    lab.innerHTML = '<span class="flag">'+flag+'</span> '+label;
+    var ta = document.createElement("textarea"); ta.rows = 2; ta.value = val || "";
+    /* a value shown from the built-in dictionary (not yet a CMS override) is faded
+       until edited, so the owner sees it's a suggestion, not their own entry */
+    if(val && !fromCms) ta.classList.add("auto");
+    ta.addEventListener("focus", function(){ ta.classList.remove("auto"); });
+    wrap.appendChild(lab); wrap.appendChild(ta); langs.appendChild(ta._wrap = wrap);
+    return ta;
+  }
+  var deTa = field("German", "🇩🇪", t.de, t.deCms);
+  var ruTa = field("Russian", "🇷🇺", t.ru, t.ruCms);
+  row.appendChild(langs);
+
+  function onEdit(){
+    deTa.classList.remove("auto"); ruTa.classList.remove("auto");
+    setTrans(en, deTa.value, ruTa.value);
+    var nowNeeds = transNeeds(en);
+    row.classList.toggle("need", nowNeeds);
+    needTag.style.display = nowNeeds ? "" : "none";
+    markDirty(); updateTransStat();
+  }
+  deTa.addEventListener("input", onEdit);
+  ruTa.addEventListener("input", onEdit);
+  return row;
+}
+
+function updateTransStat(){
+  var stat = $("#trStat"); if(!stat) return;
+  var groups = collectTranslatables(), total = 0, missing = 0;
+  groups.forEach(function(g){ g.items.forEach(function(it){ total++; if(transNeeds(it.en)) missing++; }); });
+  stat.innerHTML = missing
+    ? '<span class="miss">'+missing+' still need German or Russian</span> · <b>'+total+'</b> translatable items in total'
+    : '<b>All '+total+' items</b> have German and Russian 🎉';
+}
+
+function renderTranslations(){
+  var host = $("#trList"); if(!host) return;
+  host.innerHTML = "";
+  var q = trSearch.trim().toLowerCase();
+  var groups = collectTranslatables();
+  var shown = 0;
+
+  groups.forEach(function(g){
+    var items = g.items.filter(function(it){
+      if(trFilter === "need" && !transNeeds(it.en)) return false;
+      if(q && it.en.toLowerCase().indexOf(q) === -1) return false;
+      return true;
+    });
+    if(!items.length) return;
+    var sec = document.createElement("div"); sec.className = "tr-group";
+    var h = document.createElement("h4"); h.textContent = g.group; sec.appendChild(h);
+    var lastSub = null;
+    items.forEach(function(it){
+      if(it.sub && it.sub !== lastSub){
+        var sh = document.createElement("div"); sh.className = "tr-sub"; sh.textContent = it.sub;
+        sec.appendChild(sh); lastSub = it.sub;
+      }
+      sec.appendChild(buildTransRow(it)); shown++;
+    });
+    host.appendChild(sec);
+  });
+
+  if(!shown){
+    var empty = document.createElement("div"); empty.className = "tr-empty";
+    empty.textContent = q
+      ? "No wording matches “"+trSearch+"”."
+      : (trFilter === "need"
+          ? "Everything is translated — nothing needs German or Russian right now."
+          : "No translatable content yet.");
+    host.appendChild(empty);
+  }
+  updateTransStat();
+}
+
+/* toolbar wiring (search + filter) */
+(function wireTransToolbar(){
+  var search = $("#trSearch");
+  if(search) search.addEventListener("input", function(){ trSearch = search.value; renderTranslations(); });
+  document.querySelectorAll(".tr-filter [data-trfilter]").forEach(function(b){
+    b.addEventListener("click", function(){
+      trFilter = b.getAttribute("data-trfilter");
+      document.querySelectorAll(".tr-filter [data-trfilter]").forEach(function(x){ x.classList.toggle("active", x===b); });
+      renderTranslations();
+    });
+  });
+})();
+
+/* ---- IMAGES & VIDEO ---- */
+
+
+
+var MAX_IMG_BYTES = 2.6 * 1024 * 1024;   // ~2.5MB photo
+var MAX_VID_BYTES = 4.2 * 1024 * 1024;   // ~4MB video (browser-demo limit)
+function isVideoSrc(src){ return typeof src==="string" && (/^data:video\//i.test(src) || /\.(mp4|webm|ogg|mov)(\?|#|$)/i.test(src)); }
+
+function renderImages(){
+  var host=$("#imageGroups"); host.innerHTML="";
+  content.images = content.images || {};
+  IMAGE_GROUPS.forEach(function(g){
+    var card=document.createElement("div"); card.className="section-card";
+    var head='<h3><span class="ico">▦</span> '+esc(g.group)+'</h3>'+
+             (g.note?'<p class="desc">'+esc(g.note)+'</p>':'');
+    card.innerHTML=head+'<div class="grid-2 media-grid"></div>';
+    var grid=card.querySelector(".media-grid");
+    g.slots.forEach(function(slot){ grid.appendChild(buildSlot(slot)); });
+    host.appendChild(card);
+  });
+}
+
+function buildSlot(slot){
+  var saved=(content.images[slot.key]||"");
+  var wrap=document.createElement("div"); wrap.className="field media-slot";
+  var vid=isVideoSrc(saved);
+  var videoOnly=!!slot.videoOnly;
+  wrap.innerHTML=
+    '<label>'+esc(slot.label)+'</label>'+
+    '<div class="img-upload">'+
+      '<div class="media-preview'+(saved?' show':'')+'">'+
+        (saved
+          ? (vid
+              ? '<video src="'+saved+'" muted loop autoplay playsinline></video>'
+              : '<img src="'+saved+'">')
+          : '<div class="ph">'+(videoOnly?'No video yet — using the built-in hero video':'No media yet — using the illustration')+'</div>')+
+      '</div>'+
+      '<div class="media-row">'+
+        '<input type="file" accept="'+(videoOnly?'video/*':'image/*,video/*')+'" style="font-size:.82rem">'+
+        (saved?'<button type="button" class="icon-btn danger remove" title="Remove">🗑</button>':'')+
+      '</div>'+
+      (saved?'<div class="media-tag">'+(vid?'Video':'Photo')+' set</div>':'')+
+    '</div>';
+
+  var input=wrap.querySelector("input[type=file]");
+  input.addEventListener("change", function(){
+    var f=input.files[0]; if(!f) return;
+    var asVideo=/^video\//i.test(f.type);
+    if(videoOnly && !asVideo){ toast("Please choose a video file for the hero."); input.value=""; return; }
+    if(!GBR_LIVE){
+      var cap=asVideo?MAX_VID_BYTES:MAX_IMG_BYTES;
+      if(f.size>cap){
+        toast(asVideo
+          ? "That video is large for the browser demo — please use one under 4MB (at go-live it uploads to the server)."
+          : "That photo is large — please use one under 2.5MB.");
+        input.value=""; return;
+      }
+    }
+    GBR_uploadMedia(f, slot.key).then(function(url){
+      content.images[slot.key]=url;
+      if(!GBR_LIVE && !trySaveDraft()){ delete content.images[slot.key]; input.value=""; return; }
+      markDirty(); renderImages(); toast((asVideo?"Video":"Photo")+" added");
+    });
+  });
+  var rm=wrap.querySelector(".remove");
+  if(rm) rm.addEventListener("click", function(){
+    delete content.images[slot.key]; markDirty(); renderImages(); toast(videoOnly?"Removed — back to the built-in hero video":"Removed — back to the illustration");
+  });
+  return wrap;
+}
+
+/* Guard the browser's localStorage quota (videos are heavy). Returns false if
+   the draft can't be saved so the caller can roll the change back. */
+function trySaveDraft(){
+  try{ localStorage.setItem(STORE_KEY+"_draft", JSON.stringify(content)); return true; }
+  catch(e){
+    toast("Storage is full — videos are heavy. Remove one, or use smaller files. At go-live media uploads to the server instead.");
+    return false;
+  }
+}
+
+/* ---- BACKUP ---- */
+$("#exportBtn").addEventListener("click", function(){
+  var blob=new Blob([JSON.stringify(content,null,2)],{type:"application/json"});
+  var a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download="golden-beach-content-"+new Date().toISOString().slice(0,10)+".json"; a.click();
+  toast("Backup downloaded");
+});
+$("#importBtn").addEventListener("click", function(){
+  var f=$("#importFile").files[0]; if(!f){ toast("Choose a backup file first"); return; }
+  var fr=new FileReader();
+  fr.onload=function(){ try{ content=mergeDefaults(JSON.parse(fr.result)); hydrate(); markDirty(); toast("Content restored — press Publish to go live"); }catch(e){ toast("That file couldn't be read"); } };
+  fr.readAsText(f);
+});
+$("#resetBtn").addEventListener("click", function(){
+  if(confirm("Reset ALL content back to the original website wording? This can't be undone.")){
+    content=deepClone(DEFAULTS); try{ localStorage.removeItem(STORE_KEY); localStorage.removeItem(STORE_KEY+"_draft"); }catch(e){}
+    hydrate(); markClean(); toast("Reset to original");
+  }
+});
+
+/* ---- modals / toast / utils ---- */
+document.querySelectorAll("[data-close-modal]").forEach(function(b){ b.addEventListener("click", closeModals); });
+document.querySelectorAll(".modal-bg").forEach(function(m){ m.addEventListener("click", function(e){ if(e.target===m) closeModals(); }); });
+function closeModals(){ document.querySelectorAll(".modal-bg").forEach(function(m){ m.classList.remove("show"); }); }
+var toastT;
+function toast(msg){ $("#toastMsg").textContent=msg; $("#toast").classList.add("show"); clearTimeout(toastT); toastT=setTimeout(function(){ $("#toast").classList.remove("show"); },2600); }
+function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]);}); }
+function todayStr(){ var d=new Date(); return d.toLocaleDateString('en-US',{month:'short',day:'2-digit',year:'numeric'}); }
+
+window.addEventListener("beforeunload", function(e){ if(dirty){ e.preventDefault(); e.returnValue=""; } });
+</script>
+<script src="seo-config.js"></script>
+<script>
+/* ---- Admin SEO panel: preview, per-page overrides, regenerate on publish ---- */
+(function(){
+  "use strict";
+  if(!window.GBR_SEO) return;
+  function H(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+  function len(s){ return String(s||"").replace(/\s+/g," ").trim().length; }
+  function prettyName(key){
+    if(key==="index") return "Homepage";
+    if(key.indexOf("room-")===0) return "Room — "+key.replace("room-","").replace(/-/g," ");
+    return key.charAt(0).toUpperCase()+key.slice(1).replace(/-/g," ");
+  }
+
+  /* inject panel styles once */
+  (function(){
+    var css = '#panel-seo .seo-item{border:1px solid var(--border);border-radius:14px;padding:16px 18px;margin-top:14px;background:#fff}'+
+      '#panel-seo .seo-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}'+
+      '#panel-seo .seo-head b{font-size:.98rem;color:var(--ink);text-transform:capitalize}'+
+      '#panel-seo .seo-url{font-size:.78rem;color:var(--muted);font-family:monospace}'+
+      '#panel-seo .seo-preview{background:#F5F5F5;border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:12px}'+
+      '#panel-seo .seo-g-title{color:#1a0dab;font-size:1.02rem;line-height:1.3;font-family:arial,sans-serif}'+
+      '#panel-seo .seo-g-url{color:#006621;font-size:.78rem;margin:2px 0 4px;word-break:break-all;font-family:arial,sans-serif}'+
+      '#panel-seo .seo-g-desc{color:#4d5156;font-size:.85rem;line-height:1.45;font-family:arial,sans-serif}'+
+      '#panel-seo .seo-lab{display:block;font-size:.78rem;font-weight:600;color:var(--muted);margin:10px 0 5px}'+
+      '#panel-seo .seo-count{font-weight:700;margin-left:6px}'+
+      '#panel-seo .seo-count.ok{color:var(--green-deep,#34A03E)}'+
+      '#panel-seo .seo-count.amber{color:#C0392B}'+
+      '#panel-seo .seo-in{width:100%;border:1px solid var(--border);border-radius:9px;padding:9px 11px;font:inherit;font-size:.88rem;color:var(--ink);background:#fff}'+
+      '#panel-seo textarea.seo-in{resize:vertical;line-height:1.5}';
+    var st=document.createElement("style"); st.textContent=css; document.head.appendChild(st);
+  })();
+
+  function ensureSeo(key){
+    if(!content.seo) content.seo={};
+    if(!content.seo[key]) content.seo[key]={};
+    return content.seo[key];
+  }
+
+  /* Build a full resolved SEO map for the server to inject into served HTML.
+     Runs automatically on Publish. Keeps content.seo (overrides) separate. */
+  window.bakeResolvedSEO = function(){
+    var keys = GBR_SEO.indexablePages.concat(["admin","_qa-preview"]);
+    var map={};
+    keys.forEach(function(key){
+      var s = GBR_SEO.compute(content, key);
+      map[key] = { title:s.title, description:s.description, canonical:s.canonical,
+        robots:s.robots, indexable:s.indexable,
+        jsonld: s.jsonld ? JSON.stringify(s.jsonld) : null };
+    });
+    content.seoResolved = map;
+    content.seoResolvedAt = new Date().toISOString();
+    return map;
+  };
+
+  function updateCard(card, key){
+    var s = GBR_SEO.compute(content, key);
+    card.querySelector(".seo-g-title").textContent = s.title;
+    card.querySelector(".seo-g-desc").textContent  = s.description;
+    var c = card.querySelectorAll(".seo-count");
+    if(c[0]){ c[0].textContent=s.title.length+"/60"; c[0].className="seo-count "+(s.title.length>60?"amber":"ok"); }
+    if(c[1]){ c[1].textContent=s.description.length+"/160"; c[1].className="seo-count "+(s.description.length>160?"amber":"ok"); }
+  }
+
+  function renderSEO(){
+    var box=$("#seoList"); if(!box) return;
+    box.innerHTML="";
+    GBR_SEO.indexablePages.forEach(function(key){
+      var s=GBR_SEO.compute(content,key);
+      var ov=(content.seo&&content.seo[key])||{};
+      var tLen=len(ov.title||s.title), dLen=len(ov.description||s.description);
+      var card=document.createElement("div"); card.className="seo-item";
+      card.innerHTML=
+        '<div class="seo-head"><b>'+H(prettyName(key))+'</b>'+
+          '<span class="seo-url">/'+(key==="index"?"":H(key)+".html")+'</span></div>'+
+        '<div class="seo-preview"><div class="seo-g-title">'+H(s.title)+'</div>'+
+          '<div class="seo-g-url">'+H(s.canonical)+'</div>'+
+          '<div class="seo-g-desc">'+H(s.description)+'</div></div>'+
+        '<label class="seo-lab">Custom title (optional)<span class="seo-count '+(tLen>60?"amber":"ok")+'">'+tLen+'/60</span></label>'+
+        '<input class="seo-in" data-k="'+H(key)+'" data-f="title" type="text" placeholder="'+H(s.title)+'" value="'+H(ov.title||"")+'">'+
+        '<label class="seo-lab">Custom description (optional)<span class="seo-count '+(dLen>160?"amber":"ok")+'">'+dLen+'/160</span></label>'+
+        '<textarea class="seo-in" data-k="'+H(key)+'" data-f="description" rows="2" placeholder="'+H(s.description)+'">'+H(ov.description||"")+'</textarea>';
+      box.appendChild(card);
+    });
+    box.querySelectorAll("[data-k]").forEach(function(el){
+      el.addEventListener("input", function(){
+        var key=el.getAttribute("data-k"), f=el.getAttribute("data-f"), rec=ensureSeo(key);
+        if(el.value.trim()==="") delete rec[f]; else rec[f]=el.value;
+        if(content.seo[key]&&!Object.keys(content.seo[key]).length) delete content.seo[key];
+        if(typeof markDirty==="function") markDirty();
+        updateCard(el.closest(".seo-item"), key);
+      });
+    });
+  }
+
+  var rb=$("#seoRefreshBtn");
+  if(rb) rb.addEventListener("click", function(){ renderSEO(); if(typeof toast==="function") toast("SEO preview refreshed from your current content"); });
+  var nav=document.querySelector('.nav-item[data-panel="seo"]');
+  if(nav) nav.addEventListener("click", renderSEO);
+})();
+</script>
+</body>
+</html>
