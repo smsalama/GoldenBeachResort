@@ -145,7 +145,7 @@ h2{font-size:clamp(2rem,4.5vw,3.8rem);font-weight:800;letter-spacing:-.03em;line
 h3{font-size:clamp(1.4rem,2.2vw,1.8rem);font-weight:700}
 
 em.lime{color:var(--lime-deep);font-style:normal;font-weight:800;position:relative;display:inline-block}
-em.lime::after{content:'';position:absolute;left:0;right:0;bottom:6%;height:30%;background:var(--lime);z-index:-1;opacity:.45;border-radius:4px;transform:skew(-3deg)}
+em.lime::after{content:'';position:absolute;left:0;right:0;bottom:0;height:6px;background:var(--lime);z-index:-1;opacity:.9;border-radius:100px}.features em.lime,.testimonials em.lime,#bars em.lime{color:var(--lime);-webkit-text-fill-color:var(--lime)}
 
 .eyebrow{font-family:var(--sans);font-size:.78rem;letter-spacing:.3em;text-transform:uppercase;color:#00003D;font-weight:800;display:inline-flex;align-items:center;gap:14px}
 .eyebrow::before{content:'';width:32px;height:2px;background:var(--lime);display:inline-block}
@@ -476,7 +476,7 @@ html.js .reveal-stagger.in > *{transform:translateY(0)}
 .split-img svg{width:100%;height:100%;display:block;transition:transform .8s var(--ease)}
 .split-img:hover svg{transform:scale(1.04)}
 .split-img-tag{position:absolute;top:32px;left:32px;padding:10px 18px;background:var(--lime);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--navy-deep);font-weight:800;border-radius:100px;box-shadow:var(--shadow-sm);z-index:2}
-.split-text{background:var(--white);padding:80px;display:flex;flex-direction:column;justify-content:center}
+.split-text{background:var(--white);padding:80px;display:flex;flex-direction:column;justify-content:center}.split-text .btn{align-self:flex-start}
 .split-text h2{margin:18px 0 28px}
 .split-text p{color:var(--navy-deep);margin-bottom:20px;font-size:1.04rem;line-height:1.8;font-weight:500;letter-spacing:.005em}
 .split-list{margin:32px 0 36px}
@@ -1149,8 +1149,8 @@ section:not(.split-section):not(.marquee):not(.page-hero) {
 
 /* ── ALLINC DINE FIX — h2 white, em lime, on navy bg ── */
 .allinc .section-head h2{color:#ffffff !important;}
-.allinc .section-head h2 em.lime{color:var(--lime-deep) !important;background:none !important;}
-.allinc .section-head h2 em.lime::after{display:none !important;}
+.allinc .section-head h2 em.lime{color:var(--lime) !important;-webkit-text-fill-color:var(--lime) !important;background:none !important;}
+.allinc .section-head h2 em.lime::after{display:block !important;}
 .allinc .section-head .eyebrow{background:var(--lime) !important;color:var(--navy-deep) !important;}
 
 /* ============================================================
