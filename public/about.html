@@ -391,7 +391,7 @@ html.js .reveal-stagger.in > *{transform:translateY(0)}
 .feature::before{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent,rgba(204,255,0,.12));opacity:0;transition:opacity .4s}
 .feature:hover{transform:translateY(-8px);border-color:var(--lime);background:rgba(204,255,0,.08)}
 .feature:hover::before{opacity:1}
-.feature-icon{width:90px;height:90px;margin:0 auto 28px;background:rgba(204,255,0,.12);border:2px solid var(--lime);border-radius:24px;display:flex;align-items:center;justify-content:center;transition:all .5s var(--ease-spring);position:relative;color:var(--lime)}
+.feature-icon{width:90px;height:90px;margin:0 auto 28px;background:rgba(204,255,0,.12);border:2px solid var(--lime);border-radius:24px;display:flex;align-items:center;justify-content:center;transition:all .5s var(--ease-spring);position:relative;color:var(--navy-deep)}
 .feature-icon svg{width:48px;height:48px;transition:transform .5s,color .4s}
 .feature:hover .feature-icon{background:var(--lime);transform:rotate(-8deg) scale(1.08);box-shadow:0 18px 40px -10px rgba(204,255,0,.7);color:var(--navy-deep)}
 .feature:hover .feature-icon svg{transform:scale(1.1)}
@@ -792,8 +792,8 @@ section.page-hero .breadcrumb a                    { color: var(--lime) !importa
 }
 /* Lime side-bar accent on hero titles */
 .page-hero-content h1::before {
-  content: '';
-  display: block;
+  content: none;
+  display: none;
   width: 52px;
   height: 5px;
   background: var(--lime);
@@ -1828,7 +1828,7 @@ img, svg, video { max-width: 100%; height: auto; }
           </select>
         </div>
       </div>
-      <a href="#" id="bkSubmit" class="btn btn-lime magnetic booking-submit" target="_blank" rel="noopener">Check Availability <i class="fas fa-arrow-right"></i></a>
+      <a href="#" id="bkSubmit" class="btn btn-navy magnetic booking-submit" target="_blank" rel="noopener">Check Availability <i class="fas fa-arrow-right"></i></a>
       <div class="booking-note"><i class="fas fa-lock"></i> Secure booking via our reservation system</div>
     </div>
   </div>
