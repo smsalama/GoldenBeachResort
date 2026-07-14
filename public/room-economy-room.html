@@ -777,7 +777,7 @@ body.page-activities a[href='activities.html']::before,
 body.page-entertainment a[href='entertainment.html']::before,
 body.page-gallery  a[href='gallery.html']::before{transform:scaleX(1)!important;transform-origin:left!important}
 /* Page hero — shorter than homepage */
-.page-hero{position:relative;min-height:calc(100vh - var(--top-h,134px) - clamp(80px,13vh,150px));min-height:calc(100dvh - var(--top-h,134px) - clamp(80px,13vh,150px));overflow:hidden;background:var(--navy-deep);display:flex;align-items:stretch}
+.page-hero{position:relative;overflow:hidden;background:var(--navy-deep);display:flex;align-items:flex-start}
 .page-hero-scene{position:absolute;inset:0}
 .page-hero-scene svg{width:100%;height:100%;display:block}
 .page-hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,46,.88) 0%,rgba(0,0,46,.68) 40%,rgba(0,0,46,.7) 62%,rgba(0,0,46,.9) 100%);z-index:2}
@@ -1180,7 +1180,7 @@ section:not(.split-section):not(.marquee):not(.page-hero) {
 .room-facilities-list li{display:flex;align-items:center;gap:10px;font-size:.9rem;color:var(--navy);font-weight:500}
 .room-facilities-list li i{color:var(--lime-deep);font-size:.72rem}
 .room-cta-row{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-.room-price-tag span{font-size:.78rem;color:var(--muted);font-weight:600}
+.room-price-tag > span{font-size:.78rem;color:var(--muted);font-weight:600}
 .room-price-tag div{font-size:2rem;font-weight:900;color:var(--navy-deep);font-family:var(--display)}
 .room-price-tag div small{font-size:.85rem;font-weight:400;color:var(--muted)}
 
@@ -1284,6 +1284,8 @@ img, svg, video { max-width: 100%; height: auto; }
 /* FIX: page-hero breadcrumb / eyebrow spacing — consistent all pages */
 .page-hero-content .breadcrumb { margin-bottom:20px !important; }
 .page-hero-content > .eyebrow, .page-hero-content > span.eyebrow { margin-bottom:16px !important; }
+/* FIX 12: breadcrumb pinned to top of room hero (was floating mid-hero) */
+.page-hero > .breadcrumb{position:absolute;top:clamp(18px,2.6vh,32px);left:50%;transform:translateX(-50%);width:100%;max-width:var(--container);padding:0 32px;margin:0 !important;z-index:6}
 
 /* FIX: About stats — number + unit identical navy colour */
 .stats .stat-num, .stats .stat-num .plus, .stats .stat-num span {
@@ -1729,8 +1731,8 @@ img, svg, video { max-width: 100%; height: auto; }
         <circle cx="580" cy="130" r="20" fill="#CCFF00"/><circle cx="1020" cy="130" r="20" fill="#CCFF00"/></svg>
   </div>
   <div class="page-hero-overlay"></div>
+  <div class="breadcrumb"><a href="index.html">Home</a><i class="fas fa-chevron-right"></i><a href="rooms.html">Rooms</a><i class="fas fa-chevron-right"></i><span>Economy Room</span></div>
   <div class="page-hero-content container">
-    <div class="breadcrumb"><a href="index.html">Home</a><i class="fas fa-chevron-right"></i><a href="rooms.html">Rooms</a><i class="fas fa-chevron-right"></i><span>Economy Room</span></div>
     <span class="eyebrow light">Best Value</span>
     <h1 data-cms-room="economy" data-cms-field="name">Economy Room</h1>
   </div>
