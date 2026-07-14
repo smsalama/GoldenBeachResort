@@ -147,6 +147,10 @@ h3{font-size:clamp(1.4rem,2.2vw,1.8rem);font-weight:700}
 em.lime{color:var(--lime-deep);font-style:normal;font-weight:800;position:relative;display:inline-block}
 em.lime::after{content:'';position:absolute;left:0;right:0;bottom:0;height:6px;background:var(--lime);z-index:-1;opacity:.9;border-radius:100px}.features em.lime,.testimonials em.lime,#bars em.lime{color:var(--lime);-webkit-text-fill-color:var(--lime)}
 #timetable em.lime{color:var(--lime-deep);-webkit-text-fill-color:var(--lime-deep)}
+/* #timetable is a .features section but on a LIGHT (cream) bg — force dark text so it's visible */
+#timetable .section-head h2{color:var(--navy-deep) !important;-webkit-text-fill-color:var(--navy-deep) !important}
+#timetable .section-head .lede{color:var(--navy-deep) !important;-webkit-text-fill-color:var(--navy-deep) !important}
+#timetable .section-head .eyebrow{color:var(--navy-deep) !important}
 
 .eyebrow{font-family:var(--sans);font-size:.78rem;letter-spacing:.3em;text-transform:uppercase;color:#00003D;font-weight:800;display:inline-flex;align-items:center;gap:14px}
 .eyebrow::before{content:'';width:32px;height:2px;background:var(--lime);display:inline-block}
