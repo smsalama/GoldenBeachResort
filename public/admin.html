@@ -236,7 +236,17 @@ input,textarea,select{font-family:inherit;font-size:.95rem}
 .tr-filter button.active{background:var(--navy-deep);color:#fff}
 .tr-langnote{font-size:.8rem;color:var(--muted);margin:-6px 0 4px}
 .tr-langnote .flag{font-weight:800;color:var(--navy)}
-.tr-group{margin-bottom:14px}
+.tr-group{margin-bottom:14px;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;background:#fff}
+.tr-ghead{width:100%;display:flex;align-items:center;gap:10px;padding:13px 16px;background:var(--cream);border:none;border-bottom:1px solid var(--border);cursor:pointer;text-align:left;transition:background .18s}
+.tr-ghead:hover{background:#ECECEC}
+.tr-ghead .tr-gchev{font-size:.7rem;color:var(--lime-deep);transition:transform .2s;flex-shrink:0}
+.tr-ghead .tr-gname{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--navy);font-weight:800;flex:1}
+.tr-ghead .tr-gcount{font-size:.66rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);background:#fff;border:1px solid var(--border);border-radius:100px;padding:3px 10px}
+.tr-ghead .tr-gcount.miss{color:#9A6B12;border-color:rgba(224,168,46,.5);background:#FFF7E6}
+.tr-gbody{padding:12px 16px 4px}
+.tr-group.collapsed .tr-gbody{display:none}
+.tr-group.collapsed .tr-ghead{border-bottom:none}
+.tr-group.collapsed .tr-ghead .tr-gchev{transform:rotate(-90deg)}
 .tr-group > h4{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--lime-deep);font-weight:800;margin:18px 2px 10px;display:flex;align-items:center;gap:8px}
 .tr-sub{font-size:.74rem;font-weight:700;color:var(--navy);background:var(--cream);border:1px solid var(--border);border-left:3px solid var(--lime);border-radius:8px;padding:6px 11px;margin:14px 0 8px}
 .tr-row{display:grid;grid-template-columns:1fr;gap:10px;padding:16px;border:1px solid var(--border);border-radius:var(--radius-sm);background:#fff;margin-bottom:10px;transition:border-color .2s,box-shadow .2s}
@@ -245,8 +255,8 @@ input,textarea,select{font-family:inherit;font-size:.95rem}
 .tr-row .tr-en .src{font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted);display:flex;align-items:center;gap:8px;margin-bottom:5px}
 .tr-row .tr-en .src .pill-en{background:var(--cream);border:1px solid var(--border);border-radius:100px;padding:2px 9px;color:var(--navy)}
 .tr-row .tr-en .src .need-tag{background:#F0F0F0;color:#9A6B12;border-radius:100px;padding:2px 9px;font-weight:800}
-.tr-langs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-@media(max-width:640px){.tr-langs{grid-template-columns:1fr}}
+.tr-langs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:900px){.tr-langs{grid-template-columns:1fr}}
 .tr-field label{display:flex;align-items:center;gap:7px;font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--navy);margin-bottom:6px}
 .tr-field label .flag{font-size:1rem;line-height:1}
 .tr-field textarea{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--cream);resize:vertical;min-height:46px;line-height:1.45}
@@ -378,7 +388,7 @@ input,textarea,select{font-family:inherit;font-size:.95rem}
     <button class="nav-item" data-panel="cGallery"><span class="ico">▦</span> Gallery</button>
 
     <div class="nav-group-label">Languages</div>
-    <button class="nav-item" data-panel="languages"><span class="ico"><i class="fas fa-language"></i></span> German &amp; Russian</button>
+    <button class="nav-item" data-panel="languages"><span class="ico"><i class="fas fa-language"></i></span> GE, FR &amp; RU</button>
 
     <div class="nav-group-label">Manage</div>
     <button class="nav-item" data-panel="seo"><span class="ico">⌕</span> SEO &amp; Search</button>
@@ -435,7 +445,7 @@ input,textarea,select{font-family:inherit;font-size:.95rem}
           <button class="tile" data-jump="cSchedule"><span class="ti">▦</span><h4>Activities Timetable</h4><p>Edit what's on each day in the weekly "day by day" grid.</p></button>
           <button class="tile" data-jump="cGallery"><span class="ti">▦</span><h4>Gallery</h4><p>Add photos, organise them under filter categories, and manage the filter pills.</p></button>
           <button class="tile" data-jump="images"><span class="ti">▦</span><h4>Photos &amp; Videos</h4><p>Replace any photo on the site, or add looping videos.</p></button>
-          <button class="tile" data-jump="languages"><span class="ti"><i class="fas fa-language"></i></span><h4>German &amp; Russian</h4><p>Add the German &amp; Russian wording for everything you've edited, so the whole site translates.</p></button>
+          <button class="tile" data-jump="languages"><span class="ti"><i class="fas fa-language"></i></span><h4>GE, FR &amp; RU</h4><p>Add the German, French &amp; Russian wording for everything you've edited, so the whole site translates.</p></button>
           <button class="tile" data-jump="backup"><span class="ti">⤓</span><h4>Backup &amp; Restore</h4><p>Download a copy of your content, or restore from a file.</p></button>
         </div>
       </section>
@@ -689,8 +699,8 @@ input,textarea,select{font-family:inherit;font-size:.95rem}
       <!-- LANGUAGES -->
       <section class="panel" id="panel-languages">
         <div class="intro-card" style="padding:22px 26px;margin-bottom:20px">
-          <h3 style="font-size:1.1rem">German &amp; Russian wording</h3>
-          <p>Your website can be shown in English, German or Russian. Whenever you add or change wording in the portal, its German and Russian versions are added here — fill them in so visitors who pick those languages see the whole site translated, not half-English. Anything still missing a translation is highlighted. Leave a box blank and that item simply stays in English for that language.</p>
+          <h3 style="font-size:1.1rem">German, French &amp; Russian wording</h3>
+          <p>Your website can be shown in English, German, French or Russian. Whenever you add or change wording in the portal, its German, French and Russian versions are added here — fill them in so visitors who pick those languages see the whole site translated, not half-English. Anything still missing a translation is highlighted. Leave a box blank and that item simply stays in English for that language. Tip: click a page heading to collapse or expand that group.</p>
         </div>
         <div class="section-card">
           <div class="tr-toolbar">
@@ -2049,6 +2059,7 @@ $("#ts-save").addEventListener("click", function(){
    ============================================================ */
 var trFilter = "need";   // "need" | "all"
 var trSearch = "";
+var trCollapsed = {};    // page group name -> collapsed?  (persists across re-renders)
 
 function siteDict(){ try{ return window.GBR_I18N_DICT || {}; }catch(e){ return {}; } }
 
@@ -2063,17 +2074,19 @@ function transFor(en){
   return {
     de:    (cms && cms.de) || (dict && dict.de) || "",
     ru:    (cms && cms.ru) || (dict && dict.ru) || "",
+    fr:    (cms && cms.fr) || (dict && dict.fr) || "",
     deCms: !!(cms && cms.de),
-    ruCms: !!(cms && cms.ru)
+    ruCms: !!(cms && cms.ru),
+    frCms: !!(cms && cms.fr)
   };
 }
-function transNeeds(en){ var t = transFor(en); return !(t.de && t.ru); }
+function transNeeds(en){ var t = transFor(en); return !(t.de && t.ru && t.fr); }
 
-function setTrans(en, de, ru){
+function setTrans(en, de, ru, fr){
   en = (en||"").trim(); if(!en) return;
   content.i18n = content.i18n || {};
-  de = (de||"").trim(); ru = (ru||"").trim();
-  if(de || ru) content.i18n[en] = {de:de, ru:ru};
+  de = (de||"").trim(); ru = (ru||"").trim(); fr = (fr||"").trim();
+  if(de || ru || fr) content.i18n[en] = {de:de, ru:ru, fr:fr};
   else delete content.i18n[en];
 }
 
@@ -2210,18 +2223,20 @@ function buildTransRow(item){
     return ta;
   }
   var deTa = field("German", "🇩🇪", t.de, t.deCms);
+  var frTa = field("French", "🇫🇷", t.fr, t.frCms);
   var ruTa = field("Russian", "🇷🇺", t.ru, t.ruCms);
   row.appendChild(langs);
 
   function onEdit(){
-    deTa.classList.remove("auto"); ruTa.classList.remove("auto");
-    setTrans(en, deTa.value, ruTa.value);
+    deTa.classList.remove("auto"); frTa.classList.remove("auto"); ruTa.classList.remove("auto");
+    setTrans(en, deTa.value, ruTa.value, frTa.value);
     var nowNeeds = transNeeds(en);
     row.classList.toggle("need", nowNeeds);
     needTag.style.display = nowNeeds ? "" : "none";
     markDirty(); updateTransStat();
   }
   deTa.addEventListener("input", onEdit);
+  frTa.addEventListener("input", onEdit);
   ruTa.addEventListener("input", onEdit);
   return row;
 }
@@ -2231,8 +2246,8 @@ function updateTransStat(){
   var groups = collectTranslatables(), total = 0, missing = 0;
   groups.forEach(function(g){ g.items.forEach(function(it){ total++; if(transNeeds(it.en)) missing++; }); });
   stat.innerHTML = missing
-    ? '<span class="miss">'+missing+' still need German or Russian</span> · <b>'+total+'</b> translatable items in total'
-    : '<b>All '+total+' items</b> have German and Russian 🎉';
+    ? '<span class="miss">'+missing+' still need German, French or Russian</span> · <b>'+total+'</b> translatable items in total'
+    : '<b>All '+total+' items</b> have German, French and Russian 🎉';
 }
 
 function renderTranslations(){
@@ -2249,16 +2264,38 @@ function renderTranslations(){
       return true;
     });
     if(!items.length) return;
+    /* count how many of this page's (filtered) items still need a translation */
+    var miss = items.filter(function(it){ return transNeeds(it.en); }).length;
+
     var sec = document.createElement("div"); sec.className = "tr-group";
-    var h = document.createElement("h4"); h.textContent = g.group; sec.appendChild(h);
+    /* while searching, force groups open so matches are visible; otherwise use saved state */
+    var collapsed = q ? false : !!trCollapsed[g.group];
+    if(collapsed) sec.classList.add("collapsed");
+
+    var head = document.createElement("button");
+    head.type = "button"; head.className = "tr-ghead";
+    var chev = document.createElement("span"); chev.className = "tr-gchev"; chev.textContent = "▼";
+    var name = document.createElement("span"); name.className = "tr-gname"; name.textContent = g.group;
+    var count = document.createElement("span"); count.className = "tr-gcount" + (miss ? " miss" : "");
+    count.textContent = miss ? (miss + " need · " + items.length + " items") : (items.length + " items ✓");
+    head.appendChild(chev); head.appendChild(name); head.appendChild(count);
+    head.addEventListener("click", function(){
+      var nowCollapsed = !sec.classList.contains("collapsed");
+      sec.classList.toggle("collapsed", nowCollapsed);
+      trCollapsed[g.group] = nowCollapsed;
+    });
+    sec.appendChild(head);
+
+    var body = document.createElement("div"); body.className = "tr-gbody";
     var lastSub = null;
     items.forEach(function(it){
       if(it.sub && it.sub !== lastSub){
         var sh = document.createElement("div"); sh.className = "tr-sub"; sh.textContent = it.sub;
-        sec.appendChild(sh); lastSub = it.sub;
+        body.appendChild(sh); lastSub = it.sub;
       }
-      sec.appendChild(buildTransRow(it)); shown++;
+      body.appendChild(buildTransRow(it)); shown++;
     });
+    sec.appendChild(body);
     host.appendChild(sec);
   });
 
@@ -2267,7 +2304,7 @@ function renderTranslations(){
     empty.textContent = q
       ? "No wording matches “"+trSearch+"”."
       : (trFilter === "need"
-          ? "Everything is translated — nothing needs German or Russian right now."
+          ? "Everything is translated — nothing needs German, French or Russian right now."
           : "No translatable content yet.");
     host.appendChild(empty);
   }
