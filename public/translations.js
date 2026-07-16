@@ -3,6 +3,78 @@
    Language persists via localStorage across all pages. */
 (function(){
 const DICT = {
+  "Years of Hospitality": {de:"Jahre Gastfreundschaft", ru:"Лет гостеприимства", fr:"Ans d’hospitalité"},
+  /* -- gap fills (auto-added) -- */
+  "Virtual Tour": {de:"Virtueller Rundgang", ru:"Виртуальный тур", fr:"Visite virtuelle"},
+  "Take a guided walk through the resort — the pools, the beach, the rooms and the gardens — in a single, sweeping tour.": {de:"Unternehmen Sie einen geführten Rundgang durch das Resort — die Pools, den Strand, die Zimmer und die Gärten — in einer einzigen, weitläufigen Tour.", ru:"Отправьтесь в экскурсию по курорту — бассейны, пляж, номера и сады — в одном непрерывном туре.", fr:"Découvrez le resort lors d'une promenade guidée — les piscines, la plage, les chambres et les jardins — au fil d'une seule visite panoramique."},
+  "Live Tour": {de:"Live-Tour", ru:"Тур в прямом эфире", fr:"Visite en direct"},
+  "Tap for sound": {de:"Für Ton tippen", ru:"Нажмите для звука", fr:"Appuyez pour le son"},
+  "Our Story": {de:"Unsere Geschichte", ru:"Наша история", fr:"Notre histoire"},
+  "Three decades of warm Red Sea hospitality and family memories, on one of Hurghada's finest stretches of beach.": {de:"Drei Jahrzehnte herzlicher Gastfreundschaft am Roten Meer und familiärer Erinnerungen an einem der schönsten Strandabschnitte von Hurghada.", ru:"Три десятилетия тёплого гостеприимства у Красного моря и семейных воспоминаний на одном из лучших пляжей Хургады.", fr:"Trois décennies d'hospitalité chaleureuse en mer Rouge et de souvenirs en famille, sur l'une des plus belles plages de Hurghada."},
+  "This Week": {de:"Diese Woche", ru:"На этой неделе", fr:"Cette semaine"},
+  "A guide to what's on across the resort. Times can vary with the season — check the daily board at reception.": {de:"Ein Überblick über das Programm im gesamten Resort. Die Zeiten können je nach Saison variieren — prüfen Sie die Tagestafel an der Rezeption.", ru:"Путеводитель по всему, что происходит на курорте. Время может меняться в зависимости от сезона — сверяйтесь с ежедневным расписанием на ресепшене.", fr:"Un aperçu du programme dans tout le resort. Les horaires peuvent varier selon la saison — consultez le tableau du jour à la réception."},
+  "Beach yoga · 08:00": {de:"Strand-Yoga · 08:00", ru:"Йога на пляже · 08:00", fr:"Yoga sur la plage · 08:00"},
+  "Aqua aerobics · 15:00": {de:"Aqua-Aerobic · 15:00", ru:"Аквааэробика · 15:00", fr:"Aquagym · 15:00"},
+  "Live music · 21:00": {de:"Live-Musik · 21:00", ru:"Живая музыка · 21:00", fr:"Musique live · 21:00"},
+  "Reef snorkel trip · 09:00": {de:"Schnorchelausflug am Riff · 09:00", ru:"Снорклинг у рифа · 09:00", fr:"Sortie snorkeling au récif · 09:00"},
+  "Beach volleyball · 16:00": {de:"Beachvolleyball · 16:00", ru:"Пляжный волейбол · 16:00", fr:"Beach-volley · 16:00"},
+  "Quiz night · 21:30": {de:"Quiz-Abend · 21:30", ru:"Вечер викторин · 21:30", fr:"Soirée quiz · 21:30"},
+  "Spinning class · 08:30": {de:"Spinning-Kurs · 08:30", ru:"Занятие по сайклингу · 08:30", fr:"Cours de spinning · 08:30"},
+  "Water polo · 15:30": {de:"Wasserball · 15:30", ru:"Водное поло · 15:30", fr:"Water-polo · 15:30"},
+  "Italian Night · 19:00": {de:"Italienischer Abend · 19:00", ru:"Итальянский вечер · 19:00", fr:"Soirée italienne · 19:00"},
+  "Sunrise stretch · 07:30": {de:"Sonnenaufgangs-Stretching · 07:30", ru:"Растяжка на рассвете · 07:30", fr:"Étirements au lever du soleil · 07:30"},
+  "Archery · 16:00": {de:"Bogenschießen · 16:00", ru:"Стрельба из лука · 16:00", fr:"Tir à l'arc · 16:00"},
+  "Live band · 21:00": {de:"Live-Band · 21:00", ru:"Живая группа · 21:00", fr:"Groupe live · 21:00"},
+  "Pool games · 15:00": {de:"Poolspiele · 15:00", ru:"Игры в бассейне · 15:00", fr:"Jeux à la piscine · 15:00"},
+  "Belly dance show · 21:30": {de:"Bauchtanz-Show · 21:30", ru:"Шоу танца живота · 21:30", fr:"Spectacle de danse orientale · 21:30"},
+  "Diving intro · 09:00": {de:"Tauch-Einführung · 09:00", ru:"Вводное занятие по дайвингу · 09:00", fr:"Initiation à la plongée · 09:00"},
+  "Tennis tournament · 16:00": {de:"Tennisturnier · 16:00", ru:"Теннисный турнир · 16:00", fr:"Tournoi de tennis · 16:00"},
+  "Cinema under stars · 21:00": {de:"Kino unter Sternen · 21:00", ru:"Кино под звёздами · 21:00", fr:"Cinéma sous les étoiles · 21:00"},
+  "Aqua aerobics · 10:00": {de:"Aqua-Aerobic · 10:00", ru:"Аквааэробика · 10:00", fr:"Aquagym · 10:00"},
+  "Beach football · 15:30": {de:"Beachfußball · 15:30", ru:"Пляжный футбол · 15:30", fr:"Football sur la plage · 15:30"},
+  "Gala dinner · 19:30": {de:"Gala-Dinner · 19:30", ru:"Гала-ужин · 19:30", fr:"Dîner de gala · 19:30"},
+
+  /* -- Whole-sentence FR for inline-accent headings (accent marked U+27E6..U+27E7) -- */
+  "An extraordinary vision above all": {de:"Vor allem eine außergewöhnliche Vision", ru:"Прежде всего необыкновенный замысел", fr:"Une vision extraordinaire avant tout"},
+  "Built around what matters": {de:"Gebaut rund um das, was zählt", ru:"Построено вокруг того, что важно", fr:"Conçu autour de ce qui compte"},
+  "Land, sea, and everything between": {fr:"La terre, la mer et tout ce qu'il y a entre les deux"},
+  "500 metres of soft white sand": {de:"500 Meter weicher weißer Sand", ru:"500 метров мягкого белого песка", fr:"500 mètres de sable blanc et doux"},
+  "Six pools. Every temperature.": {de:"Sechs Pools. Jede Temperatur.", ru:"Шесть бассейнов. Любая температура.", fr:"Six piscines. Chaque température."},
+  "12 slides. Zero boring afternoons.": {de:"12 Rutschen. Keine langweiligen Nachmittage.", ru:"12 горок. Никаких скучных дней.", fr:"12 toboggans. Zéro après-midi ennuyeux."},
+  "Recharge on your own terms": {de:"Tanken Sie neue Kraft zu Ihren eigenen Bedingungen", ru:"Восстанавливайте силы на ваших собственных условиях", fr:"Ressourcez-vous selon vos propres conditions"},
+  "Your week, day by day": {de:"Ihre Woche, Tag für Tag", ru:"Ваша неделя, день за днём", fr:"Votre semaine, jour après jour"},
+  "Have any queries? Let us know.": {de:"Haben Sie Fragen? Lassen Sie es uns wissen.", ru:"Есть вопросы? Дайте нам знать.", fr:"Vous avez des questions ? Faites-le-nous savoir."},
+  "Something on, every night of the week": {fr:"Une animation chaque nuit de la semaine"},
+  "Live shows seven nights": {de:"Live-Shows an sieben Nächte", ru:"Живые шоу семь вечеров", fr:"Des spectacles live sept nuits sur sept"},
+  "Daytime fun — never stops": {de:"Spaß am Tag — hört nie auf", ru:"Дневное веселье — никогда не прекращается", fr:"Le divertissement en journée — ne s'arrête jamais"},
+  "Plan your perfect week": {de:"Planen Sie Ihre perfekte Woche", ru:"Спланируйте отдых — идеальная неделя ждёт", fr:"Planifiez votre semaine parfaite"},
+  "Little guests, big adventures": {de:"Kleine Gäste, große Abenteuer", ru:"Маленькие гости, большие приключения", fr:"Petits invités, de grandes aventures"},
+  "Every comfort, a short stroll away": {fr:"Tout le confort, à quelques pas"},
+  "15 slides, six pools": {fr:"15 toboggans, six piscines"},
+  "Shallow, safe, family-perfect": {fr:"Peu profond, sûr, parfait pour les familles"},
+  "An oasis of relaxation": {fr:"Une oasis de détente"},
+  "Other facilities": {de:"Weitere Einrichtungen", ru:"Другие услуги", fr:"Autres équipements"},
+  "Every shade of a Red Sea day": {de:"Jede Nuance eines Tages am Roten Meer", ru:"Все оттенки дня у Красного моря", fr:"Toutes les nuances d'une journée en mer Rouge"},
+  "An extraordinary vision, three decades in the making.": {de:"Eine außergewöhnliche Vision, die über drei Jahrzehnte gereift ist.", ru:"Поистине необыкновенный замысел, воплощавшийся в жизнь три десятилетия.", fr:"Une vision extraordinaire, fruit de trois décennies de travail."},
+  "Built for every kind of traveller": {de:"Für jede Art von Reisenden geschaffen", ru:"Создано для каждого путешественника", fr:"Conçu pour chaque type de voyageur"},
+  "Seven categories. One quiet view.": {de:"Sieben Kategorien. Ein ruhiger Ausblick.", ru:"Семь категорий. Один тихий вид.", fr:"Sept catégories. Une même vue paisible."},
+  "Half a kilometre of soft, white sand.": {de:"Ein halber Kilometer weicher, weißer Sand.", ru:"Полкилометра мягкого белого песка.", fr:"Un demi-kilomètre de sable blanc et doux."},
+  "Seven kitchens. One shared table.": {de:"Sieben Küchen. Ein gemeinsamer Tisch.", ru:"Семь кухонь. Один общий стол.", fr:"Sept cuisines. Une table partagée."},
+  "A morning, an afternoon, a night.": {de:"Ein Morgen, ein Nachmittag, ein Erlebnis pro Nacht.", ru:"Утро, день и целое приключение за ночь.", fr:"Un matin, un après-midi, la nuit."},
+  "Step inside, before you arrive.": {de:"Treten Sie ein, bevor Sie ankommen.", ru:"Загляните внутрь ещё до приезда.", fr:"Entrez à l'intérieur, avant même votre arrivée."},
+  "What our guests say": {de:"Was unsere Gäste sagen", ru:"Что говорят наши гости", fr:"Ce que disent nos clients"},
+  "From the resort": {de:"Aus dem Resort", ru:"Из жизни курорта", fr:"Depuis le resort"},
+  "Seasonal events & fresh updates": {de:"Saisonale Veranstaltungen & frische Neuigkeiten", ru:"Сезонные события и свежие новости", fr:"Événements saisonniers et nouveautés"},
+  "From buffet to à la carte": {fr:"Du buffet à la à la carte"},
+  "Eight places to raise a glass": {de:"Acht Orte, um anzustoßen", ru:"Восемь мест, где можно поднять бокал", fr:"Huit endroits où levez votre verre"},
+  "Featured amenities": {de:"Ausgewählte Annehmlichkeiten", ru:"Избранные удобства", fr:"Prestations phares"},
+  "Dine anywhere, anytime": {de:"Speisen Sie überall, jederzeit", ru:"Ешьте где угодно и когда угодно", fr:"Dînez partout, à tout moment"},
+  "Other room types": {de:"Weitere Zimmertypen", ru:"Другие типы номеров", fr:"Autres types de chambres"},
+  "From cosy retreats to family suites": {de:"Von gemütlichen Rückzugsorten bis zu Familiensuiten", ru:"Уютные уголки и семейные люксы", fr:"Des refuges douillets aux suites familiales"},
+  "Every budget, every family size": {de:"Jedes Budget, jede Familiengröße", ru:"Любой бюджет, любой размер семьи", fr:"Tous les budgets, toutes les tailles de famille"},
+  "Ready to book your stay?": {de:"Bereit, Ihren Aufenthalt zu buchen?", ru:"Готовы забронировать отдых?", fr:"Prêt à réserver votre séjour ?"},
+
+
   /* ── NAVIGATION ── */
   "Home": {de:"Startseite", ru:"Главная", fr:"Accueil"},
   "Rooms": {de:"Zimmer", ru:"Номера", fr:"Chambres"},
@@ -776,6 +848,51 @@ function applyLang(lang){
       el.textContent = tr;
     }
     el.setAttribute('data-i18n-done', '1');
+  });
+
+  /* Inline-accent headings — e.g.  <h2>Built for <em class="lime">every kind</em> of
+     traveller</h2>.  Translating the fragments on their own can read wrong in
+     languages that reorder words (French puts adjectives after the noun), so where a
+     whole-sentence translation exists we translate the heading as a unit and re-wrap
+     the accent phrase in <em class="lime">.  These translations live in the dictionary
+     with the accent marked by ⟦…⟧, e.g.  fr:"Une vision ⟦extraordinaire⟧ avant tout".
+     Languages with no whole-sentence entry (German/Russian, whose word-by-word pieces
+     already compose correctly) simply fall through to the per-node walker below. */
+  document.querySelectorAll('em.lime').forEach(function (em) {
+    var host = em.parentElement;
+    if (!host || host.hasAttribute('data-i18n-done') || host.closest('[data-i18n-done]')) return;
+    /* only rebuild clean "text + one accent" headings — never anything with other markup */
+    if (host.children.length !== 1 || host.children[0] !== em) return;
+    var full = host.textContent.replace(/\s+/g, ' ').trim();
+    var entry = DICT[full];
+    var tr = entry && entry[lang];
+    if (!tr) return;                                   /* no whole-sentence translation → walker */
+    var before, accent, after;
+    var a = tr.indexOf('⟦'), b = tr.indexOf('⟧');
+    if (a >= 0 && b > a) {
+      /* explicit accent markers ⟦…⟧ (used by built-in translations) */
+      before = tr.slice(0, a); accent = tr.slice(a + 1, b); after = tr.slice(b + 1);
+    } else {
+      /* No markers (e.g. a translation typed into the Admin portal). Find the accent
+         phrase's own translation inside the sentence and lime exactly that, so the
+         design is preserved wherever the words land (French reorders, etc.). */
+      var accEn = em.textContent.replace(/\s+/g, ' ').trim();
+      var accTr = (DICT[accEn] && DICT[accEn][lang]) ? DICT[accEn][lang] : '';
+      var idx = accTr ? tr.toLowerCase().indexOf(accTr.toLowerCase()) : -1;
+      if (idx >= 0) {
+        before = tr.slice(0, idx); accent = tr.slice(idx, idx + accTr.length); after = tr.slice(idx + accTr.length);
+      } else {
+        /* last resort — lime the last 1–2 words so an accent always exists */
+        var wds = tr.split(/\s+/); var nn = wds.length > 3 ? 2 : 1; var fr0 = Math.max(0, wds.length - nn);
+        before = wds.slice(0, fr0).join(' ') + (fr0 ? ' ' : ''); accent = wds.slice(fr0).join(' '); after = '';
+      }
+    }
+    host.innerHTML = '';
+    if (before) host.appendChild(document.createTextNode(before));
+    var e2 = document.createElement('em'); e2.className = 'lime'; e2.textContent = accent;
+    host.appendChild(e2);
+    if (after) host.appendChild(document.createTextNode(after));
+    host.setAttribute('data-i18n-done', '1');
   });
 
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {

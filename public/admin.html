@@ -489,6 +489,22 @@ input,textarea,select{font-family:inherit;font-size:.95rem}
           <div class="field"><label>Sub-text under the headline</label><textarea rows="2" data-bind="index.heroSubtitle"></textarea></div>
         </div>
         <div class="section-card">
+          <h3><span class="ico">✎</span> Welcome / intro section</h3>
+          <p class="desc">The "Welcome to Golden Beach" section just below the hero. Leave a box blank to keep the current wording shown on the site.</p>
+          <div class="field"><label>Small label above the heading</label><input data-bind="index.introEyebrow" placeholder="Welcome to Golden Beach"></div>
+          <div class="field"><label>Heading</label><input data-bind="index.introHeading" placeholder="An extraordinary vision, three decades in the making."></div>
+          <div class="field"><label>First paragraph</label><textarea rows="3" data-bind="index.introText" placeholder="The Golden Beach is an innovative, contemporary hotel brand, offering an ultimate vacation concept…"></textarea></div>
+          <div class="field"><label>Second paragraph</label><textarea rows="3" data-bind="index.introText2" placeholder="Tucked into the northwest curve of Hurghada…"></textarea></div>
+          <div class="grid-2">
+            <div class="field"><label>Signature line</label><input data-bind="index.introSignature" placeholder="A warm welcome from our family to yours."></div>
+            <div class="field"><label>Signature name</label><input data-bind="index.introSignatureName" placeholder="The Golden Beach Family"></div>
+          </div>
+          <div class="grid-2">
+            <div class="field"><label>Badge number</label><input data-bind="index.introStatNum" placeholder="30+"></div>
+            <div class="field"><label>Badge label</label><input data-bind="index.introStatLabel" placeholder="Years of Hospitality"></div>
+          </div>
+        </div>
+        <div class="section-card">
           <h3><span class="ico">★</span> Review highlights</h3>
           <p class="desc">The three stats shown in your "What our guests say" section.</p>
           <div class="grid-2">
@@ -700,15 +716,11 @@ input,textarea,select{font-family:inherit;font-size:.95rem}
       <section class="panel" id="panel-languages">
         <div class="intro-card" style="padding:22px 26px;margin-bottom:20px">
           <h3 style="font-size:1.1rem">German, French &amp; Russian wording</h3>
-          <p>Your website can be shown in English, German, French or Russian. Whenever you add or change wording in the portal, its German, French and Russian versions are added here — fill them in so visitors who pick those languages see the whole site translated, not half-English. Anything still missing a translation is highlighted. Leave a box blank and that item simply stays in English for that language. Tip: click a page heading to collapse or expand that group.</p>
+          <p>Your website can be shown in English, German, French or Russian. Every piece of text on the whole site is listed here, grouped by page — fill in the German, French and Russian so visitors who pick those languages see the site fully translated, not half-English. Leave a box blank and that item simply stays in English for that language, keeping its original design. Page groups start collapsed — click a page heading to expand it, and use the search box to jump to any wording. When you edit or add content elsewhere in the portal, it appears here automatically for translation.</p>
         </div>
         <div class="section-card">
           <div class="tr-toolbar">
             <input id="trSearch" class="tr-search" type="search" placeholder="Search the English wording…">
-            <div class="tr-filter">
-              <button type="button" data-trfilter="need" class="active">Needs translation</button>
-              <button type="button" data-trfilter="all">Show everything</button>
-            </div>
           </div>
           <div class="tr-stat" id="trStat"></div>
           <div id="trList"></div>
@@ -945,6 +957,7 @@ input,textarea,select{font-family:inherit;font-size:.95rem}
 <!-- Shared site dictionary: read-only here, used to show which strings already
      have German/Russian. The guard in translations.js prevents it translating
      the portal itself (no .lang-switch on this page). -->
+<script src="translations-manifest.js"></script>
 <script src="translations.js"></script>
 
 <script>
@@ -2134,7 +2147,19 @@ function collectTranslatables(){
 
   /* ── Homepage (hero + the guest reviews shown on it) ── */
   var home = G("Homepage");
-  if(P.index){ add(home, P.index.heroTitle, "Headline", "Hero"); add(home, P.index.heroSubtitle, "Intro text", "Hero"); }
+  if(P.index){
+    add(home, P.index.heroTitle, "Headline", "Hero"); add(home, P.index.heroSubtitle, "Intro text", "Hero");
+    /* Welcome / intro section — editable via the Homepage panel; fall back to the
+       on-page default so the wording is always listed here (and reflects any edit). */
+    var ix = P.index;
+    add(home, ix.introEyebrow || "Welcome to Golden Beach", "Small label", "Welcome section");
+    add(home, ix.introHeading || "An extraordinary vision, three decades in the making.", "Heading", "Welcome section");
+    add(home, ix.introText || "The Golden Beach is an innovative, contemporary hotel brand, offering an ultimate vacation concept on Hurghada's Red Sea coast. Whether beach resort, lifestyle retreat, or family playground — we are constantly redefining what a Red Sea holiday can be.", "Paragraph", "Welcome section");
+    add(home, ix.introText2 || "Tucked into the northwest curve of Hurghada, we sit ten kilometres from El Gouna, fifteen from the city centre, and twenty from Hurghada International Airport. Close enough to explore, far enough to feel away.", "Paragraph", "Welcome section");
+    add(home, ix.introSignature || "A warm welcome from our family to yours.", "Signature", "Welcome section");
+    add(home, ix.introSignatureName || "The Golden Beach Family", "Signature name", "Welcome section");
+    add(home, ix.introStatLabel || "Years of Hospitality", "Badge label", "Welcome section");
+  }
   (content.testimonials||[]).forEach(function(t,i){
     var s = "Guest review" + (t.where ? (" — "+t.where) : (" "+(i+1)));
     add(home, t.quote, "Quote", s); add(home, t.where, "Name & source", s);
@@ -2188,22 +2213,31 @@ function collectTranslatables(){
   (gal.pills||[]).forEach(function(p){ add(gg, p.label, "Filter category", "Filter categories"); });
   (gal.tiles||[]).forEach(function(t){ add(gg, t.label, "Photo caption", "Photo captions"); });
 
+  /* Merge in the hardcoded page text captured in the manifest (every on-page string
+     that isn't driven by the CMS above), grouped by page — so the owner can translate
+     ALL text on the whole website, not just editable content. add() de-dupes against
+     everything already collected, so CMS content keeps its richer labelling. */
+  var manifest = (window.GBR_TR_MANIFEST || []);
+  manifest.forEach(function(mg){
+    var g = null;
+    for(var i=0;i<groups.length;i++){ if(groups[i].group===mg.group){ g=groups[i]; break; } }
+    if(!g){ g = G(mg.group); }
+    (mg.items||[]).forEach(function(en){ add(g, en, "Page text", ""); });
+  });
+
   return groups.filter(function(g){ return g.items.length; });
 }
 
 function buildTransRow(item){
-  var en = item.en, t = transFor(en), needs = transNeeds(en);
+  var en = item.en, t = transFor(en);
   var row = document.createElement("div");
-  row.className = "tr-row" + (needs ? " need" : "");
+  row.className = "tr-row";
   row.dataset.en = en;
 
   var enBox = document.createElement("div"); enBox.className = "tr-en";
   var src = document.createElement("div"); src.className = "src";
   var ctxPill = document.createElement("span"); ctxPill.className = "pill-en"; ctxPill.textContent = item.ctx || "English";
   src.appendChild(ctxPill);
-  var needTag = document.createElement("span"); needTag.className = "need-tag"; needTag.textContent = "Needs translation";
-  needTag.style.display = needs ? "" : "none";
-  src.appendChild(needTag);
   enBox.appendChild(src);
   var enText = document.createElement("div"); enText.textContent = en; enBox.appendChild(enText);
   row.appendChild(enBox);
@@ -2230,9 +2264,6 @@ function buildTransRow(item){
   function onEdit(){
     deTa.classList.remove("auto"); frTa.classList.remove("auto"); ruTa.classList.remove("auto");
     setTrans(en, deTa.value, ruTa.value, frTa.value);
-    var nowNeeds = transNeeds(en);
-    row.classList.toggle("need", nowNeeds);
-    needTag.style.display = nowNeeds ? "" : "none";
     markDirty(); updateTransStat();
   }
   deTa.addEventListener("input", onEdit);
@@ -2243,11 +2274,9 @@ function buildTransRow(item){
 
 function updateTransStat(){
   var stat = $("#trStat"); if(!stat) return;
-  var groups = collectTranslatables(), total = 0, missing = 0;
-  groups.forEach(function(g){ g.items.forEach(function(it){ total++; if(transNeeds(it.en)) missing++; }); });
-  stat.innerHTML = missing
-    ? '<span class="miss">'+missing+' still need German, French or Russian</span> · <b>'+total+'</b> translatable items in total'
-    : '<b>All '+total+' items</b> have German, French and Russian 🎉';
+  var groups = collectTranslatables(), total = 0, done = 0;
+  groups.forEach(function(g){ g.items.forEach(function(it){ total++; if(!transNeeds(it.en)) done++; }); });
+  stat.innerHTML = '<b>'+total+'</b> translatable items across the whole website · '+done+' fully translated (DE, FR &amp; RU)';
 }
 
 function renderTranslations(){
@@ -2258,26 +2287,20 @@ function renderTranslations(){
   var shown = 0;
 
   groups.forEach(function(g){
-    var items = g.items.filter(function(it){
-      if(trFilter === "need" && !transNeeds(it.en)) return false;
-      if(q && it.en.toLowerCase().indexOf(q) === -1) return false;
-      return true;
-    });
+    var items = q ? g.items.filter(function(it){ return it.en.toLowerCase().indexOf(q) !== -1; }) : g.items;
     if(!items.length) return;
-    /* count how many of this page's (filtered) items still need a translation */
-    var miss = items.filter(function(it){ return transNeeds(it.en); }).length;
 
     var sec = document.createElement("div"); sec.className = "tr-group";
-    /* while searching, force groups open so matches are visible; otherwise use saved state */
-    var collapsed = q ? false : !!trCollapsed[g.group];
+    /* Collapsed by DEFAULT — the owner expands a page as needed. A search forces
+       every matching group open so the results are visible. */
+    var collapsed = q ? false : (trCollapsed[g.group] !== false);
     if(collapsed) sec.classList.add("collapsed");
 
     var head = document.createElement("button");
     head.type = "button"; head.className = "tr-ghead";
     var chev = document.createElement("span"); chev.className = "tr-gchev"; chev.textContent = "▼";
     var name = document.createElement("span"); name.className = "tr-gname"; name.textContent = g.group;
-    var count = document.createElement("span"); count.className = "tr-gcount" + (miss ? " miss" : "");
-    count.textContent = miss ? (miss + " need · " + items.length + " items") : (items.length + " items ✓");
+    var count = document.createElement("span"); count.className = "tr-gcount"; count.textContent = items.length + " items";
     head.appendChild(chev); head.appendChild(name); head.appendChild(count);
     head.addEventListener("click", function(){
       var nowCollapsed = !sec.classList.contains("collapsed");
@@ -2301,27 +2324,16 @@ function renderTranslations(){
 
   if(!shown){
     var empty = document.createElement("div"); empty.className = "tr-empty";
-    empty.textContent = q
-      ? "No wording matches “"+trSearch+"”."
-      : (trFilter === "need"
-          ? "Everything is translated — nothing needs German, French or Russian right now."
-          : "No translatable content yet.");
+    empty.textContent = q ? "No wording matches “"+trSearch+"”." : "No translatable content yet.";
     host.appendChild(empty);
   }
   updateTransStat();
 }
 
-/* toolbar wiring (search + filter) */
+/* toolbar wiring (search only) */
 (function wireTransToolbar(){
   var search = $("#trSearch");
   if(search) search.addEventListener("input", function(){ trSearch = search.value; renderTranslations(); });
-  document.querySelectorAll(".tr-filter [data-trfilter]").forEach(function(b){
-    b.addEventListener("click", function(){
-      trFilter = b.getAttribute("data-trfilter");
-      document.querySelectorAll(".tr-filter [data-trfilter]").forEach(function(x){ x.classList.toggle("active", x===b); });
-      renderTranslations();
-    });
-  });
 })();
 
 /* ---- IMAGES & VIDEO ---- */
