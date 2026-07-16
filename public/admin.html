@@ -606,7 +606,7 @@ input,textarea,select{font-family:inherit;font-size:.95rem}
       <section class="panel" id="panel-images">
         <div class="intro-card" style="padding:22px 26px;margin-bottom:20px">
           <h3 style="font-size:1.1rem">Photos &amp; videos</h3>
-          <p>Every photo on your website can be replaced here. Upload a wide landscape photo (at least 1200px) or a short looping video (MP4/WebM) for any slot. Leave a slot empty to keep the built-in illustration. Replacing a room updates both its card on the Rooms page and that room's own page.</p>
+          <p>Every photo and video on your website can be replaced here. The slots are grouped by <b>page</b> — click a page to expand it, then upload a wide landscape photo (at least 1200px) or a short looping video (MP4/WebM) for any slot. Uploads are saved to your website's media folder. Leave a slot empty to keep the built-in illustration. Replacing a room updates both its card on the Rooms page and that room's own page. Any new sections you add elsewhere (extra restaurants, facilities, activities or gallery photos) appear here automatically, under their page, in a “Sections you added” list.</p>
         </div>
         <div id="imageGroups"></div>
       </section>
@@ -1197,27 +1197,34 @@ var DEFAULTS = {
   i18n:{}
 };
 
-/* Every media slot on the site, grouped by area. Each accepts a photo OR a
-   video. A room slot updates both its card on the Rooms page and its own page. */
+/* Every media slot on the site, grouped by the PAGE it appears on. Each slot
+   accepts a photo OR a video and uploads to the site's media folder. This list
+   covers every replaceable image/video placeholder across the whole website —
+   keep it in step with the data-cms-img markup in the page HTML. */
 var IMAGE_GROUPS = [
-  { group:"Homepage hero video", note:"One looping background video for the top of the homepage. It plays automatically, on a loop, with no sound. Leave empty to use the built-in tour video.", slots:[
-    {key:"index.heroVideo", label:"Hero background video", videoOnly:true}
+  { group:"Homepage", note:"Everything visual on the homepage — the two background videos, the Welcome illustrations, the Beach & Dining preview panels, and the gallery preview tiles. Videos play automatically on a loop; leave a slot empty to keep the built-in illustration.", slots:[
+    {key:"index.heroVideo", label:"Hero background video (top of page)", videoOnly:true},
+    {key:"index.tourVideo", label:"Virtual Tour video", videoOnly:true},
+    {key:"index.introImg1", label:"Welcome section — large illustration"},
+    {key:"index.introImg2", label:"Welcome section — small illustration"},
+    {key:"index.beach", label:"“Our Private Beach” preview panel"},
+    {key:"index.dining", label:"“Restaurants & Bars” preview panel"},
+    {key:"index.gallery1", label:"Gallery preview — tile 1 (Pool Side)"},
+    {key:"index.gallery2", label:"Gallery preview — tile 2 (Private Beach)"},
+    {key:"index.gallery3", label:"Gallery preview — tile 3 (Aqua Slides)"},
+    {key:"index.gallery4", label:"Gallery preview — tile 4 (Italian Restaurant)"},
+    {key:"index.gallery5", label:"Gallery preview — tile 5 (Sunset Hour)"},
+    {key:"index.gallery6", label:"Gallery preview — tile 6 (Premium Suite)"},
+    {key:"index.gallery7", label:"Gallery preview — tile 7 (Spa & Wellness)"},
+    {key:"index.gallery8", label:"Gallery preview — tile 8"}
   ]},
-  { group:"Homepage virtual tour video", note:"The video in the “Virtual Tour” section. It autoplays when guests scroll to it, loops, and they can turn the sound on. Leave empty to use the built-in tour video.", slots:[
-    {key:"index.tourVideo", label:"Virtual tour video", videoOnly:true}
+  { group:"About page", note:"The page banner and the two illustrations in the “Our Story” welcome section.", slots:[
+    {key:"about.hero", label:"Page header banner"},
+    {key:"about.introImg1", label:"Our Story — large illustration"},
+    {key:"about.introImg2", label:"Our Story — small illustration"}
   ]},
-  { group:"Page header banners", note:"The wide banner at the top of each page. A photo or a short looping video both work well here.", slots:[
-    {key:"rooms.hero", label:"Rooms page header"},
-    {key:"facilities.hero", label:"Facilities page header"},
-    {key:"activities.hero", label:"Activities page header"},
-    {key:"entertainment.hero", label:"Entertainment page header"},
-    {key:"outlets.hero", label:"Dining / Outlets page header"},
-    {key:"gallery.hero", label:"Gallery page header"},
-    {key:"about.hero", label:"About page header"},
-    {key:"news.hero", label:"News page header"},
-    {key:"contact.hero", label:"Contact page header"}
-  ]},
-  { group:"Room photos", note:"One photo (or video) per room. Each updates the room's card on the Rooms page AND that room's own page.", slots:[
+  { group:"Rooms page", note:"The page banner, plus one photo (or video) per room. Each room photo updates that room everywhere it appears — its card on the Rooms page, the preview card on the Homepage, and the top of that room's own page.", slots:[
+    {key:"rooms.hero", label:"Page header banner"},
     {key:"rooms.premium", label:"Premium Room"},
     {key:"rooms.seaview", label:"Sea View Room"},
     {key:"rooms.seaside", label:"Sea Side View Room"},
@@ -1226,24 +1233,48 @@ var IMAGE_GROUPS = [
     {key:"rooms.standard", label:"Standard Room"},
     {key:"rooms.economy", label:"Economy Room"}
   ]},
-  { group:"Gallery", note:"The eleven tiles on the Gallery page.", slots:[
-    {key:"gallery.tile1", label:"Private Beach"},
-    {key:"gallery.tile2", label:"Main Pool"},
-    {key:"gallery.tile3", label:"The Bouquet"},
-    {key:"gallery.tile4", label:"Aqua Slides"},
-    {key:"gallery.tile5", label:"Premium Suite"},
-    {key:"gallery.tile6", label:"Sunset Hour"},
-    {key:"gallery.tile7", label:"Reef Snorkelling"},
-    {key:"gallery.tile8", label:"Lobby Bar"},
-    {key:"gallery.tile9", label:"Spa & Wellness"},
-    {key:"gallery.tile10", label:"Aqua Aerobics"},
-    {key:"gallery.tile11", label:"Afternoon Swim"}
+  { group:"Facilities page", note:"The page banner and the large facility feature blocks. (These feature photos can also be set from the “Facilities sections” editor — either place stays in sync.)", slots:[
+    {key:"facilities.hero", label:"Page header banner"},
+    {key:"facilities.aquapark", label:"Aqua Park block"},
+    {key:"facilities.beach", label:"Private Beach block"},
+    {key:"facilities.spa", label:"Spa block"}
   ]},
-  { group:"Feature photos", note:"Large highlight images inside the pages.", slots:[
-    {key:"facilities.beach", label:"Private beach (Facilities)"},
-    {key:"activities.aquapark", label:"Aqua park (Activities)"},
-    {key:"outlets.bouquet", label:"Main restaurant (Outlets)"},
-    {key:"entertainment.shows", label:"Evening shows (Entertainment)"}
+  { group:"Activities page", note:"The page banner and the large feature blocks (Private Beach, Swimming Pools, Aqua Park).", slots:[
+    {key:"activities.hero", label:"Page header banner"},
+    {key:"activities.beach", label:"Private Beach block"},
+    {key:"activities.pools", label:"Swimming Pools block"},
+    {key:"activities.aquapark", label:"Aqua Park block"}
+  ]},
+  { group:"Entertainment page", note:"The page banner and the feature blocks (Evening Shows, Daytime Activities).", slots:[
+    {key:"entertainment.hero", label:"Page header banner"},
+    {key:"entertainment.shows", label:"Evening Shows block"},
+    {key:"entertainment.daytime", label:"Daytime Activities block"}
+  ]},
+  { group:"Dining / Outlets page", note:"The page banner and the large restaurant feature blocks. (These restaurant photos can also be set from the “Dining sections” editor — either place stays in sync.)", slots:[
+    {key:"outlets.hero", label:"Page header banner"},
+    {key:"outlets.bouquet", label:"The Bouquet"},
+    {key:"outlets.donvito", label:"Don Vito"},
+    {key:"outlets.beachrest", label:"Beach Restaurant"}
+  ]},
+  { group:"Gallery page", note:"The page banner and the eleven photo tiles on the Gallery page.", slots:[
+    {key:"gallery.hero", label:"Page header banner"},
+    {key:"gallery.tile1", label:"Tile 1 — Private Beach"},
+    {key:"gallery.tile2", label:"Tile 2 — Main Pool"},
+    {key:"gallery.tile3", label:"Tile 3 — The Bouquet"},
+    {key:"gallery.tile4", label:"Tile 4 — Aqua Slides"},
+    {key:"gallery.tile5", label:"Tile 5 — Premium Suite"},
+    {key:"gallery.tile6", label:"Tile 6 — Sunset Hour"},
+    {key:"gallery.tile7", label:"Tile 7 — Reef Snorkelling"},
+    {key:"gallery.tile8", label:"Tile 8 — Lobby Bar"},
+    {key:"gallery.tile9", label:"Tile 9 — Spa & Wellness"},
+    {key:"gallery.tile10", label:"Tile 10 — Aqua Aerobics"},
+    {key:"gallery.tile11", label:"Tile 11 — Afternoon Swim"}
+  ]},
+  { group:"News page", note:"The wide banner at the top of the News page.", slots:[
+    {key:"news.hero", label:"Page header banner"}
+  ]},
+  { group:"Contact page", note:"The wide banner at the top of the Contact page.", slots:[
+    {key:"contact.hero", label:"Page header banner"}
   ]}
 ];
 
@@ -2344,22 +2375,105 @@ var MAX_IMG_BYTES = 2.6 * 1024 * 1024;   // ~2.5MB photo
 var MAX_VID_BYTES = 4.2 * 1024 * 1024;   // ~4MB video (browser-demo limit)
 function isVideoSrc(src){ return typeof src==="string" && (/^data:video\//i.test(src) || /\.(mp4|webm|ogg|mov)(\?|#|$)/i.test(src)); }
 
+/* Which Photos & Videos page-groups are collapsed. Collapsed by DEFAULT — the
+   owner expands a page as needed (mirrors the Languages panel behaviour). */
+var imgCollapsed = {};
+/* Page group -> which collections feed extra, admin-ADDED sections that carry
+   their own photo. Only user-added items (numeric id) surface here — built-in
+   blocks already have fixed slots above, so nothing is duplicated. This keeps
+   the panel comprehensive as owners add new sections to any page. */
+var COLL_GROUP = {
+  "Facilities page":     [{coll:"facilityDetails", kind:"detail",  noun:"feature block", render:function(){renderDetailColls();}},
+                          {coll:"facilities",      kind:"feature", noun:"feature card",  render:function(){renderFeatureColls();}}],
+  "Activities page":     [{coll:"activities",      kind:"feature", noun:"activity card", render:function(){renderFeatureColls();}}],
+  "Dining / Outlets page":[{coll:"restaurants",    kind:"detail",  noun:"restaurant",    render:function(){renderDetailColls();}},
+                          {coll:"bars",            kind:"feature", noun:"bar / café card",render:function(){renderFeatureColls();}}],
+  "Gallery page":        [{coll:"__gallery__",     kind:"gallery", noun:"gallery photo", render:function(){renderGallery();}}]
+};
+function userColl(name){ return collArr(name).filter(function(it){ return !isBuiltinId(it.id); }); }
+function userTiles(){ var t=(content.gallery&&content.gallery.tiles)||[]; return t.filter(function(x){ return !isBuiltinTile(x.id); }); }
+
+/* Build the extra slot descriptors for a page group from its added sections. */
+function dynamicSlots(groupName){
+  var defs=COLL_GROUP[groupName]; if(!defs) return [];
+  var out=[];
+  defs.forEach(function(d){
+    if(d.kind==="gallery"){
+      userTiles().forEach(function(t){
+        out.push({ label:(t.label||"Untitled photo")+" — added "+d.noun, uploadId:"gallery-"+t.id,
+          get:function(){ return t.image||""; }, set:function(u){ t.image=u; }, clear:function(){ t.image=""; }, after:d.render });
+      });
+    } else if(d.kind==="feature"){
+      userColl(d.coll).forEach(function(it){
+        out.push({ label:(it.title||"Untitled")+" — added "+d.noun, uploadId:d.coll+"-"+it.id,
+          get:function(){ return it.image||""; }, set:function(u){ it.image=u; }, clear:function(){ it.image=""; }, after:d.render });
+      });
+    } else { /* detail blocks may hold a multi-photo slider — edit only the MAIN photo, keep the rest */
+      userColl(d.coll).forEach(function(it){
+        out.push({ label:(it.title||"Untitled")+" — added "+d.noun+" (main photo)", uploadId:d.coll+"-"+it.id,
+          get:function(){ return (Array.isArray(it.images)&&it.images[0])||it.image||""; },
+          set:function(u){ if(Array.isArray(it.images)&&it.images.length){ it.images[0]=u; } else { it.images=[u]; } },
+          clear:function(){ if(Array.isArray(it.images)) it.images.shift(); it.image=""; }, after:d.render });
+      });
+    }
+  });
+  return out;
+}
+
+/* Read a slot's current value whether it's a fixed content.images key or an
+   accessor-backed (added-section) slot. */
+function slotVal(slot){ return slot.get ? (slot.get()||"") : (content.images[slot.key]||""); }
+
 function renderImages(){
   var host=$("#imageGroups"); host.innerHTML="";
   content.images = content.images || {};
   IMAGE_GROUPS.forEach(function(g){
-    var card=document.createElement("div"); card.className="section-card";
-    var head='<h3><span class="ico">▦</span> '+esc(g.group)+'</h3>'+
-             (g.note?'<p class="desc">'+esc(g.note)+'</p>':'');
-    card.innerHTML=head+'<div class="grid-2 media-grid"></div>';
-    var grid=card.querySelector(".media-grid");
+    var slots=g.slots.concat(dynamicSlots(g.group));
+    var addedCount=slots.length-g.slots.length;
+
+    var sec=document.createElement("div"); sec.className="tr-group";
+    var collapsed = (imgCollapsed[g.group] !== false);   // default: collapsed
+    if(collapsed) sec.classList.add("collapsed");
+
+    var head=document.createElement("button");
+    head.type="button"; head.className="tr-ghead";
+    var chev=document.createElement("span"); chev.className="tr-gchev"; chev.textContent="▼";
+    var name=document.createElement("span"); name.className="tr-gname"; name.textContent=g.group;
+    var setCount=slots.filter(function(s){ return slotVal(s); }).length;
+    var count=document.createElement("span"); count.className="tr-gcount";
+    count.textContent = setCount ? (setCount+" of "+slots.length+" set") : (slots.length+" slots");
+    head.appendChild(chev); head.appendChild(name); head.appendChild(count);
+    head.addEventListener("click", function(){
+      var nowCollapsed = !sec.classList.contains("collapsed");
+      sec.classList.toggle("collapsed", nowCollapsed);
+      imgCollapsed[g.group] = nowCollapsed;
+    });
+    sec.appendChild(head);
+
+    var body=document.createElement("div"); body.className="tr-gbody";
+    if(g.note){ var note=document.createElement("p"); note.className="desc"; note.style.marginTop="0"; note.textContent=g.note; body.appendChild(note); }
+    var grid=document.createElement("div"); grid.className="grid-2 media-grid";
     g.slots.forEach(function(slot){ grid.appendChild(buildSlot(slot)); });
-    host.appendChild(card);
+    body.appendChild(grid);
+    if(addedCount){
+      var sub=document.createElement("div"); sub.className="tr-sub"; sub.style.margin="14px 2px 8px";
+      sub.textContent="Sections you added to this page";
+      body.appendChild(sub);
+      var grid2=document.createElement("div"); grid2.className="grid-2 media-grid";
+      dynamicSlots(g.group).forEach(function(slot){ grid2.appendChild(buildSlot(slot)); });
+      body.appendChild(grid2);
+    }
+    sec.appendChild(body);
+    host.appendChild(sec);
   });
 }
 
 function buildSlot(slot){
-  var saved=(content.images[slot.key]||"");
+  var get = slot.get || function(){ return content.images[slot.key]||""; };
+  var set = slot.set || function(u){ content.images[slot.key]=u; };
+  var clr = slot.clear || function(){ delete content.images[slot.key]; };
+  var uploadId = slot.uploadId || slot.key || ("media-"+Date.now());
+  var saved=get()||"";
   var wrap=document.createElement("div"); wrap.className="field media-slot";
   var vid=isVideoSrc(saved);
   var videoOnly=!!slot.videoOnly;
@@ -2394,15 +2508,17 @@ function buildSlot(slot){
         input.value=""; return;
       }
     }
-    GBR_uploadMedia(f, slot.key).then(function(url){
-      content.images[slot.key]=url;
-      if(!GBR_LIVE && !trySaveDraft()){ delete content.images[slot.key]; input.value=""; return; }
+    GBR_uploadMedia(f, uploadId).then(function(url){
+      var prev=get();
+      set(url);
+      if(!GBR_LIVE && !trySaveDraft()){ clr(); if(prev) set(prev); input.value=""; return; }
+      if(slot.after) slot.after();
       markDirty(); renderImages(); toast((asVideo?"Video":"Photo")+" added");
     });
   });
   var rm=wrap.querySelector(".remove");
   if(rm) rm.addEventListener("click", function(){
-    delete content.images[slot.key]; markDirty(); renderImages(); toast(videoOnly?"Removed — back to the built-in hero video":"Removed — back to the illustration");
+    clr(); if(slot.after) slot.after(); markDirty(); renderImages(); toast(videoOnly?"Removed — back to the built-in hero video":"Removed — back to the illustration");
   });
   return wrap;
 }
