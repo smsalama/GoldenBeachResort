@@ -1445,8 +1445,13 @@ function go(panel){
   $("#panelTitle").textContent = title; $("#crumbs").textContent = "Admin · "+title;
   $("#sidebar").classList.remove("open");
   /* The Languages list aggregates every page's content, so rebuild it on entry —
-     this surfaces anything added since load (rooms, facilities, activities, …). */
-  if(panel==="languages" && typeof renderTranslations==="function") renderTranslations();
+     this surfaces anything added since load (rooms, facilities, activities, …).
+     First pull the live page text so any wording changed on the pages shows the
+     current English here; renderTranslations runs again once that resolves. */
+  if(panel==="languages" && typeof renderTranslations==="function"){
+    renderTranslations();
+    if(typeof ensureLiveManifest==="function") ensureLiveManifest().then(function(m){ if(m) renderTranslations(); });
+  }
   window.scrollTo(0,0);
 }
 document.querySelectorAll(".nav-item[data-panel]").forEach(function(b){ b.addEventListener("click", function(){ go(b.dataset.panel); }); });
@@ -2134,6 +2139,78 @@ function setTrans(en, de, ru, fr){
   else delete content.i18n[en];
 }
 
+/* ── LIVE page-text manifest ──────────────────────────────────────────────
+   The hardcoded (non-CMS) text on each page is pulled straight from the live
+   page HTML at render time, so the English shown in the Languages panel always
+   matches what is actually on the site — even after a developer edits a page's
+   wording. Uses the SAME extraction rules as the build-time generator (accent
+   headings kept whole; CMS-driven, chrome and decorative nodes skipped).
+   Falls back to the static snapshot (translations-manifest.js) when the pages
+   can't be fetched (e.g. the admin opened straight from disk as file://). */
+var PAGE_FILES = [
+  ["index.html","Homepage"],["about.html","About page"],["rooms.html","Rooms page"],
+  ["room-premium-room.html","Room detail pages"],["activities.html","Activities page"],
+  ["facilities.html","Facilities page"],["entertainment.html","Entertainment page"],
+  ["outlets.html","Dining / Outlets page"],["gallery.html","Gallery page"],
+  ["contact.html","Contact page"],["news.html","News page"]
+];
+var MANIFEST_ORDER = ["Homepage","About page","Rooms page","Room detail pages","Activities page",
+  "Facilities page","Entertainment page","Dining / Outlets page","Gallery page",
+  "Contact page","News page","Site-wide (menus, header & footer)"];
+var LIVE_MANIFEST = null, liveManifestTried = false;
+
+/* Extract translatable strings from ONE parsed page document. Mirrors gen_manifest. */
+function extractPageStrings(doc){
+  var CMS='[data-cms],[data-cms-field],[data-cms-room],[data-cms-news],[data-cms-detail],[data-cms-detail-field],[data-cms-card],[data-cms-card-field],[data-cms-tile],[data-cms-testi-field],[data-cms-herotitle],[data-cms-href],[data-cms-img]';
+  function inCMS(el){ return el && el.closest && el.closest(CMS); }
+  var SKIP='svg,.logo,.brand,.lang-switch,.loader';
+  function inSkip(el){ return el && el.closest && el.closest(SKIP); }
+  function chrome_(el){ return el && el.closest && el.closest('.site-header,.top-bar,header,nav,.drawer,.site-footer,footer,.marquee'); }
+  function isNum(s){ return /^[\d\s.,%+/&·:;()°'"’“”€$£–—-]+$/.test(s); }
+  var site=[], page=[], seen={};
+  function push(arr,s){ s=(s||'').replace(/\s+/g,' ').trim(); if(!s||s.length<2||isNum(s)||seen[s]) return; seen[s]=1; arr.push(s); }
+  Array.prototype.forEach.call(doc.querySelectorAll('em.lime'), function(em){
+    var host=em.parentElement; if(!host||inCMS(em)||inSkip(em)) return;
+    if(host.children.length!==1||host.children[0]!==em) return;
+    push(chrome_(host)?site:page, host.textContent.replace(/\s+/g,' ').trim());
+    host.setAttribute('data-scanned','1');
+  });
+  var w=doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT, { acceptNode:function(n){
+    if(!n.nodeValue.trim()||!n.parentElement) return NodeFilter.FILTER_REJECT;
+    var t=n.parentElement.tagName; if(t==='SCRIPT'||t==='STYLE'||t==='NOSCRIPT'||t==='OPTION'||t==='SELECT') return NodeFilter.FILTER_REJECT;
+    if(n.parentElement.closest('[data-scanned]')) return NodeFilter.FILTER_REJECT;
+    if(inSkip(n.parentElement)) return NodeFilter.FILTER_REJECT;
+    if(inCMS(n.parentElement)) return NodeFilter.FILTER_REJECT;
+    return NodeFilter.FILTER_ACCEPT;
+  }});
+  var node; while(node=w.nextNode()){ push(chrome_(node.parentElement)?site:page, node.nodeValue); }
+  return {site:site, page:page};
+}
+
+/* Fetch + extract every page once, then cache. Resolves to a manifest array
+   (or null if the pages aren't reachable, so the static snapshot is used). */
+function ensureLiveManifest(){
+  if(liveManifestTried) return Promise.resolve(LIVE_MANIFEST);
+  if(typeof fetch!=="function" || location.protocol==="file:"){ liveManifestTried=true; return Promise.resolve(null); }
+  var groups={}, siteSeen={}, globalSeen={};
+  function add(group, s){ if(globalSeen[s]) return; globalSeen[s]=1; (groups[group]=groups[group]||[]).push(s); }
+  return Promise.all(PAGE_FILES.map(function(pf){
+    return fetch(pf[0], {credentials:"same-origin"}).then(function(r){ if(!r.ok) throw 0; return r.text(); })
+      .then(function(html){
+        var doc=new DOMParser().parseFromString(html, "text/html");
+        var d=extractPageStrings(doc);
+        d.site.forEach(function(s){ if(!siteSeen[s]){ siteSeen[s]=1; add("Site-wide (menus, header & footer)", s); } });
+        d.page.forEach(function(s){ add(pf[1], s); });
+      }).catch(function(){ /* one page failing shouldn't abort the rest */ });
+  })).then(function(){
+    liveManifestTried=true;
+    var built=MANIFEST_ORDER.filter(function(g){ return groups[g] && groups[g].length; })
+                            .map(function(g){ return {group:g, items:groups[g]}; });
+    if(built.length) LIVE_MANIFEST=built;
+    return LIVE_MANIFEST;
+  }).catch(function(){ liveManifestTried=true; return null; });
+}
+
 /* Gather every translatable English string, grouped by where it lives.
    Identical strings are de-duped (one translation covers every occurrence). */
 function collectTranslatables(){
@@ -2248,7 +2325,7 @@ function collectTranslatables(){
      that isn't driven by the CMS above), grouped by page — so the owner can translate
      ALL text on the whole website, not just editable content. add() de-dupes against
      everything already collected, so CMS content keeps its richer labelling. */
-  var manifest = (window.GBR_TR_MANIFEST || []);
+  var manifest = (LIVE_MANIFEST || window.GBR_TR_MANIFEST || []);
   manifest.forEach(function(mg){
     var g = null;
     for(var i=0;i<groups.length;i++){ if(groups[i].group===mg.group){ g=groups[i]; break; } }
