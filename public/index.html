@@ -324,6 +324,7 @@ em.lime::after{content:'';position:absolute;left:0;right:0;bottom:0;height:6px;b
 .flag-en{background:linear-gradient(180deg,#012169 33%,#fff 33% 66%,#C8102E 66%)}
 .flag-de{background:linear-gradient(180deg,#000 33%,#DD0000 33% 66%,#FFCE00 66%)}
 .flag-ru{background:linear-gradient(180deg,#fff 33%,#0039A6 33% 66%,#D52B1E 66%)}
+.flag-fr{background:linear-gradient(90deg,#0055A4 33%,#fff 33% 66%,#EF4135 66%)}
 @media (max-width:768px){.top-bar-left span:nth-child(3){display:none}}
 @media (max-width:520px){.top-bar{font-size:.72rem;padding:8px 0}.top-bar-left{gap:14px}.top-bar-left span:nth-child(2){display:none}}
 
@@ -1701,6 +1702,7 @@ img, svg, video { max-width: 100%; height: auto; }
       <div class="lang-switch">
       <a href="#" class="active" data-lang="en"><span class="flag flag-en"></span>EN</a>
       <a href="#" data-lang="de"><span class="flag flag-de"></span>DE</a>
+      <a href="#" data-lang="fr"><span class="flag flag-fr"></span>FR</a>
       <a href="#" data-lang="ru"><span class="flag flag-ru"></span>RU</a>
       </div>
     </div>
@@ -1793,7 +1795,7 @@ img, svg, video { max-width: 100%; height: auto; }
   <div class="container">
     <div class="intro">
       <div class="intro-images reveal">
-        <div class="intro-img-1">
+        <div class="intro-img-1" data-cms-img="index.introImg1">
           <svg viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice">
             <rect width="600" height="800" fill="url(#gInterior)"/>
             <rect y="600" width="600" height="200" fill="#000066" opacity=".15"/>
@@ -1817,7 +1819,7 @@ img, svg, video { max-width: 100%; height: auto; }
             <line x1="360" y1="80" x2="360" y2="40" stroke="#000066" stroke-width="2"/>
           </svg>
         </div>
-        <div class="intro-img-2">
+        <div class="intro-img-2" data-cms-img="index.introImg2">
           <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice">
             <rect width="400" height="400" fill="url(#gSky)"/>
             <circle cx="320" cy="80" r="40" fill="#FFD479"/>
@@ -1832,21 +1834,21 @@ img, svg, video { max-width: 100%; height: auto; }
         </div>
         <div class="intro-badge">
           <div class="intro-badge-inner">
-            <div class="num">30+</div>
-            <div class="lbl">Years of<br/>Hospitality</div>
+            <div class="num" data-cms="index.introStatNum" data-cms-default="30+">30+</div>
+            <div class="lbl" data-cms="index.introStatLabel" data-cms-default="Years of Hospitality">Years of<br/>Hospitality</div>
           </div>
         </div>
       </div>
       <div class="intro-text reveal">
-        <span class="eyebrow">Welcome to Golden Beach</span>
-        <h2>An <em class="lime">extraordinary</em> vision, three decades in the making.</h2>
-        <p><strong>The Golden Beach is an innovative, contemporary hotel brand</strong>, offering an ultimate vacation concept on Hurghada's Red Sea coast. Whether beach resort, lifestyle retreat, or family playground — we are constantly redefining what a Red Sea holiday can be.</p>
-        <p>Tucked into the northwest curve of Hurghada, we sit ten kilometres from El Gouna, fifteen from the city centre, and twenty from Hurghada International Airport. Close enough to explore, far enough to feel away.</p>
+        <span class="eyebrow" data-cms="index.introEyebrow" data-cms-default="Welcome to Golden Beach">Welcome to Golden Beach</span>
+        <h2 data-cms="index.introHeading" data-cms-default="An extraordinary vision, three decades in the making.">An <em class="lime">extraordinary</em> vision, three decades in the making.</h2>
+        <p data-cms="index.introText" data-cms-default="The Golden Beach is an innovative, contemporary hotel brand, offering an ultimate vacation concept on Hurghada's Red Sea coast. Whether beach resort, lifestyle retreat, or family playground — we are constantly redefining what a Red Sea holiday can be."><strong>The Golden Beach is an innovative, contemporary hotel brand</strong>, offering an ultimate vacation concept on Hurghada's Red Sea coast. Whether beach resort, lifestyle retreat, or family playground — we are constantly redefining what a Red Sea holiday can be.</p>
+        <p data-cms="index.introText2" data-cms-default="Tucked into the northwest curve of Hurghada, we sit ten kilometres from El Gouna, fifteen from the city centre, and twenty from Hurghada International Airport. Close enough to explore, far enough to feel away.">Tucked into the northwest curve of Hurghada, we sit ten kilometres from El Gouna, fifteen from the city centre, and twenty from Hurghada International Airport. Close enough to explore, far enough to feel away.</p>
         <div class="signature">
           <div class="signature-icon"><i class="fas fa-feather"></i></div>
           <div class="signature-text">
-            A warm welcome from our family to yours.
-            <small>The Golden Beach Family</small>
+            <span data-cms="index.introSignature" data-cms-default="A warm welcome from our family to yours.">A warm welcome from our family to yours.</span>
+            <small data-cms="index.introSignatureName" data-cms-default="The Golden Beach Family">The Golden Beach Family</small>
           </div>
         </div>
       </div>
@@ -1923,7 +1925,7 @@ img, svg, video { max-width: 100%; height: auto; }
     </div>
     <div class="rooms-grid reveal-stagger">
       <article onclick="location.href='room-premium-room.html'" style="cursor:pointer" class="room-card lg tilt">
-        <div class="room-card-scene">
+        <div class="room-card-scene" data-cms-img="rooms.premium">
           <svg viewBox="0 0 800 520" preserveAspectRatio="xMidYMid slice">
             <rect width="800" height="520" fill="url(#gWall)"/>
             <rect x="80" y="60" width="640" height="280" rx="8" fill="#000066"/>
@@ -1959,7 +1961,7 @@ img, svg, video { max-width: 100%; height: auto; }
         </div>
       </article>
       <article onclick="location.href='room-sea-view-room.html'" style="cursor:pointer" class="room-card md tilt">
-        <div class="room-card-scene">
+        <div class="room-card-scene" data-cms-img="rooms.seaview">
           <svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice">
             <rect width="400" height="260" fill="url(#gSky)"/>
             <rect y="130" width="400" height="130" fill="url(#gWater)"/>
@@ -1982,7 +1984,7 @@ img, svg, video { max-width: 100%; height: auto; }
         </div>
       </article>
       <article onclick="location.href='room-family-room-connected.html'" style="cursor:pointer" class="room-card md tilt">
-        <div class="room-card-scene">
+        <div class="room-card-scene" data-cms-img="rooms.familyconnected">
           <svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice">
             <rect width="400" height="260" fill="url(#gWall)"/>
             <rect x="40" y="160" width="140" height="60" rx="6" fill="#F3F3F3"/>
@@ -2012,7 +2014,7 @@ img, svg, video { max-width: 100%; height: auto; }
         </div>
       </article>
       <article onclick="location.href='room-standard-family-room.html'" style="cursor:pointer" class="room-card sm tilt">
-        <div class="room-card-scene">
+        <div class="room-card-scene" data-cms-img="rooms.standardfamily">
           <svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice">
             <rect width="400" height="260" fill="url(#gInterior)"/>
             <rect x="60" y="150" width="280" height="80" rx="6" fill="#F3F3F3"/>
@@ -2037,7 +2039,7 @@ img, svg, video { max-width: 100%; height: auto; }
         </div>
       </article>
       <article onclick="location.href='room-sea-side-view-room.html'" style="cursor:pointer" class="room-card sm tilt">
-        <div class="room-card-scene">
+        <div class="room-card-scene" data-cms-img="rooms.seaside">
           <svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice">
             <rect width="400" height="260" fill="url(#gSky)"/>
             <rect y="100" width="400" height="50" fill="url(#gPool)"/>
@@ -2062,7 +2064,7 @@ img, svg, video { max-width: 100%; height: auto; }
         </div>
       </article>
       <article onclick="location.href='room-standard-room.html'" style="cursor:pointer" class="room-card sm tilt">
-        <div class="room-card-scene">
+        <div class="room-card-scene" data-cms-img="rooms.standard">
           <svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice">
             <rect width="400" height="260" fill="url(#gWall)"/>
             <rect x="100" y="160" width="200" height="70" rx="6" fill="#F3F3F3"/>
@@ -2087,7 +2089,7 @@ img, svg, video { max-width: 100%; height: auto; }
         </div>
       </article>
       <article onclick="location.href='room-economy-room.html'" style="cursor:pointer" class="room-card sm tilt">
-        <div class="room-card-scene">
+        <div class="room-card-scene" data-cms-img="rooms.economy">
           <svg viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice">
             <rect width="400" height="260" fill="url(#gInterior)"/>
             <rect x="120" y="150" width="160" height="70" rx="6" fill="#F3F3F3"/>
@@ -2121,7 +2123,7 @@ img, svg, video { max-width: 100%; height: auto; }
 <!-- SPLIT: BEACH -->
 <section class="split-section" id="facilities">
   <div class="split-grid">
-    <div class="split-img">
+    <div class="split-img" data-cms-img="index.beach">
       <svg viewBox="0 0 800 700" preserveAspectRatio="xMidYMid slice">
         <rect width="800" height="700" fill="url(#gSky)"/>
         <circle cx="600" cy="180" r="80" fill="#FFD479"/>
@@ -2159,7 +2161,7 @@ img, svg, video { max-width: 100%; height: auto; }
 <!-- SPLIT: DINING -->
 <section class="split-section" id="dining">
   <div class="split-grid reverse">
-    <div class="split-img">
+    <div class="split-img" data-cms-img="index.dining">
       <svg viewBox="0 0 800 700" preserveAspectRatio="xMidYMid slice">
         <rect width="800" height="700" fill="url(#gRest)"/>
         <line x1="200" y1="0" x2="200" y2="120" stroke="#CCFF00" stroke-width="2"/>
@@ -2211,7 +2213,7 @@ img, svg, video { max-width: 100%; height: auto; }
     </div>
     <div class="gallery-grid reveal-stagger">
       <div class="gallery-tile t-a" data-cat="pool">
-        <div class="gallery-tile-scene">
+        <div class="gallery-tile-scene" data-cms-img="index.gallery1">
           <svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice">
             <rect width="600" height="400" fill="url(#gSand)"/>
             <ellipse cx="300" cy="200" rx="220" ry="120" fill="url(#gPool)"/>
@@ -2223,7 +2225,7 @@ img, svg, video { max-width: 100%; height: auto; }
         <span class="gallery-tile-zoom"><i class="fas fa-expand"></i></span>
       </div>
       <div class="gallery-tile" data-cat="beach">
-        <div class="gallery-tile-scene">
+        <div class="gallery-tile-scene" data-cms-img="index.gallery2">
           <svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice">
             <rect width="400" height="220" fill="url(#gSky)"/>
             <rect y="100" width="400" height="50" fill="url(#gWater)"/>
@@ -2236,7 +2238,7 @@ img, svg, video { max-width: 100%; height: auto; }
         <span class="gallery-tile-zoom"><i class="fas fa-expand"></i></span>
       </div>
       <div class="gallery-tile" data-cat="pool">
-        <div class="gallery-tile-scene">
+        <div class="gallery-tile-scene" data-cms-img="index.gallery3">
           <svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice">
             <rect width="400" height="220" fill="url(#gSky)"/>
             <rect y="160" width="400" height="60" fill="url(#gPool)"/>
@@ -2250,7 +2252,7 @@ img, svg, video { max-width: 100%; height: auto; }
         <span class="gallery-tile-zoom"><i class="fas fa-expand"></i></span>
       </div>
       <div class="gallery-tile t-d" data-cat="dining">
-        <div class="gallery-tile-scene">
+        <div class="gallery-tile-scene" data-cms-img="index.gallery4">
           <svg viewBox="0 0 600 220" preserveAspectRatio="xMidYMid slice">
             <rect width="600" height="220" fill="url(#gRest)"/>
             <line x1="200" y1="0" x2="200" y2="60" stroke="#CCFF00" stroke-width="2"/>
@@ -2265,7 +2267,7 @@ img, svg, video { max-width: 100%; height: auto; }
         <span class="gallery-tile-zoom"><i class="fas fa-expand"></i></span>
       </div>
       <div class="gallery-tile" data-cat="beach">
-        <div class="gallery-tile-scene">
+        <div class="gallery-tile-scene" data-cms-img="index.gallery5">
           <svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice">
             <rect width="400" height="220" fill="url(#gSkyEve)"/>
             <circle cx="200" cy="120" r="50" fill="#FFD479"/>
@@ -2278,7 +2280,7 @@ img, svg, video { max-width: 100%; height: auto; }
         <span class="gallery-tile-zoom"><i class="fas fa-expand"></i></span>
       </div>
       <div class="gallery-tile" data-cat="rooms">
-        <div class="gallery-tile-scene">
+        <div class="gallery-tile-scene" data-cms-img="index.gallery6">
           <svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice">
             <rect width="400" height="220" fill="url(#gWall)"/>
             <rect x="40" y="30" width="320" height="100" rx="6" fill="#000066"/>
@@ -2293,7 +2295,7 @@ img, svg, video { max-width: 100%; height: auto; }
         <span class="gallery-tile-zoom"><i class="fas fa-expand"></i></span>
       </div>
       <div class="gallery-tile" data-cat="rooms">
-        <div class="gallery-tile-scene">
+        <div class="gallery-tile-scene" data-cms-img="index.gallery7">
           <svg viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice">
             <rect width="400" height="220" fill="url(#gInterior)"/>
             <rect x="80" y="120" width="240" height="40" rx="20" fill="#F3F3F3"/>
@@ -2307,7 +2309,7 @@ img, svg, video { max-width: 100%; height: auto; }
         <span class="gallery-tile-zoom"><i class="fas fa-expand"></i></span>
       </div>
       <div class="gallery-tile t-h" data-cat="dining">
-        <div class="gallery-tile-scene">
+        <div class="gallery-tile-scene" data-cms-img="index.gallery8">
           <svg viewBox="0 0 600 220" preserveAspectRatio="xMidYMid slice">
             <rect width="600" height="220" fill="url(#gRest)"/>
             <rect y="160" width="600" height="60" fill="#000066"/>

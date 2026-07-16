@@ -236,6 +236,7 @@ em.lime::after{content:'';position:absolute;left:0;right:0;bottom:0;height:6px;b
 .flag-en{background:linear-gradient(180deg,#012169 33%,#fff 33% 66%,#C8102E 66%)}
 .flag-de{background:linear-gradient(180deg,#000 33%,#DD0000 33% 66%,#FFCE00 66%)}
 .flag-ru{background:linear-gradient(180deg,#fff 33%,#0039A6 33% 66%,#D52B1E 66%)}
+.flag-fr{background:linear-gradient(90deg,#0055A4 33%,#fff 33% 66%,#EF4135 66%)}
 @media (max-width:768px){.top-bar-left span:nth-child(3){display:none}}
 @media (max-width:520px){.top-bar{font-size:.72rem;padding:8px 0}.top-bar-left{gap:14px}.top-bar-left span:nth-child(2){display:none}}
 
@@ -1549,6 +1550,7 @@ img, svg, video { max-width: 100%; height: auto; }
       <div class="lang-switch">
       <a href="#" class="active" data-lang="en"><span class="flag flag-en"></span>EN</a>
       <a href="#" data-lang="de"><span class="flag flag-de"></span>DE</a>
+      <a href="#" data-lang="fr"><span class="flag flag-fr"></span>FR</a>
       <a href="#" data-lang="ru"><span class="flag flag-ru"></span>RU</a>
       </div>
     </div>
@@ -1645,7 +1647,7 @@ img, svg, video { max-width: 100%; height: auto; }
 <!-- BEACH -->
 <section class="split-section" id="beach">
   <div class="split-grid">
-    <div class="split-img">
+    <div class="split-img" data-cms-img="activities.beach">
       <svg viewBox="0 0 800 640" preserveAspectRatio="xMidYMid slice">
         <rect width="800" height="640" fill="url(#gSky)"/>
         <circle cx="620" cy="160" r="85" fill="#FFD479" opacity=".9"/>
@@ -1679,7 +1681,7 @@ img, svg, video { max-width: 100%; height: auto; }
 <!-- POOLS -->
 <section class="split-section" id="pools">
   <div class="split-grid reverse">
-    <div class="split-img">
+    <div class="split-img" data-cms-img="activities.pools">
       <svg viewBox="0 0 800 640" preserveAspectRatio="xMidYMid slice">
         <rect width="800" height="640" fill="url(#gSand)"/>
         <ellipse cx="400" cy="380" rx="320" ry="160" fill="url(#gPool)"/>

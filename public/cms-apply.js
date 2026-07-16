@@ -254,9 +254,14 @@
         el.insertBefore(v, el.firstChild);
         var p = v.play(); if (p && p.catch) p.catch(function () {});
       } else {
-        el.style.backgroundImage = "url(" + src + ")";
-        el.style.backgroundSize = "cover";
-        el.style.backgroundPosition = "center";
+        // Use !important so an uploaded photo always wins over a section's own
+        // background rule (e.g. `.split-img{background:…!important}`), on every
+        // page and any future section that carries such a rule.
+        if (getComputedStyle(el).position === "static") el.style.position = "relative";
+        el.style.setProperty("background-image", "url(" + src + ")", "important");
+        el.style.setProperty("background-size", "cover", "important");
+        el.style.setProperty("background-position", "center", "important");
+        el.style.setProperty("background-repeat", "no-repeat", "important");
       }
       // Hide the built-in SVG illustration behind the new media.
       el.querySelectorAll(":scope > svg").forEach(function (svg) {

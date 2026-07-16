@@ -236,7 +236,17 @@ input,textarea,select{font-family:inherit;font-size:.95rem}
 .tr-filter button.active{background:var(--navy-deep);color:#fff}
 .tr-langnote{font-size:.8rem;color:var(--muted);margin:-6px 0 4px}
 .tr-langnote .flag{font-weight:800;color:var(--navy)}
-.tr-group{margin-bottom:14px}
+.tr-group{margin-bottom:14px;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;background:#fff}
+.tr-ghead{width:100%;display:flex;align-items:center;gap:10px;padding:13px 16px;background:var(--cream);border:none;border-bottom:1px solid var(--border);cursor:pointer;text-align:left;transition:background .18s}
+.tr-ghead:hover{background:#ECECEC}
+.tr-ghead .tr-gchev{font-size:.7rem;color:var(--lime-deep);transition:transform .2s;flex-shrink:0}
+.tr-ghead .tr-gname{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--navy);font-weight:800;flex:1}
+.tr-ghead .tr-gcount{font-size:.66rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);background:#fff;border:1px solid var(--border);border-radius:100px;padding:3px 10px}
+.tr-ghead .tr-gcount.miss{color:#9A6B12;border-color:rgba(224,168,46,.5);background:#FFF7E6}
+.tr-gbody{padding:12px 16px 4px}
+.tr-group.collapsed .tr-gbody{display:none}
+.tr-group.collapsed .tr-ghead{border-bottom:none}
+.tr-group.collapsed .tr-ghead .tr-gchev{transform:rotate(-90deg)}
 .tr-group > h4{font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--lime-deep);font-weight:800;margin:18px 2px 10px;display:flex;align-items:center;gap:8px}
 .tr-sub{font-size:.74rem;font-weight:700;color:var(--navy);background:var(--cream);border:1px solid var(--border);border-left:3px solid var(--lime);border-radius:8px;padding:6px 11px;margin:14px 0 8px}
 .tr-row{display:grid;grid-template-columns:1fr;gap:10px;padding:16px;border:1px solid var(--border);border-radius:var(--radius-sm);background:#fff;margin-bottom:10px;transition:border-color .2s,box-shadow .2s}
@@ -245,8 +255,8 @@ input,textarea,select{font-family:inherit;font-size:.95rem}
 .tr-row .tr-en .src{font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;font-weight:800;color:var(--muted);display:flex;align-items:center;gap:8px;margin-bottom:5px}
 .tr-row .tr-en .src .pill-en{background:var(--cream);border:1px solid var(--border);border-radius:100px;padding:2px 9px;color:var(--navy)}
 .tr-row .tr-en .src .need-tag{background:#F0F0F0;color:#9A6B12;border-radius:100px;padding:2px 9px;font-weight:800}
-.tr-langs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-@media(max-width:640px){.tr-langs{grid-template-columns:1fr}}
+.tr-langs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:900px){.tr-langs{grid-template-columns:1fr}}
 .tr-field label{display:flex;align-items:center;gap:7px;font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--navy);margin-bottom:6px}
 .tr-field label .flag{font-size:1rem;line-height:1}
 .tr-field textarea{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;background:var(--cream);resize:vertical;min-height:46px;line-height:1.45}
@@ -378,7 +388,7 @@ input,textarea,select{font-family:inherit;font-size:.95rem}
     <button class="nav-item" data-panel="cGallery"><span class="ico">▦</span> Gallery</button>
 
     <div class="nav-group-label">Languages</div>
-    <button class="nav-item" data-panel="languages"><span class="ico"><i class="fas fa-language"></i></span> German &amp; Russian</button>
+    <button class="nav-item" data-panel="languages"><span class="ico"><i class="fas fa-language"></i></span> GE, FR &amp; RU</button>
 
     <div class="nav-group-label">Manage</div>
     <button class="nav-item" data-panel="seo"><span class="ico">⌕</span> SEO &amp; Search</button>
@@ -435,7 +445,7 @@ input,textarea,select{font-family:inherit;font-size:.95rem}
           <button class="tile" data-jump="cSchedule"><span class="ti">▦</span><h4>Activities Timetable</h4><p>Edit what's on each day in the weekly "day by day" grid.</p></button>
           <button class="tile" data-jump="cGallery"><span class="ti">▦</span><h4>Gallery</h4><p>Add photos, organise them under filter categories, and manage the filter pills.</p></button>
           <button class="tile" data-jump="images"><span class="ti">▦</span><h4>Photos &amp; Videos</h4><p>Replace any photo on the site, or add looping videos.</p></button>
-          <button class="tile" data-jump="languages"><span class="ti"><i class="fas fa-language"></i></span><h4>German &amp; Russian</h4><p>Add the German &amp; Russian wording for everything you've edited, so the whole site translates.</p></button>
+          <button class="tile" data-jump="languages"><span class="ti"><i class="fas fa-language"></i></span><h4>GE, FR &amp; RU</h4><p>Add the German, French &amp; Russian wording for everything you've edited, so the whole site translates.</p></button>
           <button class="tile" data-jump="backup"><span class="ti">⤓</span><h4>Backup &amp; Restore</h4><p>Download a copy of your content, or restore from a file.</p></button>
         </div>
       </section>
@@ -477,6 +487,22 @@ input,textarea,select{font-family:inherit;font-size:.95rem}
           <p class="desc">The big text guests see first when they arrive.</p>
           <div class="field"><label>Headline</label><input data-bind="index.heroTitle"><div class="help">Keep it short and welcoming.</div></div>
           <div class="field"><label>Sub-text under the headline</label><textarea rows="2" data-bind="index.heroSubtitle"></textarea></div>
+        </div>
+        <div class="section-card">
+          <h3><span class="ico">✎</span> Welcome / intro section</h3>
+          <p class="desc">The "Welcome to Golden Beach" section just below the hero. Leave a box blank to keep the current wording shown on the site.</p>
+          <div class="field"><label>Small label above the heading</label><input data-bind="index.introEyebrow" placeholder="Welcome to Golden Beach"></div>
+          <div class="field"><label>Heading</label><input data-bind="index.introHeading" placeholder="An extraordinary vision, three decades in the making."></div>
+          <div class="field"><label>First paragraph</label><textarea rows="3" data-bind="index.introText" placeholder="The Golden Beach is an innovative, contemporary hotel brand, offering an ultimate vacation concept…"></textarea></div>
+          <div class="field"><label>Second paragraph</label><textarea rows="3" data-bind="index.introText2" placeholder="Tucked into the northwest curve of Hurghada…"></textarea></div>
+          <div class="grid-2">
+            <div class="field"><label>Signature line</label><input data-bind="index.introSignature" placeholder="A warm welcome from our family to yours."></div>
+            <div class="field"><label>Signature name</label><input data-bind="index.introSignatureName" placeholder="The Golden Beach Family"></div>
+          </div>
+          <div class="grid-2">
+            <div class="field"><label>Badge number</label><input data-bind="index.introStatNum" placeholder="30+"></div>
+            <div class="field"><label>Badge label</label><input data-bind="index.introStatLabel" placeholder="Years of Hospitality"></div>
+          </div>
         </div>
         <div class="section-card">
           <h3><span class="ico">★</span> Review highlights</h3>
@@ -580,7 +606,7 @@ input,textarea,select{font-family:inherit;font-size:.95rem}
       <section class="panel" id="panel-images">
         <div class="intro-card" style="padding:22px 26px;margin-bottom:20px">
           <h3 style="font-size:1.1rem">Photos &amp; videos</h3>
-          <p>Every photo on your website can be replaced here. Upload a wide landscape photo (at least 1200px) or a short looping video (MP4/WebM) for any slot. Leave a slot empty to keep the built-in illustration. Replacing a room updates both its card on the Rooms page and that room's own page.</p>
+          <p>Every photo and video on your website can be replaced here. The slots are grouped by <b>page</b> — click a page to expand it, then upload a wide landscape photo (at least 1200px) or a short looping video (MP4/WebM) for any slot. Uploads are saved to your website's media folder. Leave a slot empty to keep the built-in illustration. Replacing a room updates both its card on the Rooms page and that room's own page. Any new sections you add elsewhere (extra restaurants, facilities, activities or gallery photos) appear here automatically, under their page, in a “Sections you added” list.</p>
         </div>
         <div id="imageGroups"></div>
       </section>
@@ -689,16 +715,12 @@ input,textarea,select{font-family:inherit;font-size:.95rem}
       <!-- LANGUAGES -->
       <section class="panel" id="panel-languages">
         <div class="intro-card" style="padding:22px 26px;margin-bottom:20px">
-          <h3 style="font-size:1.1rem">German &amp; Russian wording</h3>
-          <p>Your website can be shown in English, German or Russian. Whenever you add or change wording in the portal, its German and Russian versions are added here — fill them in so visitors who pick those languages see the whole site translated, not half-English. Anything still missing a translation is highlighted. Leave a box blank and that item simply stays in English for that language.</p>
+          <h3 style="font-size:1.1rem">German, French &amp; Russian wording</h3>
+          <p>Your website can be shown in English, German, French or Russian. Every piece of text on the whole site is listed here, grouped by page — fill in the German, French and Russian so visitors who pick those languages see the site fully translated, not half-English. Leave a box blank and that item simply stays in English for that language, keeping its original design. Page groups start collapsed — click a page heading to expand it, and use the search box to jump to any wording. When you edit or add content elsewhere in the portal, it appears here automatically for translation.</p>
         </div>
         <div class="section-card">
           <div class="tr-toolbar">
             <input id="trSearch" class="tr-search" type="search" placeholder="Search the English wording…">
-            <div class="tr-filter">
-              <button type="button" data-trfilter="need" class="active">Needs translation</button>
-              <button type="button" data-trfilter="all">Show everything</button>
-            </div>
           </div>
           <div class="tr-stat" id="trStat"></div>
           <div id="trList"></div>
@@ -935,6 +957,7 @@ input,textarea,select{font-family:inherit;font-size:.95rem}
 <!-- Shared site dictionary: read-only here, used to show which strings already
      have German/Russian. The guard in translations.js prevents it translating
      the portal itself (no .lang-switch on this page). -->
+<script src="translations-manifest.js"></script>
 <script src="translations.js"></script>
 
 <script>
@@ -1174,27 +1197,34 @@ var DEFAULTS = {
   i18n:{}
 };
 
-/* Every media slot on the site, grouped by area. Each accepts a photo OR a
-   video. A room slot updates both its card on the Rooms page and its own page. */
+/* Every media slot on the site, grouped by the PAGE it appears on. Each slot
+   accepts a photo OR a video and uploads to the site's media folder. This list
+   covers every replaceable image/video placeholder across the whole website —
+   keep it in step with the data-cms-img markup in the page HTML. */
 var IMAGE_GROUPS = [
-  { group:"Homepage hero video", note:"One looping background video for the top of the homepage. It plays automatically, on a loop, with no sound. Leave empty to use the built-in tour video.", slots:[
-    {key:"index.heroVideo", label:"Hero background video", videoOnly:true}
+  { group:"Homepage", note:"Everything visual on the homepage — the two background videos, the Welcome illustrations, the Beach & Dining preview panels, and the gallery preview tiles. Videos play automatically on a loop; leave a slot empty to keep the built-in illustration.", slots:[
+    {key:"index.heroVideo", label:"Hero background video (top of page)", videoOnly:true},
+    {key:"index.tourVideo", label:"Virtual Tour video", videoOnly:true},
+    {key:"index.introImg1", label:"Welcome section — large illustration"},
+    {key:"index.introImg2", label:"Welcome section — small illustration"},
+    {key:"index.beach", label:"“Our Private Beach” preview panel"},
+    {key:"index.dining", label:"“Restaurants & Bars” preview panel"},
+    {key:"index.gallery1", label:"Gallery preview — tile 1 (Pool Side)"},
+    {key:"index.gallery2", label:"Gallery preview — tile 2 (Private Beach)"},
+    {key:"index.gallery3", label:"Gallery preview — tile 3 (Aqua Slides)"},
+    {key:"index.gallery4", label:"Gallery preview — tile 4 (Italian Restaurant)"},
+    {key:"index.gallery5", label:"Gallery preview — tile 5 (Sunset Hour)"},
+    {key:"index.gallery6", label:"Gallery preview — tile 6 (Premium Suite)"},
+    {key:"index.gallery7", label:"Gallery preview — tile 7 (Spa & Wellness)"},
+    {key:"index.gallery8", label:"Gallery preview — tile 8"}
   ]},
-  { group:"Homepage virtual tour video", note:"The video in the “Virtual Tour” section. It autoplays when guests scroll to it, loops, and they can turn the sound on. Leave empty to use the built-in tour video.", slots:[
-    {key:"index.tourVideo", label:"Virtual tour video", videoOnly:true}
+  { group:"About page", note:"The page banner and the two illustrations in the “Our Story” welcome section.", slots:[
+    {key:"about.hero", label:"Page header banner"},
+    {key:"about.introImg1", label:"Our Story — large illustration"},
+    {key:"about.introImg2", label:"Our Story — small illustration"}
   ]},
-  { group:"Page header banners", note:"The wide banner at the top of each page. A photo or a short looping video both work well here.", slots:[
-    {key:"rooms.hero", label:"Rooms page header"},
-    {key:"facilities.hero", label:"Facilities page header"},
-    {key:"activities.hero", label:"Activities page header"},
-    {key:"entertainment.hero", label:"Entertainment page header"},
-    {key:"outlets.hero", label:"Dining / Outlets page header"},
-    {key:"gallery.hero", label:"Gallery page header"},
-    {key:"about.hero", label:"About page header"},
-    {key:"news.hero", label:"News page header"},
-    {key:"contact.hero", label:"Contact page header"}
-  ]},
-  { group:"Room photos", note:"One photo (or video) per room. Each updates the room's card on the Rooms page AND that room's own page.", slots:[
+  { group:"Rooms page", note:"The page banner, plus one photo (or video) per room. Each room photo updates that room everywhere it appears — its card on the Rooms page, the preview card on the Homepage, and the top of that room's own page.", slots:[
+    {key:"rooms.hero", label:"Page header banner"},
     {key:"rooms.premium", label:"Premium Room"},
     {key:"rooms.seaview", label:"Sea View Room"},
     {key:"rooms.seaside", label:"Sea Side View Room"},
@@ -1203,24 +1233,48 @@ var IMAGE_GROUPS = [
     {key:"rooms.standard", label:"Standard Room"},
     {key:"rooms.economy", label:"Economy Room"}
   ]},
-  { group:"Gallery", note:"The eleven tiles on the Gallery page.", slots:[
-    {key:"gallery.tile1", label:"Private Beach"},
-    {key:"gallery.tile2", label:"Main Pool"},
-    {key:"gallery.tile3", label:"The Bouquet"},
-    {key:"gallery.tile4", label:"Aqua Slides"},
-    {key:"gallery.tile5", label:"Premium Suite"},
-    {key:"gallery.tile6", label:"Sunset Hour"},
-    {key:"gallery.tile7", label:"Reef Snorkelling"},
-    {key:"gallery.tile8", label:"Lobby Bar"},
-    {key:"gallery.tile9", label:"Spa & Wellness"},
-    {key:"gallery.tile10", label:"Aqua Aerobics"},
-    {key:"gallery.tile11", label:"Afternoon Swim"}
+  { group:"Facilities page", note:"The page banner and the large facility feature blocks. (These feature photos can also be set from the “Facilities sections” editor — either place stays in sync.)", slots:[
+    {key:"facilities.hero", label:"Page header banner"},
+    {key:"facilities.aquapark", label:"Aqua Park block"},
+    {key:"facilities.beach", label:"Private Beach block"},
+    {key:"facilities.spa", label:"Spa block"}
   ]},
-  { group:"Feature photos", note:"Large highlight images inside the pages.", slots:[
-    {key:"facilities.beach", label:"Private beach (Facilities)"},
-    {key:"activities.aquapark", label:"Aqua park (Activities)"},
-    {key:"outlets.bouquet", label:"Main restaurant (Outlets)"},
-    {key:"entertainment.shows", label:"Evening shows (Entertainment)"}
+  { group:"Activities page", note:"The page banner and the large feature blocks (Private Beach, Swimming Pools, Aqua Park).", slots:[
+    {key:"activities.hero", label:"Page header banner"},
+    {key:"activities.beach", label:"Private Beach block"},
+    {key:"activities.pools", label:"Swimming Pools block"},
+    {key:"activities.aquapark", label:"Aqua Park block"}
+  ]},
+  { group:"Entertainment page", note:"The page banner and the feature blocks (Evening Shows, Daytime Activities).", slots:[
+    {key:"entertainment.hero", label:"Page header banner"},
+    {key:"entertainment.shows", label:"Evening Shows block"},
+    {key:"entertainment.daytime", label:"Daytime Activities block"}
+  ]},
+  { group:"Dining / Outlets page", note:"The page banner and the large restaurant feature blocks. (These restaurant photos can also be set from the “Dining sections” editor — either place stays in sync.)", slots:[
+    {key:"outlets.hero", label:"Page header banner"},
+    {key:"outlets.bouquet", label:"The Bouquet"},
+    {key:"outlets.donvito", label:"Don Vito"},
+    {key:"outlets.beachrest", label:"Beach Restaurant"}
+  ]},
+  { group:"Gallery page", note:"The page banner and the eleven photo tiles on the Gallery page.", slots:[
+    {key:"gallery.hero", label:"Page header banner"},
+    {key:"gallery.tile1", label:"Tile 1 — Private Beach"},
+    {key:"gallery.tile2", label:"Tile 2 — Main Pool"},
+    {key:"gallery.tile3", label:"Tile 3 — The Bouquet"},
+    {key:"gallery.tile4", label:"Tile 4 — Aqua Slides"},
+    {key:"gallery.tile5", label:"Tile 5 — Premium Suite"},
+    {key:"gallery.tile6", label:"Tile 6 — Sunset Hour"},
+    {key:"gallery.tile7", label:"Tile 7 — Reef Snorkelling"},
+    {key:"gallery.tile8", label:"Tile 8 — Lobby Bar"},
+    {key:"gallery.tile9", label:"Tile 9 — Spa & Wellness"},
+    {key:"gallery.tile10", label:"Tile 10 — Aqua Aerobics"},
+    {key:"gallery.tile11", label:"Tile 11 — Afternoon Swim"}
+  ]},
+  { group:"News page", note:"The wide banner at the top of the News page.", slots:[
+    {key:"news.hero", label:"Page header banner"}
+  ]},
+  { group:"Contact page", note:"The wide banner at the top of the Contact page.", slots:[
+    {key:"contact.hero", label:"Page header banner"}
   ]}
 ];
 
@@ -1391,8 +1445,13 @@ function go(panel){
   $("#panelTitle").textContent = title; $("#crumbs").textContent = "Admin · "+title;
   $("#sidebar").classList.remove("open");
   /* The Languages list aggregates every page's content, so rebuild it on entry —
-     this surfaces anything added since load (rooms, facilities, activities, …). */
-  if(panel==="languages" && typeof renderTranslations==="function") renderTranslations();
+     this surfaces anything added since load (rooms, facilities, activities, …).
+     First pull the live page text so any wording changed on the pages shows the
+     current English here; renderTranslations runs again once that resolves. */
+  if(panel==="languages" && typeof renderTranslations==="function"){
+    renderTranslations();
+    if(typeof ensureLiveManifest==="function") ensureLiveManifest().then(function(m){ if(m) renderTranslations(); });
+  }
   window.scrollTo(0,0);
 }
 document.querySelectorAll(".nav-item[data-panel]").forEach(function(b){ b.addEventListener("click", function(){ go(b.dataset.panel); }); });
@@ -2049,6 +2108,7 @@ $("#ts-save").addEventListener("click", function(){
    ============================================================ */
 var trFilter = "need";   // "need" | "all"
 var trSearch = "";
+var trCollapsed = {};    // page group name -> collapsed?  (persists across re-renders)
 
 function siteDict(){ try{ return window.GBR_I18N_DICT || {}; }catch(e){ return {}; } }
 
@@ -2063,18 +2123,92 @@ function transFor(en){
   return {
     de:    (cms && cms.de) || (dict && dict.de) || "",
     ru:    (cms && cms.ru) || (dict && dict.ru) || "",
+    fr:    (cms && cms.fr) || (dict && dict.fr) || "",
     deCms: !!(cms && cms.de),
-    ruCms: !!(cms && cms.ru)
+    ruCms: !!(cms && cms.ru),
+    frCms: !!(cms && cms.fr)
   };
 }
-function transNeeds(en){ var t = transFor(en); return !(t.de && t.ru); }
+function transNeeds(en){ var t = transFor(en); return !(t.de && t.ru && t.fr); }
 
-function setTrans(en, de, ru){
+function setTrans(en, de, ru, fr){
   en = (en||"").trim(); if(!en) return;
   content.i18n = content.i18n || {};
-  de = (de||"").trim(); ru = (ru||"").trim();
-  if(de || ru) content.i18n[en] = {de:de, ru:ru};
+  de = (de||"").trim(); ru = (ru||"").trim(); fr = (fr||"").trim();
+  if(de || ru || fr) content.i18n[en] = {de:de, ru:ru, fr:fr};
   else delete content.i18n[en];
+}
+
+/* ── LIVE page-text manifest ──────────────────────────────────────────────
+   The hardcoded (non-CMS) text on each page is pulled straight from the live
+   page HTML at render time, so the English shown in the Languages panel always
+   matches what is actually on the site — even after a developer edits a page's
+   wording. Uses the SAME extraction rules as the build-time generator (accent
+   headings kept whole; CMS-driven, chrome and decorative nodes skipped).
+   Falls back to the static snapshot (translations-manifest.js) when the pages
+   can't be fetched (e.g. the admin opened straight from disk as file://). */
+var PAGE_FILES = [
+  ["index.html","Homepage"],["about.html","About page"],["rooms.html","Rooms page"],
+  ["room-premium-room.html","Room detail pages"],["activities.html","Activities page"],
+  ["facilities.html","Facilities page"],["entertainment.html","Entertainment page"],
+  ["outlets.html","Dining / Outlets page"],["gallery.html","Gallery page"],
+  ["contact.html","Contact page"],["news.html","News page"]
+];
+var MANIFEST_ORDER = ["Homepage","About page","Rooms page","Room detail pages","Activities page",
+  "Facilities page","Entertainment page","Dining / Outlets page","Gallery page",
+  "Contact page","News page","Site-wide (menus, header & footer)"];
+var LIVE_MANIFEST = null, liveManifestTried = false;
+
+/* Extract translatable strings from ONE parsed page document. Mirrors gen_manifest. */
+function extractPageStrings(doc){
+  var CMS='[data-cms],[data-cms-field],[data-cms-room],[data-cms-news],[data-cms-detail],[data-cms-detail-field],[data-cms-card],[data-cms-card-field],[data-cms-tile],[data-cms-testi-field],[data-cms-herotitle],[data-cms-href],[data-cms-img]';
+  function inCMS(el){ return el && el.closest && el.closest(CMS); }
+  var SKIP='svg,.logo,.brand,.lang-switch,.loader';
+  function inSkip(el){ return el && el.closest && el.closest(SKIP); }
+  function chrome_(el){ return el && el.closest && el.closest('.site-header,.top-bar,header,nav,.drawer,.site-footer,footer,.marquee'); }
+  function isNum(s){ return /^[\d\s.,%+/&·:;()°'"’“”€$£–—-]+$/.test(s); }
+  var site=[], page=[], seen={};
+  function push(arr,s){ s=(s||'').replace(/\s+/g,' ').trim(); if(!s||s.length<2||isNum(s)||seen[s]) return; seen[s]=1; arr.push(s); }
+  Array.prototype.forEach.call(doc.querySelectorAll('em.lime'), function(em){
+    var host=em.parentElement; if(!host||inCMS(em)||inSkip(em)) return;
+    if(host.children.length!==1||host.children[0]!==em) return;
+    push(chrome_(host)?site:page, host.textContent.replace(/\s+/g,' ').trim());
+    host.setAttribute('data-scanned','1');
+  });
+  var w=doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT, { acceptNode:function(n){
+    if(!n.nodeValue.trim()||!n.parentElement) return NodeFilter.FILTER_REJECT;
+    var t=n.parentElement.tagName; if(t==='SCRIPT'||t==='STYLE'||t==='NOSCRIPT'||t==='OPTION'||t==='SELECT') return NodeFilter.FILTER_REJECT;
+    if(n.parentElement.closest('[data-scanned]')) return NodeFilter.FILTER_REJECT;
+    if(inSkip(n.parentElement)) return NodeFilter.FILTER_REJECT;
+    if(inCMS(n.parentElement)) return NodeFilter.FILTER_REJECT;
+    return NodeFilter.FILTER_ACCEPT;
+  }});
+  var node; while(node=w.nextNode()){ push(chrome_(node.parentElement)?site:page, node.nodeValue); }
+  return {site:site, page:page};
+}
+
+/* Fetch + extract every page once, then cache. Resolves to a manifest array
+   (or null if the pages aren't reachable, so the static snapshot is used). */
+function ensureLiveManifest(){
+  if(liveManifestTried) return Promise.resolve(LIVE_MANIFEST);
+  if(typeof fetch!=="function" || location.protocol==="file:"){ liveManifestTried=true; return Promise.resolve(null); }
+  var groups={}, siteSeen={}, globalSeen={};
+  function add(group, s){ if(globalSeen[s]) return; globalSeen[s]=1; (groups[group]=groups[group]||[]).push(s); }
+  return Promise.all(PAGE_FILES.map(function(pf){
+    return fetch(pf[0], {credentials:"same-origin"}).then(function(r){ if(!r.ok) throw 0; return r.text(); })
+      .then(function(html){
+        var doc=new DOMParser().parseFromString(html, "text/html");
+        var d=extractPageStrings(doc);
+        d.site.forEach(function(s){ if(!siteSeen[s]){ siteSeen[s]=1; add("Site-wide (menus, header & footer)", s); } });
+        d.page.forEach(function(s){ add(pf[1], s); });
+      }).catch(function(){ /* one page failing shouldn't abort the rest */ });
+  })).then(function(){
+    liveManifestTried=true;
+    var built=MANIFEST_ORDER.filter(function(g){ return groups[g] && groups[g].length; })
+                            .map(function(g){ return {group:g, items:groups[g]}; });
+    if(built.length) LIVE_MANIFEST=built;
+    return LIVE_MANIFEST;
+  }).catch(function(){ liveManifestTried=true; return null; });
 }
 
 /* Gather every translatable English string, grouped by where it lives.
@@ -2121,7 +2255,19 @@ function collectTranslatables(){
 
   /* ── Homepage (hero + the guest reviews shown on it) ── */
   var home = G("Homepage");
-  if(P.index){ add(home, P.index.heroTitle, "Headline", "Hero"); add(home, P.index.heroSubtitle, "Intro text", "Hero"); }
+  if(P.index){
+    add(home, P.index.heroTitle, "Headline", "Hero"); add(home, P.index.heroSubtitle, "Intro text", "Hero");
+    /* Welcome / intro section — editable via the Homepage panel; fall back to the
+       on-page default so the wording is always listed here (and reflects any edit). */
+    var ix = P.index;
+    add(home, ix.introEyebrow || "Welcome to Golden Beach", "Small label", "Welcome section");
+    add(home, ix.introHeading || "An extraordinary vision, three decades in the making.", "Heading", "Welcome section");
+    add(home, ix.introText || "The Golden Beach is an innovative, contemporary hotel brand, offering an ultimate vacation concept on Hurghada's Red Sea coast. Whether beach resort, lifestyle retreat, or family playground — we are constantly redefining what a Red Sea holiday can be.", "Paragraph", "Welcome section");
+    add(home, ix.introText2 || "Tucked into the northwest curve of Hurghada, we sit ten kilometres from El Gouna, fifteen from the city centre, and twenty from Hurghada International Airport. Close enough to explore, far enough to feel away.", "Paragraph", "Welcome section");
+    add(home, ix.introSignature || "A warm welcome from our family to yours.", "Signature", "Welcome section");
+    add(home, ix.introSignatureName || "The Golden Beach Family", "Signature name", "Welcome section");
+    add(home, ix.introStatLabel || "Years of Hospitality", "Badge label", "Welcome section");
+  }
   (content.testimonials||[]).forEach(function(t,i){
     var s = "Guest review" + (t.where ? (" — "+t.where) : (" "+(i+1)));
     add(home, t.quote, "Quote", s); add(home, t.where, "Name & source", s);
@@ -2175,22 +2321,31 @@ function collectTranslatables(){
   (gal.pills||[]).forEach(function(p){ add(gg, p.label, "Filter category", "Filter categories"); });
   (gal.tiles||[]).forEach(function(t){ add(gg, t.label, "Photo caption", "Photo captions"); });
 
+  /* Merge in the hardcoded page text captured in the manifest (every on-page string
+     that isn't driven by the CMS above), grouped by page — so the owner can translate
+     ALL text on the whole website, not just editable content. add() de-dupes against
+     everything already collected, so CMS content keeps its richer labelling. */
+  var manifest = (LIVE_MANIFEST || window.GBR_TR_MANIFEST || []);
+  manifest.forEach(function(mg){
+    var g = null;
+    for(var i=0;i<groups.length;i++){ if(groups[i].group===mg.group){ g=groups[i]; break; } }
+    if(!g){ g = G(mg.group); }
+    (mg.items||[]).forEach(function(en){ add(g, en, "Page text", ""); });
+  });
+
   return groups.filter(function(g){ return g.items.length; });
 }
 
 function buildTransRow(item){
-  var en = item.en, t = transFor(en), needs = transNeeds(en);
+  var en = item.en, t = transFor(en);
   var row = document.createElement("div");
-  row.className = "tr-row" + (needs ? " need" : "");
+  row.className = "tr-row";
   row.dataset.en = en;
 
   var enBox = document.createElement("div"); enBox.className = "tr-en";
   var src = document.createElement("div"); src.className = "src";
   var ctxPill = document.createElement("span"); ctxPill.className = "pill-en"; ctxPill.textContent = item.ctx || "English";
   src.appendChild(ctxPill);
-  var needTag = document.createElement("span"); needTag.className = "need-tag"; needTag.textContent = "Needs translation";
-  needTag.style.display = needs ? "" : "none";
-  src.appendChild(needTag);
   enBox.appendChild(src);
   var enText = document.createElement("div"); enText.textContent = en; enBox.appendChild(enText);
   row.appendChild(enBox);
@@ -2210,29 +2365,26 @@ function buildTransRow(item){
     return ta;
   }
   var deTa = field("German", "🇩🇪", t.de, t.deCms);
+  var frTa = field("French", "🇫🇷", t.fr, t.frCms);
   var ruTa = field("Russian", "🇷🇺", t.ru, t.ruCms);
   row.appendChild(langs);
 
   function onEdit(){
-    deTa.classList.remove("auto"); ruTa.classList.remove("auto");
-    setTrans(en, deTa.value, ruTa.value);
-    var nowNeeds = transNeeds(en);
-    row.classList.toggle("need", nowNeeds);
-    needTag.style.display = nowNeeds ? "" : "none";
+    deTa.classList.remove("auto"); frTa.classList.remove("auto"); ruTa.classList.remove("auto");
+    setTrans(en, deTa.value, ruTa.value, frTa.value);
     markDirty(); updateTransStat();
   }
   deTa.addEventListener("input", onEdit);
+  frTa.addEventListener("input", onEdit);
   ruTa.addEventListener("input", onEdit);
   return row;
 }
 
 function updateTransStat(){
   var stat = $("#trStat"); if(!stat) return;
-  var groups = collectTranslatables(), total = 0, missing = 0;
-  groups.forEach(function(g){ g.items.forEach(function(it){ total++; if(transNeeds(it.en)) missing++; }); });
-  stat.innerHTML = missing
-    ? '<span class="miss">'+missing+' still need German or Russian</span> · <b>'+total+'</b> translatable items in total'
-    : '<b>All '+total+' items</b> have German and Russian 🎉';
+  var groups = collectTranslatables(), total = 0, done = 0;
+  groups.forEach(function(g){ g.items.forEach(function(it){ total++; if(!transNeeds(it.en)) done++; }); });
+  stat.innerHTML = '<b>'+total+'</b> translatable items across the whole website · '+done+' fully translated (DE, FR &amp; RU)';
 }
 
 function renderTranslations(){
@@ -2243,48 +2395,53 @@ function renderTranslations(){
   var shown = 0;
 
   groups.forEach(function(g){
-    var items = g.items.filter(function(it){
-      if(trFilter === "need" && !transNeeds(it.en)) return false;
-      if(q && it.en.toLowerCase().indexOf(q) === -1) return false;
-      return true;
-    });
+    var items = q ? g.items.filter(function(it){ return it.en.toLowerCase().indexOf(q) !== -1; }) : g.items;
     if(!items.length) return;
+
     var sec = document.createElement("div"); sec.className = "tr-group";
-    var h = document.createElement("h4"); h.textContent = g.group; sec.appendChild(h);
+    /* Collapsed by DEFAULT — the owner expands a page as needed. A search forces
+       every matching group open so the results are visible. */
+    var collapsed = q ? false : (trCollapsed[g.group] !== false);
+    if(collapsed) sec.classList.add("collapsed");
+
+    var head = document.createElement("button");
+    head.type = "button"; head.className = "tr-ghead";
+    var chev = document.createElement("span"); chev.className = "tr-gchev"; chev.textContent = "▼";
+    var name = document.createElement("span"); name.className = "tr-gname"; name.textContent = g.group;
+    var count = document.createElement("span"); count.className = "tr-gcount"; count.textContent = items.length + " items";
+    head.appendChild(chev); head.appendChild(name); head.appendChild(count);
+    head.addEventListener("click", function(){
+      var nowCollapsed = !sec.classList.contains("collapsed");
+      sec.classList.toggle("collapsed", nowCollapsed);
+      trCollapsed[g.group] = nowCollapsed;
+    });
+    sec.appendChild(head);
+
+    var body = document.createElement("div"); body.className = "tr-gbody";
     var lastSub = null;
     items.forEach(function(it){
       if(it.sub && it.sub !== lastSub){
         var sh = document.createElement("div"); sh.className = "tr-sub"; sh.textContent = it.sub;
-        sec.appendChild(sh); lastSub = it.sub;
+        body.appendChild(sh); lastSub = it.sub;
       }
-      sec.appendChild(buildTransRow(it)); shown++;
+      body.appendChild(buildTransRow(it)); shown++;
     });
+    sec.appendChild(body);
     host.appendChild(sec);
   });
 
   if(!shown){
     var empty = document.createElement("div"); empty.className = "tr-empty";
-    empty.textContent = q
-      ? "No wording matches “"+trSearch+"”."
-      : (trFilter === "need"
-          ? "Everything is translated — nothing needs German or Russian right now."
-          : "No translatable content yet.");
+    empty.textContent = q ? "No wording matches “"+trSearch+"”." : "No translatable content yet.";
     host.appendChild(empty);
   }
   updateTransStat();
 }
 
-/* toolbar wiring (search + filter) */
+/* toolbar wiring (search only) */
 (function wireTransToolbar(){
   var search = $("#trSearch");
   if(search) search.addEventListener("input", function(){ trSearch = search.value; renderTranslations(); });
-  document.querySelectorAll(".tr-filter [data-trfilter]").forEach(function(b){
-    b.addEventListener("click", function(){
-      trFilter = b.getAttribute("data-trfilter");
-      document.querySelectorAll(".tr-filter [data-trfilter]").forEach(function(x){ x.classList.toggle("active", x===b); });
-      renderTranslations();
-    });
-  });
 })();
 
 /* ---- IMAGES & VIDEO ---- */
@@ -2295,22 +2452,105 @@ var MAX_IMG_BYTES = 2.6 * 1024 * 1024;   // ~2.5MB photo
 var MAX_VID_BYTES = 4.2 * 1024 * 1024;   // ~4MB video (browser-demo limit)
 function isVideoSrc(src){ return typeof src==="string" && (/^data:video\//i.test(src) || /\.(mp4|webm|ogg|mov)(\?|#|$)/i.test(src)); }
 
+/* Which Photos & Videos page-groups are collapsed. Collapsed by DEFAULT — the
+   owner expands a page as needed (mirrors the Languages panel behaviour). */
+var imgCollapsed = {};
+/* Page group -> which collections feed extra, admin-ADDED sections that carry
+   their own photo. Only user-added items (numeric id) surface here — built-in
+   blocks already have fixed slots above, so nothing is duplicated. This keeps
+   the panel comprehensive as owners add new sections to any page. */
+var COLL_GROUP = {
+  "Facilities page":     [{coll:"facilityDetails", kind:"detail",  noun:"feature block", render:function(){renderDetailColls();}},
+                          {coll:"facilities",      kind:"feature", noun:"feature card",  render:function(){renderFeatureColls();}}],
+  "Activities page":     [{coll:"activities",      kind:"feature", noun:"activity card", render:function(){renderFeatureColls();}}],
+  "Dining / Outlets page":[{coll:"restaurants",    kind:"detail",  noun:"restaurant",    render:function(){renderDetailColls();}},
+                          {coll:"bars",            kind:"feature", noun:"bar / café card",render:function(){renderFeatureColls();}}],
+  "Gallery page":        [{coll:"__gallery__",     kind:"gallery", noun:"gallery photo", render:function(){renderGallery();}}]
+};
+function userColl(name){ return collArr(name).filter(function(it){ return !isBuiltinId(it.id); }); }
+function userTiles(){ var t=(content.gallery&&content.gallery.tiles)||[]; return t.filter(function(x){ return !isBuiltinTile(x.id); }); }
+
+/* Build the extra slot descriptors for a page group from its added sections. */
+function dynamicSlots(groupName){
+  var defs=COLL_GROUP[groupName]; if(!defs) return [];
+  var out=[];
+  defs.forEach(function(d){
+    if(d.kind==="gallery"){
+      userTiles().forEach(function(t){
+        out.push({ label:(t.label||"Untitled photo")+" — added "+d.noun, uploadId:"gallery-"+t.id,
+          get:function(){ return t.image||""; }, set:function(u){ t.image=u; }, clear:function(){ t.image=""; }, after:d.render });
+      });
+    } else if(d.kind==="feature"){
+      userColl(d.coll).forEach(function(it){
+        out.push({ label:(it.title||"Untitled")+" — added "+d.noun, uploadId:d.coll+"-"+it.id,
+          get:function(){ return it.image||""; }, set:function(u){ it.image=u; }, clear:function(){ it.image=""; }, after:d.render });
+      });
+    } else { /* detail blocks may hold a multi-photo slider — edit only the MAIN photo, keep the rest */
+      userColl(d.coll).forEach(function(it){
+        out.push({ label:(it.title||"Untitled")+" — added "+d.noun+" (main photo)", uploadId:d.coll+"-"+it.id,
+          get:function(){ return (Array.isArray(it.images)&&it.images[0])||it.image||""; },
+          set:function(u){ if(Array.isArray(it.images)&&it.images.length){ it.images[0]=u; } else { it.images=[u]; } },
+          clear:function(){ if(Array.isArray(it.images)) it.images.shift(); it.image=""; }, after:d.render });
+      });
+    }
+  });
+  return out;
+}
+
+/* Read a slot's current value whether it's a fixed content.images key or an
+   accessor-backed (added-section) slot. */
+function slotVal(slot){ return slot.get ? (slot.get()||"") : (content.images[slot.key]||""); }
+
 function renderImages(){
   var host=$("#imageGroups"); host.innerHTML="";
   content.images = content.images || {};
   IMAGE_GROUPS.forEach(function(g){
-    var card=document.createElement("div"); card.className="section-card";
-    var head='<h3><span class="ico">▦</span> '+esc(g.group)+'</h3>'+
-             (g.note?'<p class="desc">'+esc(g.note)+'</p>':'');
-    card.innerHTML=head+'<div class="grid-2 media-grid"></div>';
-    var grid=card.querySelector(".media-grid");
+    var slots=g.slots.concat(dynamicSlots(g.group));
+    var addedCount=slots.length-g.slots.length;
+
+    var sec=document.createElement("div"); sec.className="tr-group";
+    var collapsed = (imgCollapsed[g.group] !== false);   // default: collapsed
+    if(collapsed) sec.classList.add("collapsed");
+
+    var head=document.createElement("button");
+    head.type="button"; head.className="tr-ghead";
+    var chev=document.createElement("span"); chev.className="tr-gchev"; chev.textContent="▼";
+    var name=document.createElement("span"); name.className="tr-gname"; name.textContent=g.group;
+    var setCount=slots.filter(function(s){ return slotVal(s); }).length;
+    var count=document.createElement("span"); count.className="tr-gcount";
+    count.textContent = setCount ? (setCount+" of "+slots.length+" set") : (slots.length+" slots");
+    head.appendChild(chev); head.appendChild(name); head.appendChild(count);
+    head.addEventListener("click", function(){
+      var nowCollapsed = !sec.classList.contains("collapsed");
+      sec.classList.toggle("collapsed", nowCollapsed);
+      imgCollapsed[g.group] = nowCollapsed;
+    });
+    sec.appendChild(head);
+
+    var body=document.createElement("div"); body.className="tr-gbody";
+    if(g.note){ var note=document.createElement("p"); note.className="desc"; note.style.marginTop="0"; note.textContent=g.note; body.appendChild(note); }
+    var grid=document.createElement("div"); grid.className="grid-2 media-grid";
     g.slots.forEach(function(slot){ grid.appendChild(buildSlot(slot)); });
-    host.appendChild(card);
+    body.appendChild(grid);
+    if(addedCount){
+      var sub=document.createElement("div"); sub.className="tr-sub"; sub.style.margin="14px 2px 8px";
+      sub.textContent="Sections you added to this page";
+      body.appendChild(sub);
+      var grid2=document.createElement("div"); grid2.className="grid-2 media-grid";
+      dynamicSlots(g.group).forEach(function(slot){ grid2.appendChild(buildSlot(slot)); });
+      body.appendChild(grid2);
+    }
+    sec.appendChild(body);
+    host.appendChild(sec);
   });
 }
 
 function buildSlot(slot){
-  var saved=(content.images[slot.key]||"");
+  var get = slot.get || function(){ return content.images[slot.key]||""; };
+  var set = slot.set || function(u){ content.images[slot.key]=u; };
+  var clr = slot.clear || function(){ delete content.images[slot.key]; };
+  var uploadId = slot.uploadId || slot.key || ("media-"+Date.now());
+  var saved=get()||"";
   var wrap=document.createElement("div"); wrap.className="field media-slot";
   var vid=isVideoSrc(saved);
   var videoOnly=!!slot.videoOnly;
@@ -2345,15 +2585,17 @@ function buildSlot(slot){
         input.value=""; return;
       }
     }
-    GBR_uploadMedia(f, slot.key).then(function(url){
-      content.images[slot.key]=url;
-      if(!GBR_LIVE && !trySaveDraft()){ delete content.images[slot.key]; input.value=""; return; }
+    GBR_uploadMedia(f, uploadId).then(function(url){
+      var prev=get();
+      set(url);
+      if(!GBR_LIVE && !trySaveDraft()){ clr(); if(prev) set(prev); input.value=""; return; }
+      if(slot.after) slot.after();
       markDirty(); renderImages(); toast((asVideo?"Video":"Photo")+" added");
     });
   });
   var rm=wrap.querySelector(".remove");
   if(rm) rm.addEventListener("click", function(){
-    delete content.images[slot.key]; markDirty(); renderImages(); toast(videoOnly?"Removed — back to the built-in hero video":"Removed — back to the illustration");
+    clr(); if(slot.after) slot.after(); markDirty(); renderImages(); toast(videoOnly?"Removed — back to the built-in hero video":"Removed — back to the illustration");
   });
   return wrap;
 }
