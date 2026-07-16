@@ -720,24 +720,59 @@ function applyLang(lang){
   document.querySelectorAll('[data-cms-herotitle], [data-i18n-whole]').forEach(el => {
     var full = el.textContent.replace(/\s+/g, ' ').trim();
     var tr = DICT[full] && DICT[full][lang];
+    /* No whole-sentence translation available? Leave the element untouched so the
+       per-node walker below translates each word-span on its own — that keeps the
+       existing spans (and their .accent styling) intact. */
     if (!tr) return;
-    var spans = el.querySelectorAll('.word');
-    if (spans.length > 1) {
-      /* preserve the existing animated word-spans: split the translation across
-         the same number of slots, with the last one keeping the accent class */
-      var words = tr.split(/\s+/);
-      var perSpan = Math.ceil(words.length / spans.length);
-      spans.forEach(function (sp, i) {
-        var chunk = words.slice(i * perSpan, (i + 1) * perSpan).join(' ');
-        sp.textContent = chunk;
-      });
-      /* drop any leftover words onto the last span so nothing is lost */
-      var used = perSpan * spans.length;
-      if (used < words.length) {
-        var last = spans[spans.length - 1];
-        last.textContent = (last.textContent + ' ' + words.slice(used).join(' ')).trim();
-      }
+    /* Preserve the design in every language. The headline is a white "lead" phrase
+       followed by a lime, underlined "accent" phrase (the .accent span). Translate
+       the accent phrase on its own, find it inside the translated sentence, and
+       rebuild the headline as  lead + accent  — so the lime word + underline always
+       land on the right words, instead of slicing the sentence by raw word count
+       (which left the accent span empty and scrambled the layout). */
+    var accSpan = el.querySelector('.accent');
+    var accEn = accSpan ? accSpan.textContent.replace(/\s+/g, ' ').trim() : '';
+    var accTr = (accEn && DICT[accEn] && DICT[accEn][lang]) ? DICT[accEn][lang] : '';
+    var lead = '', accent = '';
+    var idx = accTr ? tr.toLowerCase().lastIndexOf(accTr.toLowerCase()) : -1;
+    if (idx >= 0) {
+      /* The accent phrase has its own translation and appears in the sentence:
+         accent exactly those words (keeps the semantic accent, e.g. "golden sand"). */
+      lead = tr.slice(0, idx).replace(/\s+$/, '');
+      accent = tr.slice(idx);
+    } else if (accSpan) {
+      /* Any other translation — including free wording typed into the Admin portal,
+         where the accent phrase can't be located — mirrors the built-in headline
+         design: lime the last 1–2 words (the exact rule cms-apply.js uses for the
+         English title). This keeps an accent in every language, so admin-entered
+         translations never lose the design. */
+      var w = tr.split(/\s+/);
+      var n = w.length > 3 ? 2 : 1;
+      var from = Math.max(0, w.length - n);
+      lead = w.slice(0, from).join(' ');
+      accent = w.slice(from).join(' ');
     } else {
+      lead = tr;
+    }
+    /* Rebuild with ONE span per lead word plus a single accent span — the exact
+       structure cms-apply.js uses for the English headline. This lets the words
+       flow and wrap naturally (same as English); the accent phrase only drops to a
+       new line when the text genuinely doesn't fit, never by construction. */
+    el.innerHTML = '';
+    var leadWords = lead ? lead.split(/\s+/) : [];
+    var di = 0;
+    leadWords.forEach(function (w) {
+      var sp = document.createElement('span'); sp.className = 'word';
+      sp.style.animationDelay = (0.9 + di * 0.12).toFixed(2) + 's'; di++;
+      sp.textContent = w;
+      el.appendChild(sp); el.appendChild(document.createTextNode(' '));
+    });
+    if (accent) {
+      var sa = document.createElement('span'); sa.className = 'word accent';
+      sa.style.animationDelay = (0.9 + di * 0.12).toFixed(2) + 's';
+      sa.textContent = accent;
+      el.appendChild(sa);
+    } else if (!leadWords.length) {
       el.textContent = tr;
     }
     el.setAttribute('data-i18n-done', '1');
